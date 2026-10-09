@@ -340,9 +340,10 @@
     let map = null, userMarker = null;
     function initMap() {
       map = L.map('map', { zoomControl: false }).setView([35.3472, 75.0833], 13);
-      L.tileLayer('https://{s}.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}{r}.png', {
-        attribution: '&copy; OpenStreetMap contributors &copy; CARTO',
-        subdomains: 'abcd', maxZoom: 20
+      // CartoDB Dark Matter tile layer integrated via GCP/Carto API endpoint
+      L.tileLayer('https://gcp-asia-northeast1.api.carto.com/basemaps/dark_all/{z}/{x}/{y}{r}.png', {
+        attribution: '&copy; CartoDB',
+        maxZoom: 20
       }).addTo(map);
     }
 
@@ -361,7 +362,7 @@
 
     window.openDrawer = () => document.getElementById('sidebar-drawer').classList.add('open');
     window.closeDrawer = () => document.getElementById('sidebar-drawer').classList.remove('open');
-    window.openModal = id => document.getElementById(id).classList.add('hidden') === false ? document.getElementById(id).classList.remove('hidden') : document.getElementById(id).classList.remove('hidden');
+    window.openModal = id => document.getElementById(id).classList.remove('hidden');
     window.closeModal = id => document.getElementById(id).classList.add('hidden');
     window.openBookingModal = () => document.getElementById('booking-modal').classList.remove('hidden');
 
@@ -438,7 +439,7 @@
           document.getElementById('profile-setup-section').classList.remove('hidden');
         }
       } else {
-        document.getElementById('auth-overlay').classList.remove('hidden');
+        document.getElementById('auth-overlay').classList.add('hidden');
       }
     });
 
@@ -567,7 +568,7 @@
     }
 
     window.sendDriverBid = async (rideId) => {
-      const amt = Number(document.getElementById(`bid-${rideId}`)).value;
+      const amt = Number(document.getElementById(`bid-${rideId}`).value);
       await set(push(ref(db, `rides/${rideId}/bids`)), { driverId: currentUser.uid, driverName: currentUserProfile.name, amount: amt });
       alert('Counter offer sent!');
     };
