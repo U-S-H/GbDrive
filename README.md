@@ -157,16 +157,6 @@
       margin-bottom: 4px;
     }
 
-    .fare-tag {
-      display: inline-block;
-      background: #d1fae5;
-      color: #065f46;
-      font-weight: 700;
-      padding: 4px 8px;
-      border-radius: 6px;
-      margin-top: 6px;
-    }
-
     .bid-input-group {
       display: flex;
       gap: 8px;
