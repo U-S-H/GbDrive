@@ -309,7 +309,7 @@
     </div>
   </div>
 
-  <!-- Booking Modal with Saved Places & Fare Estimator -->
+  <!-- Booking Modal -->
   <div id="booking-modal" class="modal-overlay hidden">
     <div class="modal-content">
       <div class="modal-header"><h3><i class="fa-solid fa-route"></i> Request Ride</h3><i class="fa-solid fa-xmark" style="cursor:pointer;" onclick="closeModal('booking-modal')"></i></div>
@@ -336,7 +336,7 @@
         <div class="form-group"><label>📅 Schedule Ride Time (Optional)</label><input type="datetime-local" id="schedule-time"></div>
         <div class="form-group">
           <label>Name Your Fare (PKR) <span id="fare-suggestion" style="color:var(--accent); font-size:0.75rem;">(Suggested: 400 PKR)</span></label>
-          <input type="number" id="fare" required placeholder="Enter amount">
+          <input type="number" id="fare" required placeholder="Enter amount" value="400">
         </div>
         <button type="submit" class="btn btn-accent">Offer Fare & Request</button>
       </form>
@@ -375,8 +375,12 @@
     let map = null, userMarker = null;
     function initMap() {
       map = L.map('map', { zoomControl: false }).setView([35.3472, 75.0833], 13);
-      L.tileLayer('https://gcp-asia-northeast1.api.carto.com/mcp/ac_ye8le860/{z}/{x}/{y}.png', {
-        attribution: '&copy; CARTO', maxZoom: 20
+      
+      // Using reliable CartoDB Dark Matter public tiles
+      L.tileLayer('https://{s}.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}{r}.png', {
+        attribution: '&copy; OpenStreetMap contributors &copy; CARTO',
+        subdomains: 'abcd',
+        maxZoom: 20
       }).addTo(map);
 
       const gbLocations = [
@@ -508,7 +512,7 @@
         if (snap.exists() && snap.val().isProfileComplete) {
           currentUserProfile = snap.val();
           document.getElementById('drawer-user-name').innerText = currentUserProfile.name;
-          document.getElementById('current-city-label-top').innerText = currentUserProfile.city;
+          document.getElementById('current-city-label-top').innerText = currentUserProfile.city || 'Astore';
         } else {
           document.getElementById('profile-setup-section').classList.remove('hidden');
         }
