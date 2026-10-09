@@ -2,7 +2,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>GB Drive - Intelligent Smart Taxi App</title>
+  <title>GB Drive - Ultimate Smart Taxi Network</title>
   
   <!-- Leaflet CSS for Maps -->
   <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
@@ -13,6 +13,7 @@
       --primary-dark: #1d4ed8;
       --accent: #10b981;
       --danger: #ef4444;
+      --warning: #f59e0b;
       --bg: #f3f4f6;
       --card-bg: #ffffff;
       --text: #1f2937;
@@ -62,21 +63,27 @@
       opacity: 0.9;
     }
 
-    .logout-btn {
+    .top-controls {
       position: absolute;
-      right: 15px;
-      top: 15px;
-      background: rgba(255, 255, 255, 0.2);
+      right: 10px;
+      top: 10px;
+      display: flex;
+      gap: 6px;
+    }
+
+    .top-btn {
+      background: rgba(255, 255, 255, 0.25);
       border: none;
       color: white;
-      padding: 6px 12px;
+      padding: 4px 8px;
       border-radius: 6px;
-      font-size: 0.8rem;
+      font-size: 0.75rem;
       cursor: pointer;
+      font-weight: 600;
     }
 
     #map {
-      height: 250px;
+      height: 220px;
       width: 100%;
       z-index: 1;
     }
@@ -127,7 +134,6 @@
       outline: none;
     }
 
-    /* AUTOCOMPLETE SUGGESTIONS BOX */
     .suggestions-box {
       position: absolute;
       top: 100%;
@@ -169,6 +175,8 @@
 
     .btn-google { background: #ea4335; margin-bottom: 10px; }
     .btn-accent { background: var(--accent); }
+    .btn-danger { background: var(--danger); }
+    .btn-warning { background: var(--warning); color: black; }
     .btn-whatsapp { background: #25d366; }
 
     .ride-card {
@@ -223,15 +231,49 @@
       align-items: center;
     }
 
-    .fuel-info-strip {
-      background: #fffbeb;
-      border: 1px solid #fcd34d;
-      color: #78350f;
-      padding: 8px;
+    .driver-dashboard-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      background: #f3f4f6;
+      padding: 10px;
       border-radius: 8px;
-      font-size: 0.75rem;
-      margin-bottom: 10px;
-      text-align: center;
+      margin-bottom: 12px;
+    }
+
+    /* CHAT BOX STYLING */
+    .chat-container {
+      border: 1px solid #d1d5db;
+      border-radius: 10px;
+      background: #ffffff;
+      padding: 10px;
+      margin-top: 10px;
+    }
+
+    .chat-messages {
+      height: 120px;
+      overflow-y: auto;
+      border-bottom: 1px solid #e5e7eb;
+      padding-bottom: 8px;
+      margin-bottom: 8px;
+      font-size: 0.85rem;
+    }
+
+    .chat-msg {
+      margin-bottom: 6px;
+      padding: 6px 10px;
+      border-radius: 6px;
+      max-width: 80%;
+    }
+
+    .msg-mine {
+      background: #dbeafe;
+      margin-left: auto;
+      text-align: right;
+    }
+
+    .msg-other {
+      background: #f3f4f6;
     }
 
     .hidden { display: none !important; }
@@ -242,8 +284,11 @@
   <div class="app-container">
     <header>
       <h1>GB Drive</h1>
-      <p>Pakistan Live Autocomplete & Fuel Fare Taxi App</p>
-      <button id="logout-btn" class="logout-btn hidden">Logout</button>
+      <p id="app-tagline">Intelligent Smart Taxi Network</p>
+      <div class="top-controls">
+        <button class="top-btn" onclick="toggleLanguage()" id="lang-btn">English</button>
+        <button id="logout-btn" class="top-btn hidden">Logout</button>
+      </div>
     </header>
 
     <!-- STEP 1: AUTHENTICATION -->
@@ -254,11 +299,11 @@
 
       <form id="auth-form">
         <div class="form-group">
-          <label>Email Address</label>
+          <label id="lbl-email">Email Address</label>
           <input type="email" id="auth-email" placeholder="name@example.com" required>
         </div>
         <div class="form-group">
-          <label>Password</label>
+          <label id="lbl-password">Password</label>
           <input type="password" id="auth-password" placeholder="••••••••" required>
         </div>
         <button type="submit" id="auth-submit-btn" class="btn">Login</button>
@@ -271,7 +316,7 @@
 
     <!-- STEP 2: SAFETY PROFILE FORM -->
     <div id="profile-setup-section" class="content hidden">
-      <h2 style="text-align: center; margin-bottom: 10px;">Safety Profile Setup</h2>
+      <h2 style="text-align: center; margin-bottom: 10px;">Safety Verification</h2>
       <form id="profile-setup-form">
         <div class="form-group">
           <label>Account Type</label>
@@ -281,7 +326,7 @@
           </select>
         </div>
         <div class="form-group">
-          <label>Full Name (Identity Name)</label>
+          <label>Full Name (CNIC Name)</label>
           <input type="text" id="setup-name" placeholder="Full Name as on CNIC" required>
         </div>
         <div class="form-group">
@@ -291,6 +336,10 @@
         <div class="form-group">
           <label>WhatsApp Phone Number</label>
           <input type="text" id="setup-phone" placeholder="03001234567" required>
+        </div>
+        <div class="form-group">
+          <label>Emergency Contact Phone</label>
+          <input type="text" id="setup-emergency" placeholder="Emergency Relative Number" required>
         </div>
 
         <div id="driver-setup-fields" class="hidden">
@@ -324,9 +373,10 @@
           <strong id="user-display-role" style="text-transform: uppercase;">PASSENGER</strong>
         </div>
 
-        <div class="fuel-info-strip">
-          ⛽ Official Rates: Petrol Rs 398.96/L | Diesel Rs 395.72/L
-        </div>
+        <!-- EMERGENCY SOS BUTTON -->
+        <button class="btn btn-danger" onclick="triggerSOSAlert()" style="font-size: 0.85rem; padding: 8px; margin-bottom: 10px;">
+          🚨 EMERGENCY SOS ALERT (Share Live Location)
+        </button>
       </div>
 
       <!-- Map Container -->
@@ -335,18 +385,18 @@
       <div class="content">
         <!-- PASSENGER DASHBOARD -->
         <div id="passenger-section" class="hidden">
-          <div class="map-instruction">
-            📍 Pickup/Dropoff likhein (Live Suggestions aayengi) ya Map par Click karein.
+          <div class="map-instruction" id="map-instr-text">
+            📍 Location type karein ya map par click karke route choose karein.
           </div>
 
           <div id="fare-badge" class="fare-calculator-badge hidden">
-            <div>📏 Calculated Distance: <strong id="calc-distance">0 km</strong></div>
-            <div>⛽ Fare Estimate: <strong id="calc-fare" style="color: #059669; font-size: 1.1rem;">0 PKR</strong></div>
+            <div>📏 Distance: <strong id="calc-distance">0 km</strong></div>
+            <div>⛽ Fuel Fare Estimate: <strong id="calc-fare" style="color: #059669; font-size: 1.1rem;">0 PKR</strong></div>
           </div>
           
           <form id="ride-form" autocomplete="off">
             <div class="form-group">
-              <label>Vehicle Type</label>
+              <label id="lbl-vehicle-type">Vehicle Type</label>
               <select id="ride-vehicle-type" onchange="calculateFuelFare()">
                 <option value="Car">Car / Taxi (Petrol ~ PKR 48/km)</option>
                 <option value="Bike">Bike / Rickshaw (~ PKR 16/km)</option>
@@ -354,25 +404,23 @@
               </select>
             </div>
 
-            <!-- PICKUP WITH AUTOCOMPLETE -->
             <div class="form-group">
-              <label>Pickup Location</label>
+              <label id="lbl-pickup">Pickup Location</label>
               <input type="text" id="pickup" placeholder="Type location e.g. Gilgit Bazaar" oninput="searchLocation('pickup')" required>
               <div id="pickup-suggestions" class="suggestions-box hidden"></div>
             </div>
 
-            <!-- DROPOFF WITH AUTOCOMPLETE -->
             <div class="form-group">
-              <label>Dropoff Location</label>
+              <label id="lbl-dropoff">Dropoff Location</label>
               <input type="text" id="dropoff" placeholder="Type location e.g. Skardu Airport" oninput="searchLocation('dropoff')" required>
               <div id="dropoff-suggestions" class="suggestions-box hidden"></div>
             </div>
 
             <div class="form-group">
-              <label>Your Offer Fare (PKR)</label>
+              <label id="lbl-fare">Your Offer Fare (PKR)</label>
               <input type="number" id="fare" placeholder="Recommended fare auto-applies" required>
             </div>
-            <button type="submit" class="btn">Offer Ride Now</button>
+            <button type="submit" class="btn" id="btn-offer-ride">Offer Ride Now</button>
           </form>
 
           <div id="passenger-ride-status" style="margin-top: 15px;"></div>
@@ -380,7 +428,16 @@
 
         <!-- DRIVER DASHBOARD -->
         <div id="driver-section" class="hidden">
-          <h3>Available Rides (Fuel Based Bidding)</h3>
+          <div class="driver-dashboard-header">
+            <div>Status: <strong id="driver-online-text" style="color: #10b981;">ONLINE</strong></div>
+            <button class="btn btn-warning" id="driver-toggle-btn" onclick="toggleDriverOnlineStatus()" style="width: auto; padding: 6px 12px; margin:0; font-size: 0.8rem;">Go Offline</button>
+          </div>
+
+          <div class="fare-calculator-badge" style="background: #eff6ff; border-color: #2563eb; color: #1e40af;">
+            💰 Driver Wallet Earnings: <strong id="driver-daily-earnings" style="font-size: 1.1rem;">0 PKR</strong>
+          </div>
+
+          <h3>Available Live Rides</h3>
           <div id="rides-list" style="margin-top: 10px;">
             <p style="color: #6b7280; font-size: 0.85rem;">Searching for passenger requests...</p>
           </div>
@@ -425,8 +482,30 @@
     let currentUser = null;
     let currentUserProfile = null;
     let isSignUpMode = false;
+    let isDriverOnline = true;
+    let currentLanguage = 'ur';
 
-    // --- AUTH TOGGLE ---
+    // LANGUAGE SWITCHER ENGINE
+    window.toggleLanguage = function() {
+      currentLanguage = currentLanguage === 'ur' ? 'en' : 'ur';
+      document.getElementById('lang-btn').innerText = currentLanguage === 'ur' ? 'English' : 'اردو';
+      
+      if (currentLanguage === 'en') {
+        document.getElementById('app-tagline').innerText = 'Intelligent Smart Taxi Network';
+        document.getElementById('lbl-email').innerText = 'Email Address';
+        document.getElementById('lbl-password').innerText = 'Password';
+        document.getElementById('btn-offer-ride').innerText = 'Offer Ride Now';
+        document.getElementById('map-instr-text').innerText = '📍 Type location or click on map to choose route.';
+      } else {
+        document.getElementById('app-tagline').innerText = 'گلگت بلتستان اسمارٹ ٹیکسی سروس';
+        document.getElementById('lbl-email').innerText = 'ای میل ایڈریس';
+        document.getElementById('lbl-password').innerText = 'پاس ورڈ';
+        document.getElementById('btn-offer-ride').innerText = 'رائڈ آفر کریں';
+        document.getElementById('map-instr-text').innerText = '📍 لوکیشن ٹائپ کریں یا میپ پر کلک کریں۔';
+      }
+    };
+
+    // AUTH TOGGLE
     window.toggleAuthMode = function() {
       isSignUpMode = !isSignUpMode;
       document.getElementById('auth-title').innerText = isSignUpMode ? 'Register on GB Drive' : 'Login to GB Drive';
@@ -503,6 +582,7 @@
         name: document.getElementById('setup-name').value,
         cnic: document.getElementById('setup-cnic').value,
         phone: document.getElementById('setup-phone').value,
+        emergencyPhone: document.getElementById('setup-emergency').value,
         role,
         isProfileComplete: true,
         updatedAt: Date.now()
@@ -528,6 +608,7 @@
       if (currentUserProfile.role === 'driver') {
         document.getElementById('driver-section').classList.remove('hidden');
         document.getElementById('passenger-section').classList.add('hidden');
+        loadDriverEarnings();
       } else {
         document.getElementById('passenger-section').classList.remove('hidden');
         document.getElementById('driver-section').classList.add('hidden');
@@ -536,7 +617,36 @@
       initMap();
     }
 
-    // --- LEAFLET MAP & NOMINATIM LOCATION AUTOCOMPLETE ---
+    // EMERGENCY SOS TRIGGER
+    window.triggerSOSAlert = function() {
+      if (!currentUserProfile) return;
+      const emergencyNo = currentUserProfile.emergencyPhone || '03000000000';
+      const mapLink = pickupMarker ? `https://maps.google.com/?q=${pickupMarker.getLatLng().lat},${pickupMarker.getLatLng().lng}` : 'Live Location';
+      const message = `EMERGENCY SOS ALERT! I am in danger during GB Drive Ride. Track Location: ${mapLink}`;
+      
+      window.open(`https://wa.me/${emergencyNo}?text=${encodeURIComponent(message)}`, '_blank');
+    };
+
+    // DRIVER ONLINE/OFFLINE TOGGLE
+    window.toggleDriverOnlineStatus = function() {
+      isDriverOnline = !isDriverOnline;
+      const statusText = document.getElementById('driver-online-text');
+      const toggleBtn = document.getElementById('driver-toggle-btn');
+
+      if (isDriverOnline) {
+        statusText.innerText = 'ONLINE';
+        statusText.style.color = '#10b981';
+        toggleBtn.innerText = 'Go Offline';
+        toggleBtn.className = 'btn btn-warning';
+      } else {
+        statusText.innerText = 'OFFLINE';
+        statusText.style.color = '#ef4444';
+        toggleBtn.innerText = 'Go Online';
+        toggleBtn.className = 'btn btn-accent';
+      }
+    };
+
+    // LEAFLET MAP & AUTOCOMPLETE
     let map = null;
     let pickupMarker = null;
     let dropoffMarker = null;
@@ -563,7 +673,6 @@
       });
     }
 
-    // LOCATION AUTOCOMPLETE SEARCH ENGINE
     window.searchLocation = function(type) {
       const query = document.getElementById(type).value;
       const suggestionsBox = document.getElementById(`${type}-suggestions`);
@@ -633,7 +742,7 @@
         map.fitBounds(routePolyline.getBounds(), { padding: [20, 20] });
 
         const distanceMeters = pLat.distanceTo(dLat);
-        routeDistanceKm = (distanceMeters / 1000) * 1.35; // 1.35 Road Distance multiplier
+        routeDistanceKm = (distanceMeters / 1000) * 1.35;
         calculateFuelFare();
       }
     }
@@ -642,7 +751,7 @@
       if (!routeDistanceKm) return;
 
       const vehicleType = document.getElementById('ride-vehicle-type').value;
-      let ratePerKm = 48; // Petrol Rs 398/L base
+      let ratePerKm = 48;
 
       if (vehicleType === 'Bike') ratePerKm = 16;
       else if (vehicleType === 'Van') ratePerKm = 58;
@@ -655,7 +764,7 @@
       document.getElementById('fare-badge').classList.remove('hidden');
     };
 
-    // RIDE BROADCAST & BIDDING SYSTEM
+    // RIDE BROADCAST WITH OTP GENERATION
     const rideForm = document.getElementById('ride-form');
     rideForm.addEventListener('submit', (e) => {
       e.preventDefault();
@@ -664,6 +773,7 @@
       const dropoff = document.getElementById('dropoff').value;
       const fare = document.getElementById('fare').value;
       const vehicleType = document.getElementById('ride-vehicle-type').value;
+      const otpCode = Math.floor(1000 + Math.random() * 9000);
 
       const ridesRef = ref(db, 'rides/');
       const newRideRef = push(ridesRef);
@@ -677,6 +787,7 @@
         distanceKm: routeDistanceKm.toFixed(1),
         vehicleType,
         fare: Number(fare),
+        otpCode,
         status: 'pending',
         createdAt: Date.now()
       }).then(() => {
@@ -695,7 +806,7 @@
 
         if (ride.status === 'pending' && !ride.bids) {
           statusDiv.innerHTML = `<div class="ride-card">⏳ Broadcasted! Waiting for drivers...</div>`;
-        } else if (ride.bids) {
+        } else if (ride.bids && ride.status === 'pending') {
           let html = `<h4>Drivers Offered Bids:</h4>`;
           Object.keys(ride.bids).forEach(bidId => {
             const bid = ride.bids[bidId];
@@ -711,24 +822,34 @@
           });
           statusDiv.innerHTML = html;
         } else if (ride.status === 'accepted') {
-          const waUrl = `https://wa.me/${ride.acceptedDriverPhone}?text=Hi%20${ride.acceptedDriverName},%20I%20accepted%20your%20offer%20of%20PKR%20${ride.acceptedFare}%20for%20GB%20Drive`;
           statusDiv.innerHTML = `
             <div class="ride-card" style="background: #d1fae5; border-color: #10b981;">
               ✅ <strong>Ride Accepted!</strong><br>
-              Driver: ${ride.acceptedDriverName} (${ride.acceptedFare} PKR)<br><br>
-              <a href="${waUrl}" target="_blank" class="btn btn-whatsapp" style="display:block; text-align:center; text-decoration:none;">Open WhatsApp Chat</a>
+              Driver: ${ride.acceptedDriverName} (${ride.acceptedFare} PKR)<br>
+              🔐 <strong>Your Start Ride OTP: <span style="font-size: 1.2rem; color: #1e40af;">${ride.otpCode}</span></strong>
+            </div>
+
+            <!-- IN-APP CHAT -->
+            <div class="chat-container">
+              <h5 style="margin-bottom:6px;">💬 In-App Live Chat with Driver</h5>
+              <div class="chat-messages" id="chat-box-${rideId}"></div>
+              <div style="display:flex; gap:6px;">
+                <input type="text" id="chat-input-${rideId}" placeholder="Type message..." style="flex:1; padding:6px; border-radius:6px; border:1px solid #ccc;">
+                <button class="btn btn-accent" onclick="window.sendChatMessage('${rideId}')" style="width:auto; padding:6px 12px; margin:0;">Send</button>
+              </div>
             </div>
           `;
+          listenToChatMessages(rideId);
         }
       });
     }
 
-    // DRIVER MONITOR
+    // DRIVER RIDES MONITOR & OTP VERIFY
     const ridesList = document.getElementById('rides-list');
     const ridesRef = ref(db, 'rides/');
 
     onValue(ridesRef, (snapshot) => {
-      if (!currentUserProfile || currentUserProfile.role !== 'driver') return;
+      if (!currentUserProfile || currentUserProfile.role !== 'driver' || !isDriverOnline) return;
       const data = snapshot.val();
       ridesList.innerHTML = '';
 
@@ -753,6 +874,30 @@
             </div>
           `;
           ridesList.appendChild(card);
+        } else if (ride.status === 'accepted' && ride.acceptedDriverPhone === currentUserProfile.phone) {
+          const card = document.createElement('div');
+          card.className = 'ride-card';
+          card.style.background = '#eff6ff';
+          card.innerHTML = `
+            <h4>Active Trip with ${ride.passengerName}</h4>
+            <div class="ride-info">Fare: <strong>PKR ${ride.acceptedFare}</strong></div>
+            <div class="bid-input-group">
+              <input type="number" id="verify-otp-${rideId}" placeholder="Enter Passenger 4-Digit OTP">
+              <button class="btn btn-accent" onclick="window.verifyRideOTP('${rideId}', ${ride.otpCode}, ${ride.acceptedFare})">Start & Complete Ride</button>
+            </div>
+
+            <!-- IN-APP CHAT FOR DRIVER -->
+            <div class="chat-container" style="margin-top:10px;">
+              <h5 style="margin-bottom:6px;">💬 Live Chat with Passenger</h5>
+              <div class="chat-messages" id="chat-box-${rideId}"></div>
+              <div style="display:flex; gap:6px;">
+                <input type="text" id="chat-input-${rideId}" placeholder="Type message..." style="flex:1; padding:6px; border-radius:6px; border:1px solid #ccc;">
+                <button class="btn btn-accent" onclick="window.sendChatMessage('${rideId}')" style="width:auto; padding:6px 12px; margin:0;">Send</button>
+              </div>
+            </div>
+          `;
+          ridesList.appendChild(card);
+          listenToChatMessages(rideId);
         }
       });
     });
@@ -780,6 +925,71 @@
         acceptedFare: fare
       });
     };
+
+    window.verifyRideOTP = function(rideId, correctOtp, fareAmount) {
+      const enteredOtp = document.getElementById(`verify-otp-${rideId}`).value;
+      if (Number(enteredOtp) === correctOtp) {
+        const rideRef = ref(db, `rides/${rideId}`);
+        update(rideRef, { status: 'completed' }).then(() => {
+          alert('Ride Completed Successfully!');
+          const earningsRef = ref(db, `earnings/${currentUser.uid}/${Date.now()}`);
+          set(earningsRef, { amount: fareAmount });
+          loadDriverEarnings();
+        });
+      } else {
+        alert('Incorrect OTP Code!');
+      }
+    };
+
+    function loadDriverEarnings() {
+      const earningsRef = ref(db, `earnings/${currentUser.uid}`);
+      onValue(earningsRef, (snapshot) => {
+        const data = snapshot.val();
+        let total = 0;
+        if (data) {
+          Object.values(data).forEach(item => total += item.amount);
+        }
+        document.getElementById('driver-daily-earnings').innerText = `${total} PKR`;
+      });
+    }
+
+    // IN-APP CHAT LOGIC
+    window.sendChatMessage = function(rideId) {
+      const input = document.getElementById(`chat-input-${rideId}`);
+      const text = input.value.trim();
+      if (!text) return;
+
+      const chatRef = ref(db, `chats/${rideId}`);
+      const newMsgRef = push(chatRef);
+
+      set(newMsgRef, {
+        senderId: currentUser.uid,
+        senderName: currentUserProfile.name,
+        text,
+        timestamp: Date.now()
+      }).then(() => { input.value = ''; });
+    };
+
+    function listenToChatMessages(rideId) {
+      const chatRef = ref(db, `chats/${rideId}`);
+      onValue(chatRef, (snapshot) => {
+        const data = snapshot.val();
+        const chatBox = document.getElementById(`chat-box-${rideId}`);
+        if (!chatBox) return;
+
+        chatBox.innerHTML = '';
+        if (data) {
+          Object.values(data).forEach(msg => {
+            const isMine = msg.senderId === currentUser.uid;
+            const div = document.createElement('div');
+            div.className = `chat-msg ${isMine ? 'msg-mine' : 'msg-other'}`;
+            div.innerHTML = `<strong>${isMine ? 'You' : msg.senderName}:</strong> ${msg.text}`;
+            chatBox.appendChild(div);
+          });
+          chatBox.scrollTop = chatBox.scrollHeight;
+        }
+      });
+    }
   </script>
 </body>
 </html>
