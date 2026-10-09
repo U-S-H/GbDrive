@@ -395,7 +395,7 @@
 
             <div class="form-group">
               <label>Dropoff / Tour Destination</label>
-              <input type="text" id="dropoff" placeholder="Type destination e.g. Skardu / Hunza..." oninput="searchLocation('dropoff')" required>
+              <input type="text" id="dropoff" placeholder="Type destination e.g. Skardu / Astore..." oninput="searchLocation('dropoff')" required>
               <div id="dropoff-suggestions" class="suggestions-box hidden"></div>
             </div>
 
@@ -420,7 +420,7 @@
             💰 Easypaisa/JazzCash Wallet Balance: <strong id="driver-daily-earnings" style="font-size: 1.1rem;">0 PKR</strong>
           </div>
 
-          <h3>Available Live Rides Nearby</h3>
+          <h3>Available Live Rides</h3>
           <div id="rides-list" style="margin-top: 10px;"></div>
         </div>
       </div>
@@ -466,7 +466,8 @@
       }
     };
 
-    mapboxgl.accessToken = 'pk.eyJ1IjoibWFwYm94IiwiYSI6ImNpejY4M29iazA2Z2gycXA4N2pmbDZmangifQ.-g_vE53SD2WrJ6tFX7QHmA';
+    // YOUR CUSTOM MAPBOX TOKEN INTEGRATED HERE
+    mapboxgl.accessToken = 'pk.eyJ1IjoibXJraGFuNzc1IiwiYSI6ImNtdjE3am52ODAyaXkyenNidjFvNWJmamoifQ.-oubT8UYwpjhgXHwE-NXWw';
     let map = null;
     let userMarker = null;
     let userCoords = null;
@@ -572,7 +573,7 @@
     };
 
     function calculateDistanceDummy() {
-      routeDistanceKm = 15.0; // Estimated route distance for demo
+      routeDistanceKm = 15.0;
       window.calculateFuelFare();
     }
 
@@ -581,7 +582,7 @@
       let ratePerKm = 48;
       if (vehicleType === 'Bike') ratePerKm = 16;
       else if (vehicleType === 'Van') ratePerKm = 58;
-      else if (vehicleType === 'Jeep 4x4') ratePerKm = 120; // Special 4x4 rate
+      else if (vehicleType === 'Jeep 4x4') ratePerKm = 120;
 
       let calculatedFare = Math.round(200 + (routeDistanceKm * ratePerKm));
       document.getElementById('calc-distance').innerText = `${routeDistanceKm.toFixed(1)} km`;
@@ -678,7 +679,6 @@
       getCurrentGPSLocation();
     }
 
-    // RIDE BROADCAST & BIDDING
     const rideForm = document.getElementById('ride-form');
     rideForm.addEventListener('submit', (e) => {
       e.preventDefault();
@@ -804,7 +804,7 @@
       const walletRef = ref(db, `wallet/${currentUser.uid}`);
       onValue(walletRef, (snapshot) => {
         const data = snapshot.val();
-        let total = data ? data.balance || 0 : 5000; // Starting wallet balance demo
+        let total = data ? data.balance || 0 : 5000;
         document.getElementById('driver-daily-earnings').innerText = `${total} PKR`;
       });
     }
