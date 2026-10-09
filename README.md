@@ -2,12 +2,17 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>GB Drive - Gilgit-Baltistan Ride Sharing</title>
+  <title>GB Drive - Ultimate InDrive Clone</title>
+  
+  <!-- Leaflet CSS for OpenStreetMap -->
+  <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
+  
   <style>
     :root {
       --primary: #2563eb;
       --primary-dark: #1d4ed8;
       --accent: #10b981;
+      --danger: #ef4444;
       --bg: #f3f4f6;
       --card-bg: #ffffff;
       --text: #1f2937;
@@ -17,7 +22,7 @@
       box-sizing: border-box;
       margin: 0;
       padding: 0;
-      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Oxygen, Ubuntu, sans-serif;
     }
 
     body {
@@ -27,42 +32,40 @@
       flex-direction: column;
       align-items: center;
       min-height: 100vh;
-      padding: 15px;
+      padding: 10px;
     }
 
     .app-container {
       width: 100%;
-      max-width: 480px;
+      max-width: 500px;
       background: var(--card-bg);
       border-radius: 16px;
-      box-shadow: 0 10px 25px rgba(0, 0, 0, 0.08);
+      box-shadow: 0 10px 25px rgba(0, 0, 0, 0.1);
       overflow: hidden;
-      margin-top: 10px;
     }
 
     header {
       background: var(--primary);
       color: white;
-      padding: 20px;
+      padding: 15px;
       text-align: center;
     }
 
     header h1 {
-      font-size: 1.6rem;
+      font-size: 1.5rem;
       font-weight: 700;
     }
 
     header p {
-      font-size: 0.85rem;
+      font-size: 0.8rem;
       opacity: 0.9;
-      margin-top: 4px;
     }
 
     .role-switcher {
       display: flex;
       background: #e5e7eb;
       padding: 4px;
-      margin: 15px;
+      margin: 12px;
       border-radius: 10px;
     }
 
@@ -84,34 +87,45 @@
       box-shadow: 0 2px 5px rgba(0,0,0,0.1);
     }
 
+    #map {
+      height: 250px;
+      width: 100%;
+      z-index: 1;
+    }
+
     .content {
-      padding: 20px;
+      padding: 15px;
+    }
+
+    .map-instruction {
+      font-size: 0.8rem;
+      color: #6b7280;
+      text-align: center;
+      margin-bottom: 10px;
+      background: #eff6ff;
+      padding: 6px;
+      border-radius: 6px;
     }
 
     .form-group {
-      margin-bottom: 15px;
+      margin-bottom: 12px;
     }
 
     .form-group label {
       display: block;
       font-size: 0.85rem;
       font-weight: 600;
-      margin-bottom: 6px;
+      margin-bottom: 4px;
       color: #4b5563;
     }
 
-    .form-group input, .form-group select {
+    .form-group input {
       width: 100%;
-      padding: 12px 14px;
+      padding: 10px 12px;
       border: 1px solid #d1d5db;
       border-radius: 8px;
-      font-size: 0.95rem;
+      font-size: 0.9rem;
       outline: none;
-      transition: border-color 0.2s;
-    }
-
-    .form-group input:focus {
-      border-color: var(--primary);
     }
 
     .btn {
@@ -127,40 +141,33 @@
       transition: background 0.2s;
     }
 
-    .btn:hover {
-      background: var(--primary-dark);
-    }
-
-    .btn-accent {
-      background: var(--accent);
-    }
-
-    .btn-accent:hover {
-      background: #059669;
-    }
+    .btn-accent { background: var(--accent); }
+    .btn-danger { background: var(--danger); }
+    .btn-whatsapp { background: #25d366; }
 
     .ride-card {
       border: 1px solid #e5e7eb;
       border-radius: 12px;
-      padding: 15px;
+      padding: 12px;
       margin-bottom: 12px;
       background: #fafafa;
     }
 
     .ride-card h4 {
       color: var(--primary);
-      margin-bottom: 8px;
+      margin-bottom: 6px;
+      font-size: 0.95rem;
     }
 
     .ride-info {
-      font-size: 0.9rem;
+      font-size: 0.85rem;
       margin-bottom: 4px;
     }
 
     .bid-input-group {
       display: flex;
-      gap: 8px;
-      margin-top: 10px;
+      gap: 6px;
+      margin-top: 8px;
     }
 
     .bid-input-group input {
@@ -170,9 +177,7 @@
       border-radius: 6px;
     }
 
-    .hidden {
-      display: none;
-    }
+    .hidden { display: none; }
   </style>
 </head>
 <body>
@@ -180,7 +185,7 @@
   <div class="app-container">
     <header>
       <h1>GB Drive</h1>
-      <p>Gilgit-Baltistan Local Ride & Bid Service</p>
+      <p>Realtime Map, Fare Offer & Bidding System</p>
     </header>
 
     <!-- Role Switcher -->
@@ -189,43 +194,56 @@
       <button class="role-btn" id="btn-driver-view" onclick="switchRole('driver')">Driver</button>
     </div>
 
+    <!-- Map Container -->
+    <div id="map"></div>
+
     <div class="content">
       <!-- PASSENGER VIEW -->
       <div id="passenger-section">
-        <h3>Book a Ride</h3>
-        <form id="ride-form" style="margin-top: 15px;">
+        <div class="map-instruction">
+          📍 Map par pehla click <b>Pickup</b> aur doosra click <b>Dropoff</b> set karega.
+        </div>
+        
+        <form id="ride-form">
           <div class="form-group">
             <label>Pickup Location</label>
-            <input type="text" id="pickup" placeholder="e.g. Gilgit Airport / Skardu Bazaar" required>
+            <input type="text" id="pickup" placeholder="Map par click karein ya likhein" required>
           </div>
           <div class="form-group">
             <label>Dropoff Location</label>
-            <input type="text" id="dropoff" placeholder="e.g. Hunza / Astore Main Bazaar" required>
+            <input type="text" id="dropoff" placeholder="Map par click karein ya likhein" required>
           </div>
           <div class="form-group">
-            <label>Your Offer Price (PKR)</label>
-            <input type="number" id="fare" placeholder="e.g. 1500" required>
+            <label>Passenger Phone Number (WhatsApp)</label>
+            <input type="text" id="passenger-phone" placeholder="e.g. 03001234567" required>
           </div>
-          <button type="submit" class="btn">Offer Ride</button>
+          <div class="form-group">
+            <label>Your Offer Fare (PKR)</label>
+            <input type="number" id="fare" placeholder="e.g. 1200" required>
+          </div>
+          <button type="submit" class="btn">Offer Ride Now</button>
         </form>
 
-        <div id="passenger-status" style="margin-top: 20px;"></div>
+        <div id="passenger-ride-status" style="margin-top: 15px;"></div>
       </div>
 
       <!-- DRIVER VIEW -->
       <div id="driver-section" class="hidden">
-        <h3>Available Rides</h3>
-        <div id="rides-list" style="margin-top: 15px;">
-          <p style="color: #6b7280; font-size: 0.9rem;">No active ride requests...</p>
+        <h3>Available Live Rides</h3>
+        <div id="rides-list" style="margin-top: 10px;">
+          <p style="color: #6b7280; font-size: 0.85rem;">Searching for rides near Gilgit-Baltistan...</p>
         </div>
       </div>
     </div>
   </div>
 
+  <!-- Leaflet JS -->
+  <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+
   <!-- FIREBASE SDKs -->
   <script type="module">
     import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
-    import { getDatabase, ref, push, set, onValue, update } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-database.js";
+    import { getDatabase, ref, push, set, onValue, update, remove } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-database.js";
 
     // Firebase Config
     const firebaseConfig = {
@@ -238,37 +256,116 @@
       appId: "1:867100945312:web:315dfb48fb34496cee12c5"
     };
 
-    // Initialize Firebase
     const app = initializeApp(firebaseConfig);
     const db = getDatabase(app);
 
-    // Ride Request Submit (Passenger)
+    // --- LEAFLET MAP SETUP ---
+    // Gilgit City Coordinates
+    const map = L.map('map').setView([35.9208, 74.3144], 12);
+
+    L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+      attribution: '© OpenStreetMap'
+    }).addTo(map);
+
+    let pickupMarker = null;
+    let dropoffMarker = null;
+    let routePolyline = null;
+    let clickState = 'pickup';
+
+    map.on('click', (e) => {
+      const { lat, lng } = e.latlng;
+      const coordsText = `${lat.toFixed(4)}, ${lng.toFixed(4)}`;
+
+      if (clickState === 'pickup') {
+        if (pickupMarker) map.removeLayer(pickupMarker);
+        pickupMarker = L.marker([lat, lng]).addTo(map).bindPopup('Pickup Location').openPopup();
+        document.getElementById('pickup').value = `Gilgit Pin (${coordsText})`;
+        clickState = 'dropoff';
+      } else {
+        if (dropoffMarker) map.removeLayer(dropoffMarker);
+        dropoffMarker = L.marker([lat, lng]).addTo(map).bindPopup('Dropoff Location').openPopup();
+        document.getElementById('dropoff').value = `Drop Pin (${coordsText})`;
+        clickState = 'pickup';
+      }
+
+      // Draw Route Line
+      if (pickupMarker && dropoffMarker) {
+        if (routePolyline) map.removeLayer(routePolyline);
+        routePolyline = L.polyline([pickupMarker.getLatLng(), dropoffMarker.getLatLng()], { color: '#2563eb', weight: 4 }).addTo(map);
+        map.fitBounds(routePolyline.getBounds(), { padding: [20, 20] });
+      }
+    });
+
+    // --- RIDE SUBMISSION (PASSENGER) ---
+    let currentRideId = null;
     const rideForm = document.getElementById('ride-form');
+
     rideForm.addEventListener('submit', (e) => {
       e.preventDefault();
 
       const pickup = document.getElementById('pickup').value;
       const dropoff = document.getElementById('dropoff').value;
+      const phone = document.getElementById('passenger-phone').value;
       const fare = document.getElementById('fare').value;
 
       const ridesRef = ref(db, 'rides/');
       const newRideRef = push(ridesRef);
+      currentRideId = newRideRef.key;
 
       set(newRideRef, {
         pickup,
         dropoff,
+        phone,
         fare: Number(fare),
         status: 'pending',
+        bids: {},
         createdAt: Date.now()
       }).then(() => {
-        alert('Ride request successfully posted!');
-        rideForm.reset();
-      }).catch(err => {
-        alert('Error: ' + err.message);
+        alert('Ride Request Broadcasted to Drivers!');
+        listenToMyRide(currentRideId);
       });
     });
 
-    // Realtime Rides Monitoring (Driver)
+    // Passenger Listens to Driver Bids
+    function listenToMyRide(rideId) {
+      const rideRef = ref(db, `rides/${rideId}`);
+      const statusDiv = document.getElementById('passenger-ride-status');
+
+      onValue(rideRef, (snapshot) => {
+        const ride = snapshot.val();
+        if (!ride) return;
+
+        if (ride.status === 'pending' && !ride.bids) {
+          statusDiv.innerHTML = `<div class="ride-card">⏳ Waiting for drivers to bid...</div>`;
+        } else if (ride.bids) {
+          let html = `<h4>Drivers Offered Bids:</h4>`;
+          Object.keys(ride.bids).forEach(bidId => {
+            const bid = ride.bids[bidId];
+            html += `
+              <div class="ride-card">
+                <div>Driver: <strong>${bid.driverName}</strong></div>
+                <div>Bid Fare: <strong style="color: green;">PKR ${bid.amount}</strong></div>
+                <div style="display:flex; gap:6px; margin-top:8px;">
+                  <button class="btn btn-accent" onclick="window.acceptBid('${rideId}', '${bid.driverName}', '${bid.driverPhone}', ${bid.amount})">Accept Offer</button>
+                </div>
+              </div>
+            `;
+          });
+          statusDiv.innerHTML = html;
+        } else if (ride.status === 'accepted') {
+          const waUrl = `https://wa.me/${ride.acceptedDriverPhone}?text=Hi%20${ride.acceptedDriverName},%20I%20accepted%20your%20GB%20Drive%20offer%20of%20PKR%20${ride.acceptedFare}%20from%20${ride.pickup}%20to%20${ride.dropoff}`;
+          statusDiv.innerHTML = `
+            <div class="ride-card" style="background: #d1fae5; border-color: #10b981;">
+              ✅ <strong>Ride Accepted!</strong><br>
+              Driver: ${ride.acceptedDriverName} (${ride.acceptedFare} PKR)<br><br>
+              <a href="${waUrl}" target="_blank" class="btn btn-whatsapp" style="display:block; text-align:center; text-decoration:none;">Open WhatsApp Chat</a>
+            </div>
+          `;
+        }
+      });
+    }
+
+    // --- DRIVER SIDE FUNCTIONALITY ---
     const ridesList = document.getElementById('rides-list');
     const ridesRef = ref(db, 'rides/');
 
@@ -277,7 +374,7 @@
       ridesList.innerHTML = '';
 
       if (!data) {
-        ridesList.innerHTML = '<p style="color: #6b7280; font-size: 0.9rem;">No active ride requests...</p>';
+        ridesList.innerHTML = '<p style="color: #6b7280; font-size: 0.85rem;">No active ride requests...</p>';
         return;
       }
 
@@ -290,8 +387,12 @@
             <h4>Route: ${ride.pickup} ➔ ${ride.dropoff}</h4>
             <div class="ride-info">Offered Fare: <strong>PKR ${ride.fare}</strong></div>
             <div class="bid-input-group">
-              <input type="number" id="counter-${rideId}" placeholder="Counter Fare (PKR)" value="${ride.fare}">
-              <button class="btn btn-accent" onclick="window.sendCounterBid('${rideId}')">Send Bid</button>
+              <input type="number" id="bid-price-${rideId}" placeholder="Counter Fare" value="${ride.fare}">
+              <input type="text" id="driver-name-${rideId}" placeholder="Your Name" style="flex:1;">
+            </div>
+            <div class="bid-input-group">
+              <input type="text" id="driver-phone-${rideId}" placeholder="WhatsApp No">
+              <button class="btn btn-accent" onclick="window.sendDriverBid('${rideId}')">Send Bid</button>
             </div>
           `;
           ridesList.appendChild(card);
@@ -299,23 +400,38 @@
       });
     });
 
-    // Send Counter Offer / Accept Ride
-    window.sendCounterBid = function(rideId) {
-      const bidInput = document.getElementById(`counter-${rideId}`);
-      const bidPrice = bidInput.value;
+    // Driver Counter-Bid Submit
+    window.sendDriverBid = function(rideId) {
+      const price = document.getElementById(`bid-price-${rideId}`).value;
+      const driverName = document.getElementById(`driver-name-${rideId}`).value || 'Driver';
+      const driverPhone = document.getElementById(`driver-phone-${rideId}`).value || '03000000000';
 
+      const bidsRef = ref(db, `rides/${rideId}/bids`);
+      const newBidRef = push(bidsRef);
+
+      set(newBidRef, {
+        driverName,
+        driverPhone,
+        amount: Number(price)
+      }).then(() => {
+        alert('Bid offer sent to passenger!');
+      });
+    };
+
+    // Passenger Accepts Bid
+    window.acceptBid = function(rideId, driverName, driverPhone, fare) {
       const rideRef = ref(db, `rides/${rideId}`);
       update(rideRef, {
-        driverBid: Number(bidPrice),
-        status: 'bid_offered'
-      }).then(() => {
-        alert('Offer sent to passenger!');
+        status: 'accepted',
+        acceptedDriverName: driverName,
+        acceptedDriverPhone: driverPhone,
+        acceptedFare: fare
       });
     };
   </script>
 
   <script>
-    // Toggle UI Role Views
+    // Role Switcher Toggle
     function switchRole(role) {
       const passengerSec = document.getElementById('passenger-section');
       const driverSec = document.getElementById('driver-section');
