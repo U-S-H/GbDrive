@@ -2,9 +2,9 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>GB Drive - Fuel Rate Calculated Ride App</title>
+  <title>GB Drive - Intelligent Smart Taxi App</title>
   
-  <!-- Leaflet CSS for OpenStreetMap -->
+  <!-- Leaflet CSS for Maps -->
   <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
   
   <style>
@@ -76,7 +76,7 @@
     }
 
     #map {
-      height: 240px;
+      height: 250px;
       width: 100%;
       z-index: 1;
     }
@@ -107,6 +107,7 @@
 
     .form-group {
       margin-bottom: 12px;
+      position: relative;
     }
 
     .form-group label {
@@ -124,6 +125,32 @@
       border-radius: 8px;
       font-size: 0.9rem;
       outline: none;
+    }
+
+    /* AUTOCOMPLETE SUGGESTIONS BOX */
+    .suggestions-box {
+      position: absolute;
+      top: 100%;
+      left: 0;
+      right: 0;
+      background: white;
+      border: 1px solid #d1d5db;
+      border-radius: 8px;
+      max-height: 160px;
+      overflow-y: auto;
+      z-index: 1000;
+      box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+    }
+
+    .suggestion-item {
+      padding: 8px 12px;
+      font-size: 0.85rem;
+      cursor: pointer;
+      border-bottom: 1px solid #f3f4f6;
+    }
+
+    .suggestion-item:hover {
+      background: #eff6ff;
     }
 
     .btn {
@@ -196,6 +223,17 @@
       align-items: center;
     }
 
+    .fuel-info-strip {
+      background: #fffbeb;
+      border: 1px solid #fcd34d;
+      color: #78350f;
+      padding: 8px;
+      border-radius: 8px;
+      font-size: 0.75rem;
+      margin-bottom: 10px;
+      text-align: center;
+    }
+
     .hidden { display: none !important; }
   </style>
 </head>
@@ -204,7 +242,7 @@
   <div class="app-container">
     <header>
       <h1>GB Drive</h1>
-      <p>Fuel & Distance Rate Intelligent Taxi App</p>
+      <p>Pakistan Live Autocomplete & Fuel Fare Taxi App</p>
       <button id="logout-btn" class="logout-btn hidden">Logout</button>
     </header>
 
@@ -233,7 +271,7 @@
 
     <!-- STEP 2: SAFETY PROFILE FORM -->
     <div id="profile-setup-section" class="content hidden">
-      <h2 style="text-align: center; margin-bottom: 10px;">Safety Profile Verification</h2>
+      <h2 style="text-align: center; margin-bottom: 10px;">Safety Profile Setup</h2>
       <form id="profile-setup-form">
         <div class="form-group">
           <label>Account Type</label>
@@ -285,6 +323,10 @@
           <span id="user-display-name">Welcome User</span>
           <strong id="user-display-role" style="text-transform: uppercase;">PASSENGER</strong>
         </div>
+
+        <div class="fuel-info-strip">
+          ⛽ Official Rates: Petrol Rs 398.96/L | Diesel Rs 395.72/L
+        </div>
       </div>
 
       <!-- Map Container -->
@@ -294,36 +336,43 @@
         <!-- PASSENGER DASHBOARD -->
         <div id="passenger-section" class="hidden">
           <div class="map-instruction">
-            📍 Map par <b>Pickup</b> aur <b>Dropoff</b> choose karein (Distance auto-calculate hoga).
+            📍 Pickup/Dropoff likhein (Live Suggestions aayengi) ya Map par Click karein.
           </div>
 
           <div id="fare-badge" class="fare-calculator-badge hidden">
             <div>📏 Calculated Distance: <strong id="calc-distance">0 km</strong></div>
-            <div>⛽ Fuel Based Fare Estimate: <strong id="calc-fare" style="color: #059669; font-size: 1.1rem;">0 PKR</strong></div>
+            <div>⛽ Fare Estimate: <strong id="calc-fare" style="color: #059669; font-size: 1.1rem;">0 PKR</strong></div>
           </div>
           
-          <form id="ride-form">
+          <form id="ride-form" autocomplete="off">
             <div class="form-group">
-              <label>Vehicle Ride Type</label>
+              <label>Vehicle Type</label>
               <select id="ride-vehicle-type" onchange="calculateFuelFare()">
-                <option value="Car">Car / Taxi (Petrol ~ PKR 35/km)</option>
-                <option value="Bike">Bike / Rickshaw (~ PKR 12/km)</option>
-                <option value="Van">Van / Hiace (Diesel ~ PKR 45/km)</option>
+                <option value="Car">Car / Taxi (Petrol ~ PKR 48/km)</option>
+                <option value="Bike">Bike / Rickshaw (~ PKR 16/km)</option>
+                <option value="Van">Van / Hiace (Diesel ~ PKR 58/km)</option>
               </select>
             </div>
+
+            <!-- PICKUP WITH AUTOCOMPLETE -->
             <div class="form-group">
               <label>Pickup Location</label>
-              <input type="text" id="pickup" placeholder="Map click ya location" required>
+              <input type="text" id="pickup" placeholder="Type location e.g. Gilgit Bazaar" oninput="searchLocation('pickup')" required>
+              <div id="pickup-suggestions" class="suggestions-box hidden"></div>
             </div>
+
+            <!-- DROPOFF WITH AUTOCOMPLETE -->
             <div class="form-group">
               <label>Dropoff Location</label>
-              <input type="text" id="dropoff" placeholder="Map click ya location" required>
+              <input type="text" id="dropoff" placeholder="Type location e.g. Skardu Airport" oninput="searchLocation('dropoff')" required>
+              <div id="dropoff-suggestions" class="suggestions-box hidden"></div>
             </div>
+
             <div class="form-group">
               <label>Your Offer Fare (PKR)</label>
               <input type="number" id="fare" placeholder="Recommended fare auto-applies" required>
             </div>
-            <button type="submit" class="btn">Broadcast Ride Offer</button>
+            <button type="submit" class="btn">Offer Ride Now</button>
           </form>
 
           <div id="passenger-ride-status" style="margin-top: 15px;"></div>
@@ -331,7 +380,7 @@
 
         <!-- DRIVER DASHBOARD -->
         <div id="driver-section" class="hidden">
-          <h3>Available Rides (Fuel Fair Prices)</h3>
+          <h3>Available Rides (Fuel Based Bidding)</h3>
           <div id="rides-list" style="margin-top: 10px;">
             <p style="color: #6b7280; font-size: 0.85rem;">Searching for passenger requests...</p>
           </div>
@@ -487,13 +536,14 @@
       initMap();
     }
 
-    // --- LEAFLET MAP & FUEL FARE ENGINE ---
+    // --- LEAFLET MAP & NOMINATIM LOCATION AUTOCOMPLETE ---
     let map = null;
     let pickupMarker = null;
     let dropoffMarker = null;
     let routePolyline = null;
     let clickState = 'pickup';
     let routeDistanceKm = 0;
+    let searchDebounce = null;
 
     function initMap() {
       if (map) return;
@@ -503,48 +553,101 @@
 
       map.on('click', (e) => {
         const { lat, lng } = e.latlng;
-        const coordsText = `${lat.toFixed(4)}, ${lng.toFixed(4)}`;
-
         if (clickState === 'pickup') {
-          if (pickupMarker) map.removeLayer(pickupMarker);
-          pickupMarker = L.marker([lat, lng]).addTo(map).bindPopup('Pickup Location').openPopup();
-          document.getElementById('pickup').value = `Gilgit Pin (${coordsText})`;
+          setPickupPoint(lat, lng, `Pin (${lat.toFixed(4)}, ${lng.toFixed(4)})`);
           clickState = 'dropoff';
         } else {
-          if (dropoffMarker) map.removeLayer(dropoffMarker);
-          dropoffMarker = L.marker([lat, lng]).addTo(map).bindPopup('Dropoff Location').openPopup();
-          document.getElementById('dropoff').value = `Drop Pin (${coordsText})`;
+          setDropoffPoint(lat, lng, `Pin (${lat.toFixed(4)}, ${lng.toFixed(4)})`);
           clickState = 'pickup';
         }
-
-        if (pickupMarker && dropoffMarker) {
-          if (routePolyline) map.removeLayer(routePolyline);
-          
-          const pLat = pickupMarker.getLatLng();
-          const dLat = dropoffMarker.getLatLng();
-          
-          routePolyline = L.polyline([pLat, dLat], { color: '#2563eb', weight: 4 }).addTo(map);
-          map.fitBounds(routePolyline.getBounds(), { padding: [20, 20] });
-
-          // Calculate Straight Distance (Haversine Formula)
-          const distanceMeters = pLat.distanceTo(dLat);
-          routeDistanceKm = (distanceMeters / 1000) * 1.3; // 1.3 Factor for Road Route estimation
-          window.calculateFuelFare();
-        }
       });
+    }
+
+    // LOCATION AUTOCOMPLETE SEARCH ENGINE
+    window.searchLocation = function(type) {
+      const query = document.getElementById(type).value;
+      const suggestionsBox = document.getElementById(`${type}-suggestions`);
+
+      if (query.length < 3) {
+        suggestionsBox.classList.add('hidden');
+        return;
+      }
+
+      clearTimeout(searchDebounce);
+      searchDebounce = setTimeout(async () => {
+        try {
+          const res = await fetch(`https://nominatim.openstreetmap.org/search?format=json&q=${encodeURIComponent(query)}&countrycodes=pk&limit=5`);
+          const data = await res.json();
+
+          suggestionsBox.innerHTML = '';
+          if (data.length === 0) {
+            suggestionsBox.classList.add('hidden');
+            return;
+          }
+
+          data.forEach(item => {
+            const div = document.createElement('div');
+            div.className = 'suggestion-item';
+            div.innerText = item.display_name;
+            div.onclick = () => {
+              document.getElementById(type).value = item.display_name.split(',')[0];
+              suggestionsBox.classList.add('hidden');
+
+              const lat = parseFloat(item.lat);
+              const lon = parseFloat(item.lon);
+
+              if (type === 'pickup') setPickupPoint(lat, lon, item.display_name);
+              else setDropoffPoint(lat, lon, item.display_name);
+            };
+            suggestionsBox.appendChild(div);
+          });
+
+          suggestionsBox.classList.remove('hidden');
+        } catch (e) { console.error(e); }
+      }, 300);
+    };
+
+    function setPickupPoint(lat, lng, label) {
+      if (pickupMarker) map.removeLayer(pickupMarker);
+      pickupMarker = L.marker([lat, lng]).addTo(map).bindPopup('Pickup: ' + label).openPopup();
+      document.getElementById('pickup').value = label;
+      map.setView([lat, lng], 13);
+      updateRoute();
+    }
+
+    function setDropoffPoint(lat, lng, label) {
+      if (dropoffMarker) map.removeLayer(dropoffMarker);
+      dropoffMarker = L.marker([lat, lng]).addTo(map).bindPopup('Dropoff: ' + label).openPopup();
+      document.getElementById('dropoff').value = label;
+      updateRoute();
+    }
+
+    function updateRoute() {
+      if (pickupMarker && dropoffMarker) {
+        if (routePolyline) map.removeLayer(routePolyline);
+
+        const pLat = pickupMarker.getLatLng();
+        const dLat = dropoffMarker.getLatLng();
+
+        routePolyline = L.polyline([pLat, dLat], { color: '#2563eb', weight: 4 }).addTo(map);
+        map.fitBounds(routePolyline.getBounds(), { padding: [20, 20] });
+
+        const distanceMeters = pLat.distanceTo(dLat);
+        routeDistanceKm = (distanceMeters / 1000) * 1.35; // 1.35 Road Distance multiplier
+        calculateFuelFare();
+      }
     }
 
     window.calculateFuelFare = function() {
       if (!routeDistanceKm) return;
 
       const vehicleType = document.getElementById('ride-vehicle-type').value;
-      let ratePerKm = 35; // Car Petrol Default
+      let ratePerKm = 48; // Petrol Rs 398/L base
 
-      if (vehicleType === 'Bike') ratePerKm = 12;
-      else if (vehicleType === 'Van') ratePerKm = 45;
+      if (vehicleType === 'Bike') ratePerKm = 16;
+      else if (vehicleType === 'Van') ratePerKm = 58;
 
-      // Base fare 100 PKR + Distance * Fuel Rate
-      let calculatedFare = Math.round(100 + (routeDistanceKm * ratePerKm));
+      let calculatedFare = Math.round(120 + (routeDistanceKm * ratePerKm));
 
       document.getElementById('calc-distance').innerText = `${routeDistanceKm.toFixed(1)} km`;
       document.getElementById('calc-fare').innerText = `${calculatedFare} PKR`;
@@ -577,7 +680,7 @@
         status: 'pending',
         createdAt: Date.now()
       }).then(() => {
-        alert('Ride Request Broadcasted with Fuel Rate Fare!');
+        alert('Ride Broadcasted!');
         listenToMyRide(newRideRef.key);
       });
     });
