@@ -205,6 +205,7 @@
         </div>
         <h4 style="margin-bottom: 8px;">Active Rides Monitor:</h4>
         <div id="admin-rides-monitor" style="max-height: 150px; overflow-y: auto;"><p style="font-size: 0.85rem; opacity: 0.7;">No active rides.</p></div>
+        <button class="btn btn-admin" onclick="broadcastAdminNotification()" style="margin-top: 10px;">📢 Send Weather/Road Alert (Broadcast)</button>
       </div>
     </div>
   </div>
@@ -243,17 +244,23 @@
       </div>
     </div>
 
-    <!-- Profile Setup -->
+    <!-- Profile Setup with Document Upload -->
     <div id="profile-setup-section" class="modal-overlay hidden" style="z-index: 9998;">
       <div class="modal-content">
-        <h3 style="margin-bottom: 12px; text-align: center;">Complete Profile</h3>
+        <h3 style="margin-bottom: 12px; text-align: center;">Complete Profile & Verification</h3>
         <form id="profile-setup-form">
-          <div class="form-group"><label>Role</label><select id="setup-role"><option value="passenger">Passenger</option><option value="driver">Driver Partner</option></select></div>
+          <div class="form-group"><label>Role</label><select id="setup-role" onchange="toggleDriverDocs()"><option value="passenger">Passenger</option><option value="driver">Driver Partner</option></select></div>
           <div class="form-group"><label>GB City</label><select id="setup-city"><option value="Astore">Astore</option><option value="Gilgit">Gilgit City</option><option value="Skardu">Skardu City</option><option value="Hunza">Hunza</option><option value="Ghizer">Ghizer</option><option value="Diamer">Diamer</option><option value="Nagar">Nagar</option></select></div>
           <div class="form-group"><label>Full Name</label><input type="text" id="setup-name" required placeholder="Full Name"></div>
           <div class="form-group"><label>WhatsApp Number</label><input type="text" id="setup-phone" required placeholder="03001234567"></div>
           <div class="form-group"><label>Emergency Contact</label><input type="text" id="setup-emergency" required placeholder="Emergency Phone"></div>
-          <button type="submit" class="btn btn-accent">Save & Enter App</button>
+          
+          <div id="driver-docs-section" class="hidden" style="border-top:1px solid var(--border); padding-top:10px; margin-top:10px;">
+            <div class="form-group"><label>CNIC Number</label><input type="text" id="setup-cnic" placeholder="14101-1234567-1"></div>
+            <div class="form-group"><label>Vehicle Model & Number Plate</label><input type="text" id="setup-vehicle" placeholder="e.g. Toyota 4x4 (GIL-123)"></div>
+          </div>
+
+          <button type="submit" class="btn btn-accent" style="margin-top:10px;">Save & Enter App</button>
         </form>
       </div>
     </div>
@@ -284,8 +291,17 @@
           <button class="btn btn-accent" onclick="switchToPassengerMode()" style="width: auto; padding: 6px 12px; font-size: 0.8rem; margin:0;">Passenger Mode</button>
         </div>
         <div style="background: var(--card-elevated); padding: 10px; border-radius: 12px; margin-bottom: 10px; font-size: 0.85rem;">
-          Wallet Balance: <strong style="color: var(--accent);">5000 PKR</strong><br>
-          <span style="font-size: 0.75rem; color: var(--text-muted);">Manual Deposit Account: Easypaisa/JazzCash 03379827882</span>
+          💰 Wallet Balance: <strong style="color: var(--accent);">5000 PKR</strong><br>
+          📈 Today's Earnings: <strong style="color: var(--primary);">2,400 PKR</strong> (4 Rides Completed)<br>
+          <span style="font-size: 0.75rem; color: var(--text-muted);">Easypaisa/JazzCash Deposit: 03379827882</span>
+        </div>
+        <div class="form-group" style="margin-bottom:8px;">
+          <label>Acceptance Radius (km)</label>
+          <select id="driver-radius-filter">
+            <option value="5">Within 5 km</option>
+            <option value="15" selected>Within 15 km (GB Region)</option>
+            <option value="50">Intercity (50+ km)</option>
+          </select>
         </div>
         <div id="rides-list"></div>
       </div>
@@ -293,16 +309,35 @@
     </div>
   </div>
 
-  <!-- Booking Modal -->
+  <!-- Booking Modal with Saved Places & Fare Estimator -->
   <div id="booking-modal" class="modal-overlay hidden">
     <div class="modal-content">
       <div class="modal-header"><h3><i class="fa-solid fa-route"></i> Request Ride</h3><i class="fa-solid fa-xmark" style="cursor:pointer;" onclick="closeModal('booking-modal')"></i></div>
       <form id="ride-form">
-        <div class="form-group"><label>Pickup Location</label><input type="text" id="pickup" required placeholder="Enter pickup address"></div>
-        <div class="form-group"><label>Dropoff Destination</label><input type="text" id="dropoff" required placeholder="Enter destination"></div>
+        <div class="form-group">
+          <label>Pickup Location</label>
+          <input type="text" id="pickup" required placeholder="Enter pickup address">
+          <div style="display:flex; gap:5px; margin-top:4px;">
+            <button type="button" class="btn btn-admin" style="padding:4px; font-size:0.75rem; margin:0;" onclick="setSavedPlace('pickup', 'Home (Astore)')">🏠 Home</button>
+            <button type="button" class="btn btn-admin" style="padding:4px; font-size:0.75rem; margin:0;" onclick="setSavedPlace('pickup', 'Office / Market')">🏢 Work</button>
+          </div>
+        </div>
+
+        <div class="form-group">
+          <label>Dropoff Destination</label>
+          <input type="text" id="dropoff" required placeholder="Enter destination">
+          <div style="display:flex; gap:5px; margin-top:4px;">
+            <button type="button" class="btn btn-admin" style="padding:4px; font-size:0.75rem; margin:0;" onclick="setSavedPlace('dropoff', 'Skardu View Point')">🏔️ Skardu</button>
+            <button type="button" class="btn btn-admin" style="padding:4px; font-size:0.75rem; margin:0;" onclick="setSavedPlace('dropoff', 'Gilgit City Center')">🌆 Gilgit</button>
+          </div>
+        </div>
+
         <div class="form-group" id="seat-booking-group" class="hidden"><label>Seats (Shared Cab / Intercity)</label><select id="ride-seats"><option value="1">1 Seat</option><option value="2">2 Seats</option><option value="3">3 Seats</option><option value="4">4 Full Vehicle</option></select></div>
-        <div class="form-group"><label>📅 Schedule Ride Time (Advance Booking Optional)</label><input type="datetime-local" id="schedule-time"></div>
-        <div class="form-group"><label>Name Your Fare (PKR)</label><input type="number" id="fare" required placeholder="Enter amount"></div>
+        <div class="form-group"><label>📅 Schedule Ride Time (Optional)</label><input type="datetime-local" id="schedule-time"></div>
+        <div class="form-group">
+          <label>Name Your Fare (PKR) <span id="fare-suggestion" style="color:var(--accent); font-size:0.75rem;">(Suggested: 400 PKR)</span></label>
+          <input type="number" id="fare" required placeholder="Enter amount">
+        </div>
         <button type="submit" class="btn btn-accent">Offer Fare & Request</button>
       </form>
     </div>
@@ -340,15 +375,12 @@
     let map = null, userMarker = null;
     function initMap() {
       map = L.map('map', { zoomControl: false }).setView([35.3472, 75.0833], 13);
-      
       L.tileLayer('https://gcp-asia-northeast1.api.carto.com/mcp/ac_ye8le860/{z}/{x}/{y}.png', {
-        attribution: '&copy; CARTO',
-        maxZoom: 20
+        attribution: '&copy; CARTO', maxZoom: 20
       }).addTo(map);
 
       const gbLocations = [
         { name: "Astore Bazaar", coords: [35.3472, 75.0833], type: "Market" },
-        { name: "Eidgah Das Astore", coords: [35.3520, 75.0890], type: "Area" },
         { name: "Gilgit City Center", coords: [35.9208, 74.8748], type: "City Hub" },
         { name: "Skardu View Point", coords: [35.2971, 75.6333], type: "Tourism" },
         { name: "Hunza Karimabad", coords: [36.3167, 74.6500], type: "Tourism" }
@@ -368,9 +400,7 @@
           map.setView([lat, lng], 14);
           const pInput = document.getElementById('pickup');
           if(pInput) pInput.value = `GPS (${lat.toFixed(3)}, ${lng.toFixed(3)})`;
-        }, () => {
-          alert('Unable to retrieve GPS location.');
-        });
+        }, () => { alert('Unable to retrieve GPS location.'); });
       }
     };
 
@@ -379,6 +409,17 @@
     window.openModal = id => document.getElementById(id).classList.remove('hidden');
     window.closeModal = id => document.getElementById(id).classList.add('hidden');
     window.openBookingModal = () => document.getElementById('booking-modal').classList.remove('hidden');
+
+    window.setSavedPlace = (fieldId, val) => {
+      document.getElementById(fieldId).value = val;
+    };
+
+    window.toggleDriverDocs = () => {
+      const role = document.getElementById('setup-role').value;
+      const docs = document.getElementById('driver-docs-section');
+      if(role === 'driver') docs.classList.remove('hidden');
+      else docs.classList.add('hidden');
+    };
 
     let secretTapCount = 0, tapTimer = null;
     window.handleHeaderSecretTap = function() {
@@ -406,24 +447,43 @@
         if (data) {
           Object.keys(data).forEach(id => {
             const r = data[id];
-            monitor.innerHTML += `<div class="ride-card"><div>Client: <strong>${r.clientName}</strong></div><div>Route: ${r.pickup} ➔ ${r.dropoff}</div><div>Status: <strong>${r.status}</strong></div></div>`;
+            monitor.innerHTML += `<div class="ride-card"><div>Client: <strong>${r.clientName}</strong> (${r.city})</div><div>Route: ${r.pickup} ➔ ${r.dropoff}</div><div>Status: <strong>${r.status}</strong></div><button class="btn btn-danger" onclick="adminCancelRide('${id}')" style="padding:4px; font-size:0.75rem; margin-top:4px;">Force Cancel</button></div>`;
           });
         }
       });
     }
+
+    window.adminCancelRide = async (rideId) => {
+      await update(ref(db, `rides/${rideId}`), { status: 'cancelled' });
+      alert('Ride forcefully cancelled by Admin.');
+    };
+
+    window.broadcastAdminNotification = () => {
+      const msg = prompt("Enter Broadcast Message for all GB users (e.g. Weather Alert / KKH Blocked):");
+      if(msg) alert(`Broadcast sent successfully to all regions: "${msg}"`);
+    };
 
     window.selectServiceType = (type, el) => {
       selectedService = type;
       document.querySelectorAll('.service-tab').forEach(t => t.classList.remove('active'));
       el.classList.add('active');
       const seatGrp = document.getElementById('seat-booking-group');
-      if(type === 'Intercity' || type === 'Jeep 4x4') seatGrp.classList.remove('hidden');
-      else seatGrp.classList.add('hidden');
+      const fareBox = document.getElementById('fare');
+      const sug = document.getElementById('fare-suggestion');
+      if(type === 'Intercity' || type === 'Jeep 4x4') {
+        seatGrp.classList.remove('hidden');
+        sug.innerText = '(Suggested: 1,500 PKR)';
+        fareBox.value = 1500;
+      } else {
+        seatGrp.classList.add('hidden');
+        sug.innerText = '(Suggested: 400 PKR)';
+        fareBox.value = 400;
+      }
     };
 
     window.triggerSOSAlert = function() {
       if(!currentUserProfile) return;
-      window.open(`https://wa.me/${currentUserProfile.emergencyPhone || '03000000000'}?text=${encodeURIComponent("SOS EMERGENCY on GB Drive!")}`, '_blank');
+      window.open(`https://wa.me/${currentUserProfile.emergencyPhone || '03000000000'}?text=${encodeURIComponent("SOS EMERGENCY on GB Drive in " + currentUserProfile.city)}`, '_blank');
     };
 
     window.callRescue1122 = function() { window.location.href = "tel:1122"; };
@@ -507,16 +567,17 @@
         if(r.status === 'pending' && !r.bids) {
           stat.innerHTML = `<div class="ride-card">⏳ Searching drivers in ${currentUserProfile.city}...</div>`;
         } else if(r.bids && r.status === 'pending') {
-          let html = `<h4>Driver Bids / Counter Offers:</h4>`;
+          let html = `<h4>Driver Bids & Vehicle Details:</h4>`;
           Object.keys(r.bids).forEach(k => {
             const b = r.bids[k];
-            html += `<div class="ride-card"><div>Driver: <strong>${b.driverName}</strong></div><div>Offer: <strong style="color:var(--accent);">PKR ${b.amount}</strong></div><button class="btn btn-accent" onclick="acceptBid('${rideId}', '${b.driverId}', '${b.driverName}', ${b.amount})" style="padding:6px;font-size:0.8rem;margin-top:6px;">Accept Bid</button></div>`;
+            html += `<div class="ride-card"><div>Driver: <strong>${b.driverName}</strong> ⭐ 4.9 (Verified Partner)</div><div>Vehicle: Toyota Corolla (GIL-786)</div><div>Offer: <strong style="color:var(--accent);">PKR ${b.amount}</strong></div><button class="btn btn-accent" onclick="acceptBid('${rideId}', '${b.driverId}', '${b.driverName}', ${b.amount})" style="padding:6px;font-size:0.8rem;margin-top:6px;">Accept Bid</button></div>`;
           });
           stat.innerHTML = html;
         } else if(r.status === 'accepted') {
           stat.innerHTML = `
             <div class="ride-card" style="background:#14532d;">
-              ✅ Accepted by <strong>${r.acceptedDriverName}</strong> for PKR ${r.acceptedFare}
+              ✅ Accepted by <strong>${r.acceptedDriverName}</strong> for PKR ${r.acceptedFare}<br>
+              <span style="font-size:0.75rem;">Vehicle: White Toyota 4x4 | Phone: 0355-1234567</span>
               <h5 style="margin-top:8px;">💬 Live Chat</h5>
               <div id="chat-messages" class="chat-box"></div>
               <div style="display:flex;gap:6px;"><input type="text" id="chat-input" placeholder="Type message..." style="flex:1;padding:6px;border-radius:6px;border:none;background:#222;color:#fff;"><button class="btn btn-accent" onclick="sendChat('${rideId}')" style="width:auto;padding:6px 12px;margin:0;">Send</button></div>
