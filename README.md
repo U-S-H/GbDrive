@@ -2,7 +2,19 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>GB Drive - Ultimate Smart Taxi Network</title>
+  
+  <!-- SEO & GOOGLE META TAGS -->
+  <title>GB Drive - Gilgit-Baltistan Live Taxi & Ride Sharing App</title>
+  <meta name="description" content="GB Drive - Gilgit-Baltistan's #1 intelligent ride-sharing platform. Book rides with live map tracking, fair fuel-based pricing, bidding system, and complete safety verification.">
+  <meta name="keywords" content="GB Drive, Gilgit Taxi, Skardu Ride Sharing, Hunza Taxi Service, InDrive Gilgit, Uber Pakistan, Ride Bidding App">
+  <meta name="author" content="GB Drive Network">
+  <meta name="robots" content="index, follow">
+
+  <!-- OPEN GRAPH / SOCIAL MEDIA META TAGS -->
+  <meta property="og:title" content="GB Drive - Smart Taxi & Ride Sharing">
+  <meta property="og:description" content="Book affordable rides in Gilgit-Baltistan with live GPS tracking and fair bidding prices.">
+  <meta property="og:type" content="website">
+  <meta property="og:image" content="https://images.unsplash.com/photo-1449965408869-eaa3f722e40d?auto=format&fit=crop&w=1200&q=80">
   
   <!-- Leaflet CSS for Maps -->
   <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
@@ -177,7 +189,6 @@
     .btn-accent { background: var(--accent); }
     .btn-danger { background: var(--danger); }
     .btn-warning { background: var(--warning); color: black; }
-    .btn-whatsapp { background: #25d366; }
 
     .ride-card {
       border: 1px solid #e5e7eb;
@@ -241,7 +252,6 @@
       margin-bottom: 12px;
     }
 
-    /* CHAT BOX STYLING */
     .chat-container {
       border: 1px solid #d1d5db;
       border-radius: 10px;
@@ -410,10 +420,23 @@
               <div id="pickup-suggestions" class="suggestions-box hidden"></div>
             </div>
 
+            <!-- OPTIONAL VIA-STOP -->
+            <div class="form-group">
+              <label>Via Stop (Optional)</label>
+              <input type="text" id="via-stop" placeholder="Optional stop on the way" oninput="searchLocation('via-stop')">
+              <div id="via-stop-suggestions" class="suggestions-box hidden"></div>
+            </div>
+
             <div class="form-group">
               <label id="lbl-dropoff">Dropoff Location</label>
               <input type="text" id="dropoff" placeholder="Type location e.g. Skardu Airport" oninput="searchLocation('dropoff')" required>
               <div id="dropoff-suggestions" class="suggestions-box hidden"></div>
+            </div>
+
+            <!-- SCHEDULE FOR LATER -->
+            <div class="form-group">
+              <label>Schedule Date & Time (Optional)</label>
+              <input type="datetime-local" id="schedule-time">
             </div>
 
             <div class="form-group">
@@ -764,13 +787,15 @@
       document.getElementById('fare-badge').classList.remove('hidden');
     };
 
-    // RIDE BROADCAST WITH OTP GENERATION
+    // RIDE BROADCAST WITH OTP GENERATION & SCHEDULING
     const rideForm = document.getElementById('ride-form');
     rideForm.addEventListener('submit', (e) => {
       e.preventDefault();
 
       const pickup = document.getElementById('pickup').value;
+      const viaStop = document.getElementById('via-stop').value || 'None';
       const dropoff = document.getElementById('dropoff').value;
+      const scheduleTime = document.getElementById('schedule-time').value || 'Immediate';
       const fare = document.getElementById('fare').value;
       const vehicleType = document.getElementById('ride-vehicle-type').value;
       const otpCode = Math.floor(1000 + Math.random() * 9000);
@@ -783,7 +808,9 @@
         passengerName: currentUserProfile.name,
         passengerPhone: currentUserProfile.phone,
         pickup,
+        viaStop,
         dropoff,
+        scheduleTime,
         distanceKm: routeDistanceKm.toFixed(1),
         vehicleType,
         fare: Number(fare),
@@ -791,7 +818,7 @@
         status: 'pending',
         createdAt: Date.now()
       }).then(() => {
-        alert('Ride Broadcasted!');
+        alert('Ride Request Posted!');
         listenToMyRide(newRideRef.key);
       });
     });
@@ -866,6 +893,8 @@
           card.innerHTML = `
             <h4>Passenger: ${ride.passengerName} (${ride.vehicleType || 'Taxi'})</h4>
             <div class="ride-info">Route: <strong>${ride.pickup} ➔ ${ride.dropoff}</strong></div>
+            <div class="ride-info">Via Stop: <strong>${ride.viaStop || 'None'}</strong></div>
+            <div class="ride-info">Schedule: <strong>${ride.scheduleTime || 'Immediate'}</strong></div>
             <div class="ride-info">Distance: <strong>${ride.distanceKm || 'N/A'} km</strong></div>
             <div class="ride-info">Offered Fuel Fare: <strong style="color: green;">PKR ${ride.fare}</strong></div>
             <div class="bid-input-group">
