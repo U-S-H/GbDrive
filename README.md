@@ -86,7 +86,7 @@
       font-weight: 600;
     }
 
-    #map { height: 230px; width: 100%; }
+    #map { height: 250px; width: 100%; }
 
     .content { padding: 15px; }
 
@@ -365,7 +365,7 @@
         </div>
       </div>
 
-      <!-- MAP CONTAINER -->
+      <!-- MAP CONTAINER (GILGIT-BALTISTAN REGION VIEW) -->
       <div id="map"></div>
 
       <div class="content">
@@ -389,14 +389,37 @@
 
             <div class="form-group">
               <label>Pickup Location</label>
-              <input type="text" id="pickup" placeholder="GPS or type location..." oninput="searchLocation('pickup')" required>
+              <input type="text" id="pickup" placeholder="GPS or type location e.g. Astore / Gilgit..." oninput="searchLocation('pickup')" required>
               <div id="pickup-suggestions" class="suggestions-box hidden"></div>
+            </div>
+
+            <!-- MULTI-DESTINATION VIA STOP -->
+            <div class="form-group">
+              <label>Via Stop / Intermediate Tour Stop (Optional)</label>
+              <input type="text" id="via-stop" placeholder="e.g. Stop at Jaglot / Tatta Pani..." oninput="searchLocation('via-stop')">
+              <div id="via-stop-suggestions" class="suggestions-box hidden"></div>
             </div>
 
             <div class="form-group">
               <label>Dropoff / Tour Destination</label>
-              <input type="text" id="dropoff" placeholder="Type destination e.g. Skardu / Astore..." oninput="searchLocation('dropoff')" required>
+              <input type="text" id="dropoff" placeholder="Type destination e.g. Skardu / Hunza..." oninput="searchLocation('dropoff')" required>
               <div id="dropoff-suggestions" class="suggestions-box hidden"></div>
+            </div>
+
+            <!-- LUGGAGE / CARGO CAPACITY FILTER -->
+            <div class="form-group">
+              <label>Luggage / Camping Gear Capacity</label>
+              <select id="luggage-capacity">
+                <option value="Light">Light Bag / Backpack Only</option>
+                <option value="Medium">Medium Suitcases (2-3 Bags)</option>
+                <option value="Heavy">Heavy Cargo / Camping Equipment & Tents</option>
+              </select>
+            </div>
+
+            <!-- SCHEDULED / AIRPORT SHUTTLE TIME -->
+            <div class="form-group">
+              <label>Schedule Date & Time (Optional for Later Bookings)</label>
+              <input type="datetime-local" id="schedule-time">
             </div>
 
             <div class="form-group">
@@ -418,6 +441,15 @@
 
           <div class="fare-calculator-badge" style="background: #eff6ff; border-color: #2563eb; color: #1e40af;">
             💰 Easypaisa/JazzCash Wallet Balance: <strong id="driver-daily-earnings" style="font-size: 1.1rem;">0 PKR</strong>
+          </div>
+
+          <!-- WITHDRAWAL REQUEST SECTION FOR DRIVERS -->
+          <div style="background: #f9fafb; border: 1px solid #d1d5db; padding: 10px; border-radius: 8px; margin-bottom: 15px;">
+            <h5 style="margin-bottom: 6px; color: #374151;">💸 Request Wallet Withdrawal</h5>
+            <div style="display: flex; gap: 6px;">
+              <input type="number" id="withdraw-amount" placeholder="Amount PKR" style="flex:1; padding: 6px; border-radius: 6px; border: 1px solid #ccc; font-size: 0.85rem;">
+              <button class="btn btn-accent" onclick="requestWalletWithdrawal()" style="width: auto; padding: 6px 12px; margin: 0; font-size: 0.85rem;">Withdraw</button>
+            </div>
           </div>
 
           <h3>Available Live Rides</h3>
@@ -466,8 +498,8 @@
       }
     };
 
-    // YOUR CUSTOM MAPBOX TOKEN INTEGRATED HERE
-    mapboxgl.accessToken = 'pk.eyJ1IjoibXJraGFuNzc1IiwiYSI6ImNtdjE3am52ODAyaXkyenNidjFvNWJmamoifQ.-oubT8UYwpjhgXHwE-NXWw';
+    // USER CUSTOM MAPBOX TOKEN & GB REGION SETUP
+    mapboxgl.accessToken = 'pk.eyJ1IjoibXJrhaW43NzUiLCJhIjoiY212MTdqbnY4MDI5eXpzc2JmMW9iZmptbyJ9.-oubT8UYwpjhgXHwE-NXWw';
     let map = null;
     let userMarker = null;
     let userCoords = null;
@@ -479,8 +511,8 @@
       map = new mapboxgl.Map({
         container: 'map',
         style: 'mapbox://styles/mapbox/streets-v12',
-        center: [74.3144, 35.9208],
-        zoom: 12
+        center: [74.8726, 35.8039], // Gilgit-Baltistan Central Region
+        zoom: 8
       });
     }
 
@@ -496,7 +528,7 @@
             .setLngLat(userCoords)
             .addTo(map);
 
-          map.flyTo({ center: userCoords, zoom: 14 });
+          map.flyTo({ center: userCoords, zoom: 12 });
           document.getElementById('pickup').value = `Current GPS Location (${lat.toFixed(4)}, ${lng.toFixed(4)})`;
 
           if (currentUserProfile && currentUserProfile.role === 'driver') {
@@ -573,7 +605,7 @@
     };
 
     function calculateDistanceDummy() {
-      routeDistanceKm = 15.0;
+      routeDistanceKm = 25.0;
       window.calculateFuelFare();
     }
 
@@ -584,7 +616,7 @@
       else if (vehicleType === 'Van') ratePerKm = 58;
       else if (vehicleType === 'Jeep 4x4') ratePerKm = 120;
 
-      let calculatedFare = Math.round(200 + (routeDistanceKm * ratePerKm));
+      let calculatedFare = Math.round(300 + (routeDistanceKm * ratePerKm));
       document.getElementById('calc-distance').innerText = `${routeDistanceKm.toFixed(1)} km`;
       document.getElementById('calc-fare').innerText = `${calculatedFare} PKR`;
       document.getElementById('fare').value = calculatedFare;
@@ -625,7 +657,7 @@
           document.getElementById('profile-setup-section').classList.remove('hidden');
         }
       } else {
-        document.getElementById('auth-section').classList.remove('hidden');
+        document.getElementById('auth-section').classList.add('hidden');
       }
     });
 
@@ -691,14 +723,17 @@
         passengerName: currentUserProfile.name,
         passengerPhone: currentUserProfile.phone,
         pickup: document.getElementById('pickup').value,
+        viaStop: document.getElementById('via-stop').value || 'None',
         dropoff: document.getElementById('dropoff').value,
+        luggage: document.getElementById('luggage-capacity').value,
+        scheduleTime: document.getElementById('schedule-time').value || 'Immediate',
         fare: Number(document.getElementById('fare').value),
         vehicleType: document.getElementById('ride-vehicle-type').value,
         otpCode,
         status: 'pending',
         createdAt: Date.now()
       }).then(() => {
-        alert('Ride Broadcasted Successfully!');
+        alert('Advanced Ride Broadcasted Successfully!');
         listenToMyRide(newRideRef.key);
       });
     });
@@ -741,6 +776,17 @@
                 <button class="btn btn-accent" onclick="window.sendChatMessage('${rideId}')" style="width:auto; padding:6px 12px; margin:0;">Send</button>
               </div>
             </div>
+            <div style="margin-top: 10px;">
+              <label style="font-size: 0.85rem; font-weight: 600;">Rate Your Driver:</label>
+              <select id="rating-val-${rideId}" style="padding: 6px; width:100%; border-radius: 6px; border: 1px solid #ccc; margin-top: 4px;">
+                <option value="5">⭐⭐⭐⭐⭐ (5 - Excellent)</option>
+                <option value="4">⭐⭐⭐⭐ (4 - Very Good)</option>
+                <option value="3">⭐⭐⭐ (3 - Good)</option>
+                <option value="2">⭐⭐ (2 - Fair)</option>
+                <option value="1">⭐ (1 - Poor)</option>
+              </select>
+              <button class="btn btn-accent" onclick="window.submitDriverRating('${rideId}')" style="margin-top: 6px; font-size: 0.85rem; padding: 8px;">Submit Rating & Complete</button>
+            </div>
           `;
           listenToChatMessages(rideId);
         }
@@ -766,6 +812,9 @@
           card.innerHTML = `
             <h4>Passenger: ${ride.passengerName} (${ride.vehicleType})</h4>
             <div class="ride-info">Route: <strong>${ride.pickup} ➔ ${ride.dropoff}</strong></div>
+            <div class="ride-info">Via Stop: <strong>${ride.viaStop}</strong></div>
+            <div class="ride-info">Luggage: <strong>${ride.luggage}</strong></div>
+            <div class="ride-info">Schedule: <strong>${ride.scheduleTime}</strong></div>
             <div class="ride-info">Offered Fare: <strong style="color: green;">PKR ${ride.fare}</strong></div>
             <div class="bid-input-group">
               <input type="number" id="bid-price-${rideId}" placeholder="Counter Fare" value="${ride.fare}">
@@ -780,8 +829,8 @@
     window.sendDriverBid = function(rideId) {
       const price = document.getElementById(`bid-price-${rideId}`).value;
       const bidsRef = ref(db, `rides/${rideId}/bids`);
-      const newBidRef = push(bidsRef);
-      set(newBidRef, {
+      const newRideRef = push(bidsRef);
+      set(newRideRef, {
         driverId: currentUser.uid,
         driverName: currentUserProfile.name,
         driverPhone: currentUserProfile.phone,
@@ -800,6 +849,14 @@
       });
     };
 
+    window.submitDriverRating = function(rideId) {
+      const rating = document.getElementById(`rating-val-${rideId}`).value;
+      const rideRef = ref(db, `rides/${rideId}`);
+      update(rideRef, { status: 'completed', rating }).then(() => {
+        alert('Thank you! Ride completed and rating submitted.');
+      });
+    };
+
     function loadDriverWallet() {
       const walletRef = ref(db, `wallet/${currentUser.uid}`);
       onValue(walletRef, (snapshot) => {
@@ -808,6 +865,24 @@
         document.getElementById('driver-daily-earnings').innerText = `${total} PKR`;
       });
     }
+
+    window.requestWalletWithdrawal = function() {
+      const amt = document.getElementById('withdraw-amount').value;
+      if (!amt || Number(amt) <= 0) {
+        alert('Please enter valid withdrawal amount.');
+        return;
+      }
+      const withdrawRef = ref(db, `withdrawals/${currentUser.uid}`);
+      push(withdrawRef, {
+        amount: Number(amt),
+        method: 'Easypaisa / JazzCash / Bank',
+        status: 'Pending',
+        timestamp: Date.now()
+      }).then(() => {
+        alert(`Withdrawal request of PKR ${amt} submitted successfully!`);
+        document.getElementById('withdraw-amount').value = '';
+      });
+    };
 
     window.sendChatMessage = function(rideId) {
       const input = document.getElementById(`chat-input-${rideId}`);
