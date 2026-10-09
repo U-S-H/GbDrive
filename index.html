@@ -4,14 +4,14 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
   <!-- SEO & GOOGLE META TAGS -->
-  <title>GB Drive - Gilgit-Baltistan's #1 InDrive Clone | Powered by Prime Solutions</title>
-  <meta name="description" content="GB Drive - Gilgit-Baltistan's ultimate ride-sharing platform. Book city rides, intercity, freight cargo, and 4x4 jeeps with live bidding and verified drivers. Powered by Prime Solutions, Founder Muhammad Nazim.">
-  <meta name="keywords" content="GB Drive, InDrive Pakistan, Prime Solutions, Muhammad Nazim, Gilgit Taxi, Skardu Cargo, Hunza 4x4, Eagle Eye Admin">
-  <meta name="author" content="Prime Solutions (Muhammad Nazim)">
-  <meta name="robots" content="index, follow">
+  <title>GB Drive - Gilgit-Baltistan's #1 InDrive Super App | Powered by Prime Solutions</title>
+  <meta name="description" content="GB Drive - Gilgit-Baltistan's ultimate ride-sharing platform. Book city rides, intercity, freight cargo, and 4x4 jeeps with live bidding and verified drivers. Powered by Prime Solutions, Founder Muhammad Nazim.[span_7](start_span)"[span_7](end_span)>
+  <meta name="keywords" content="GB Drive, InDrive Pakistan, Prime Solutions, Muhammad Nazim, Gilgit Taxi, Skardu Cargo, Hunza 4x4, Eagle Eye Admin[span_8](start_span)"[span_8](end_span)>
+  <meta name="author" content="Prime Solutions (Muhammad Nazim)[span_9](start_span)"[span_9](end_span)>
+  <meta name="robots" content="index, follow[span_10](start_span)"[span_10](end_span)>
 
   <!-- Leaflet CSS for Maps -->
-  <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
+  <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css[span_11](start_span)"[span_11](end_span) />
   
   <style>
     :root {
@@ -24,6 +24,22 @@
       --bg: #f3f4f6;
       --card-bg: #ffffff;
       --text: #1f2937;
+      --input-bg: #ffffff;
+      --input-border: #d1d5db;
+    }
+
+    .dark-theme {
+      --primary: #3b82f6;
+      --primary-dark: #2563eb;
+      --accent: #34d399;
+      --danger: #f87171;
+      --warning: #fbbf24;
+      --admin-color: #a78bfa;
+      --bg: #111827;
+      --card-bg: #1f2937;
+      --text: #f9fafb;
+      --input-bg: #374151;
+      --input-border: #4b5563;
     }
 
     * {
@@ -41,6 +57,7 @@
       align-items: center;
       min-height: 100vh;
       padding: 10px;
+      transition: background 0.3s ease, color 0.3s ease;
     }
 
     /* MODERN SPLASH & LOADING SCREEN */
@@ -84,6 +101,7 @@
       box-shadow: 0 10px 25px rgba(0, 0, 0, 0.1);
       overflow: hidden;
       position: relative;
+      transition: background 0.3s ease;
     }
 
     header {
@@ -104,16 +122,16 @@
       right: 10px;
       top: 10px;
       display: flex;
-      gap: 6px;
+      gap: 5px;
     }
 
     .top-btn {
       background: rgba(255, 255, 255, 0.25);
       border: none;
       color: white;
-      padding: 4px 8px;
+      padding: 4px 6px;
       border-radius: 6px;
-      font-size: 0.75rem;
+      font-size: 0.7rem;
       cursor: pointer;
       font-weight: 600;
     }
@@ -140,9 +158,9 @@
     }
 
     .fare-calculator-badge {
-      background: #ecfdf5;
-      border: 1px solid #10b981;
-      color: #065f46;
+      background: rgba(16, 185, 129, 0.1);
+      border: 1px solid var(--accent);
+      color: var(--accent);
       padding: 10px;
       border-radius: 10px;
       margin-bottom: 12px;
@@ -150,9 +168,9 @@
     }
 
     .payment-info-box {
-      background: #fffbeb;
-      border: 1px solid #f59e0b;
-      color: #92400e;
+      background: rgba(245, 158, 11, 0.1);
+      border: 1px solid var(--warning);
+      color: var(--warning);
       padding: 10px;
       border-radius: 10px;
       margin-bottom: 12px;
@@ -169,13 +187,15 @@
       font-size: 0.85rem;
       font-weight: 600;
       margin-bottom: 4px;
-      color: #4b5563;
+      color: var(--text);
     }
 
     .form-group input, .form-group select {
       width: 100%;
       padding: 10px 12px;
-      border: 1px solid #d1d5db;
+      border: 1px solid var(--input-border);
+      background-color: var(--input-bg);
+      color: var(--text);
       border-radius: 8px;
       font-size: 0.9rem;
       outline: none;
@@ -186,8 +206,8 @@
       top: 100%;
       left: 0;
       right: 0;
-      background: white;
-      border: 1px solid #d1d5db;
+      background: var(--card-bg);
+      border: 1px solid var(--input-border);
       border-radius: 8px;
       max-height: 160px;
       overflow-y: auto;
@@ -199,10 +219,11 @@
       padding: 8px 12px;
       font-size: 0.85rem;
       cursor: pointer;
-      border-bottom: 1px solid #f3f4f6;
+      border-bottom: 1px solid var(--input-border);
+      color: var(--text);
     }
 
-    .suggestion-item:hover { background: #eff6ff; }
+    .suggestion-item:hover { background: rgba(37, 99, 235, 0.1); }
 
     .btn {
       width: 100%;
@@ -217,29 +238,29 @@
       margin-top: 5px;
     }
 
-    .btn-google { background: #ea4335; margin-bottom: 10px; }
-    .btn-accent { background: var(--accent); }
-    .btn-danger { background: var(--danger); }
+    .btn-google { background: #ea4335; margin-bottom: 10px; color: white; }
+    .btn-accent { background: var(--accent); color: white; }
+    .btn-danger { background: var(--danger); color: white; }
     .btn-warning { background: var(--warning); color: black; }
-    .btn-admin { background: var(--admin-color); margin-top: 10px; }
+    .btn-admin { background: var(--admin-color); color: white; margin-top: 10px; }
 
     .ride-card {
-      border: 1px solid #e5e7eb;
+      border: 1px solid var(--input-border);
       border-radius: 12px;
       padding: 12px;
       margin-bottom: 12px;
-      background: #fafafa;
+      background: var(--card-bg);
     }
 
     .ride-card h4 { color: var(--primary); margin-bottom: 6px; font-size: 0.95rem; }
-    .ride-info { font-size: 0.85rem; margin-bottom: 4px; }
+    .ride-info { font-size: 0.85rem; margin-bottom: 4px; color: var(--text); }
 
     .bid-input-group { display: flex; gap: 6px; margin-top: 8px; }
-    .bid-input-group input { flex: 1; padding: 8px; border: 1px solid #d1d5db; border-radius: 6px; }
+    .bid-input-group input { flex: 1; padding: 8px; border: 1px solid var(--input-border); background: var(--input-bg); color: var(--text); border-radius: 6px; }
 
     .user-badge {
-      background: #e0e7ff;
-      color: #3730a3;
+      background: rgba(37, 99, 235, 0.1);
+      color: var(--primary);
       padding: 8px 12px;
       border-radius: 8px;
       font-size: 0.85rem;
@@ -247,37 +268,67 @@
       display: flex;
       justify-content: space-between;
       align-items: center;
+      border: 1px solid var(--primary);
     }
 
     .driver-dashboard-header {
       display: flex;
       justify-content: space-between;
       align-items: center;
-      background: #f3f4f6;
+      background: rgba(156, 163, 175, 0.1);
       padding: 10px;
       border-radius: 8px;
       margin-bottom: 12px;
     }
 
     .nearby-count {
-      background: #d1fae5;
-      color: #065f46;
+      background: rgba(16, 185, 129, 0.15);
+      color: var(--accent);
       padding: 6px 10px;
       border-radius: 6px;
       font-size: 0.8rem;
       font-weight: 600;
       margin-bottom: 10px;
       text-align: center;
+      border: 1px solid var(--accent);
     }
+
+    .chat-container {
+      border: 1px solid var(--input-border);
+      border-radius: 10px;
+      background: var(--card-bg);
+      padding: 10px;
+      margin-top: 10px;
+    }
+
+    .chat-messages {
+      height: 120px;
+      overflow-y: auto;
+      border-bottom: 1px solid var(--input-border);
+      padding-bottom: 6px;
+      margin-bottom: 6px;
+      font-size: 0.85rem;
+    }
+
+    .chat-msg {
+      margin-bottom: 6px;
+      padding: 6px 10px;
+      border-radius: 6px;
+      max-width: 80%;
+    }
+
+    .msg-mine { background: var(--primary); color: white; margin-left: auto; text-align: right; }
+    .msg-other { background: rgba(156, 163, 175, 0.2); color: var(--text); }
 
     /* FOOTER & COMPANY BRANDING */
     .app-footer {
-      background: #1f2937;
+      background: #111827;
       color: #9ca3af;
       padding: 15px;
       text-align: center;
       font-size: 0.75rem;
       border-top: 1px solid #374151;
+      width: 100%;
     }
 
     .app-footer strong { color: #ffffff; }
@@ -297,7 +348,6 @@
 
     .footer-links a:hover { text-decoration: underline; }
 
-    /* MODALS (Admin & Legal) */
     .modal-overlay {
       position: fixed;
       top: 0; left: 0; width: 100%; height: 100%;
@@ -310,7 +360,8 @@
     }
 
     .modal-content {
-      background: white;
+      background: var(--card-bg);
+      color: var(--text);
       width: 100%;
       max-width: 450px;
       border-radius: 14px;
@@ -338,12 +389,12 @@
   <!-- MODERN LOADING SPLASH SCREEN -->
   <div id="splash-screen">
     <h1>GB Drive</h1>
-    <p>Gilgit-Baltistan's Official InDrive-Style Platform</p>
+    <p>Gilgit-Baltistan's Official InDrive Super App</p>
     <div class="spinner"></div>
     <p style="margin-top: 25px; font-size: 0.8rem; opacity: 0.7;">Powered by Prime Solutions | Founder: Muhammad Nazim</p>
   </div>
 
-  <!-- EAGLE EYE ADMIN MODAL -->
+  <!-- EAGLE EYE ADMIN MODAL WITH MASTER CONTROLS -->
   <div id="eagle-eye-modal" class="modal-overlay hidden">
     <div class="modal-content">
       <div class="modal-header" style="border-color: var(--admin-color);">
@@ -352,7 +403,7 @@
       </div>
 
       <div id="admin-login-view">
-        <p style="font-size: 0.85rem; margin-bottom: 10px; color: #4b5563;">Enter Master Security Key (5426):</p>
+        <p style="font-size: 0.85rem; margin-bottom: 10px;">Enter Master Security Key (5426):</p>
         <div class="form-group">
           <input type="password" id="admin-key-input" placeholder="Enter Master Key">
         </div>
@@ -360,18 +411,30 @@
       </div>
 
       <div id="admin-dashboard-view" class="hidden">
-        <div style="background: #f5f3ff; border: 1px solid var(--admin-color); padding: 10px; border-radius: 8px; margin-bottom: 12px; font-size: 0.85rem;">
-          👑 <strong>Platform Revenue:</strong> <span id="admin-total-revenue" style="color: #059669; font-weight: bold;">0 PKR</span>
-        </div>
-        
-        <h4 style="margin-bottom: 8px; color: #1f2937;">Pending TID Approvals:</h4>
-        <div id="admin-payments-monitor" style="max-height: 180px; overflow-y: auto; margin-bottom: 15px;">
-          <p style="font-size: 0.85rem; color: #6b7280;">No pending payments.</p>
+        <div style="background: rgba(124, 58, 237, 0.1); border: 1px solid var(--admin-color); padding: 10px; border-radius: 8px; margin-bottom: 12px; font-size: 0.85rem;">
+          👑 <strong>Platform Revenue:</strong> <span id="admin-total-revenue" style="color: var(--accent); font-weight: bold;">0 PKR</span>
         </div>
 
-        <h4 style="margin-bottom: 8px; color: #1f2937;">Active Rides:</h4>
-        <div id="admin-rides-monitor" style="max-height: 160px; overflow-y: auto;">
-          <p style="font-size: 0.85rem; color: #6b7280;">No active rides.</p>
+        <!-- ADMIN PROMO CODE CREATOR -->
+        <div style="background: rgba(124, 58, 237, 0.05); border: 1px solid var(--admin-color); padding: 10px; border-radius: 8px; margin-bottom: 12px;">
+          <h4 style="color: var(--admin-color); margin-bottom: 6px; font-size: 0.9rem;">🎁 Add / Update Promo Code</h4>
+          <div class="form-group" style="margin-bottom: 6px;">
+            <input type="text" id="admin-new-code" placeholder="Code Name (e.g. GB2026)">
+          </div>
+          <div class="form-group" style="margin-bottom: 8px;">
+            <input type="number" id="admin-new-discount" placeholder="Discount Percentage (e.g. 15 for 15%)">
+          </div>
+          <button class="btn btn-admin" onclick="saveAdminPromoCode()" style="padding: 6px; font-size: 0.8rem; margin:0;">Save Promo Code</button>
+        </div>
+        
+        <h4 style="margin-bottom: 8px;">Pending TID Approvals:</h4>
+        <div id="admin-payments-monitor" style="max-height: 120px; overflow-y: auto; margin-bottom: 12px;">
+          <p style="font-size: 0.85rem; opacity: 0.7;">No pending payments.</p>
+        </div>
+
+        <h4 style="margin-bottom: 8px;">Active Rides:</h4>
+        <div id="admin-rides-monitor" style="max-height: 120px; overflow-y: auto;">
+          <p style="font-size: 0.85rem; opacity: 0.7;">No active rides.</p>
         </div>
       </div>
     </div>
@@ -384,9 +447,8 @@
         <h3>Privacy Policy</h3>
         <button class="top-btn" onclick="closeModal('privacy-modal')" style="background: var(--danger);">Close</button>
       </div>
-      <div style="font-size: 0.85rem; line-height: 1.5; color: #4b5563;">
-        <p style="margin-bottom: 8px;"><strong>GB Drive</strong> respects your privacy and is committed to protecting your personal information. We collect user data such as name, CNIC verification, phone numbers, and real-time GPS location strictly to facilitate safe matching between passengers and verified drivers across Gilgit-Baltistan.</p>
-        <p style="margin-bottom: 8px;">All data is securely processed via Firebase and is never shared with third parties without consent. For support, contact Prime Solutions.</p>
+      <div style="font-size: 0.85rem; line-height: 1.5;">
+        <p style="margin-bottom: 8px;"><strong>GB Drive</strong> respects your privacy and protects your personal information across Gilgit-Baltistan[span_12](start_span)[span_12](end_span). Data is securely processed via Firebase[span_13](start_span)[span_13](end_span).</p>
       </div>
     </div>
   </div>
@@ -398,19 +460,19 @@
         <h3>Terms of Service</h3>
         <button class="top-btn" onclick="closeModal('terms-modal')" style="background: var(--danger);">Close</button>
       </div>
-      <div style="font-size: 0.85rem; line-height: 1.5; color: #4b5563;">
-        <p style="margin-bottom: 8px;">By using GB Drive, you agree to abide by local traffic laws of Pakistan and Gilgit-Baltistan. Drivers must possess valid CNIC and driving licenses. A 10% platform service fee applies to completed rides.</p>
-        <p style="margin-bottom: 8px;">Prime Solutions and Founder Muhammad Nazim hold absolute rights regarding system management and dispute resolutions.</p>
+      <div style="font-size: 0.85rem; line-height: 1.5;">
+        <p style="margin-bottom: 8px;">By using GB Drive, you agree to local traffic and transport regulations[span_14](start_span)[span_14](end_span). A 10% platform service fee applies[span_15](start_span)[span_15](end_span). Powered by Prime Solutions[span_16](start_span)[span_16](end_span).</p>
       </div>
     </div>
   </div>
 
   <div class="app-container">
-    <!-- HEADER WITH 5-TAP EAGLE EYE TRIGGER -->
+    <!-- HEADER WITH 5-TAP EAGLE EYE TRIGGER & THEME TOGGLE -->
     <header onclick="handleHeaderTap()">
       <h1>GB Drive</h1>
-      <p id="app-tagline">InDrive Official Style Platform (GB)</p>
-      <div class="top-controls">
+      <p id="app-tagline">InDrive Official Super App (GB)</p>
+      <div class="top-controls" onclick="event.stopPropagation();">
+        <button class="top-btn" onclick="toggleTheme()" id="theme-btn">🌙</button>
         <button class="top-btn" onclick="toggleLanguage()" id="lang-btn">English</button>
         <button id="logout-btn" class="top-btn hidden">Logout</button>
       </div>
@@ -420,7 +482,7 @@
     <div id="auth-section" class="content">
       <h2 id="auth-title" style="text-align: center; margin-bottom: 15px;">Login to GB Drive</h2>
       <button id="google-login-btn" class="btn btn-google">Continue with Google</button>
-      <div style="text-align: center; margin: 10px 0; color: #9ca3af; font-size: 0.8rem;">OR EMAIL LOGIN</div>
+      <div style="text-align: center; margin: 10px 0; font-size: 0.8rem; opacity: 0.7;">OR EMAIL LOGIN</div>
 
       <form id="auth-form">
         <div class="form-group">
@@ -434,7 +496,7 @@
         <button type="submit" id="auth-submit-btn" class="btn">Login</button>
       </form>
 
-      <div class="auth-toggle" id="auth-toggle-btn" onclick="toggleAuthMode()" style="text-align: center; margin-top: 10px; font-size: 0.85rem; color: #2563eb; cursor: pointer;">
+      <div class="auth-toggle" id="auth-toggle-btn" onclick="toggleAuthMode()" style="text-align: center; margin-top: 10px; font-size: 0.85rem; color: var(--primary); cursor: pointer;">
         Don't have an account? Sign Up
       </div>
     </div>
@@ -517,7 +579,7 @@
         <div id="passenger-section" class="hidden">
           <div id="fare-badge" class="fare-calculator-badge hidden">
             <div>📏 Route Distance: <strong id="calc-distance">0 km</strong></div>
-            <div>💰 Suggested InDrive Fare: <strong id="calc-fare" style="color: #059669; font-size: 1.1rem;">0 PKR</strong></div>
+            <div>💰 Suggested InDrive Fare: <strong id="calc-fare" style="font-size: 1.1rem;">0 PKR</strong></div>
           </div>
           
           <form id="ride-form" autocomplete="off">
@@ -565,6 +627,15 @@
             </div>
 
             <div class="form-group">
+              <label>Promo Code / Discount Coupon</label>
+              <div style="display: flex; gap: 6px;">
+                <input type="text" id="promo-code" placeholder="e.g. GB2026">
+                <button type="button" class="btn btn-accent" onclick="applyPromoCode()" style="width: auto; margin:0; padding: 6px 12px; font-size: 0.85rem;">Apply</button>
+              </div>
+              <small id="promo-msg" style="color: var(--accent); font-weight: 600;"></small>
+            </div>
+
+            <div class="form-group">
               <label>Name Your Fare (Propose Your Price - PKR)</label>
               <input type="number" id="fare" placeholder="Enter what you want to pay" required>
             </div>
@@ -577,27 +648,27 @@
         <!-- DRIVER / PARTNER DASHBOARD -->
         <div id="driver-section" class="hidden">
           <div class="driver-dashboard-header">
-            <div>Status: <strong id="driver-online-text" style="color: #10b981;">ONLINE</strong></div>
+            <div>Status: <strong id="driver-online-text" style="color: var(--accent);">ONLINE</strong></div>
             <button class="btn btn-warning" id="driver-toggle-btn" onclick="toggleDriverOnlineStatus()" style="width: auto; padding: 6px 12px; margin:0; font-size: 0.8rem;">Go Offline</button>
           </div>
 
-          <div class="fare-calculator-badge" style="background: #eff6ff; border-color: #2563eb; color: #1e40af;">
+          <div class="fare-calculator-badge" style="background: rgba(37, 99, 235, 0.1); border-color: var(--primary); color: var(--primary);">
             💰 Partner Wallet Balance: <strong id="driver-daily-earnings" style="font-size: 1.1rem;">0 PKR</strong><br>
-            <span style="font-size: 0.75rem; color: #4b5563;">Completed Rides: <strong id="driver-completed-count">12</strong> | Rating: ⭐ 4.9</span>
+            <span style="font-size: 0.75rem; opacity: 0.8;">Completed Rides: <strong id="driver-completed-count">12</strong> | Rating: ⭐ <span id="driver-rating-score">4.9</span></span>
           </div>
 
           <!-- TID PAYMENT RECHARGE BOX -->
           <div class="payment-info-box">
             <strong>💳 Easypaisa & JazzCash Deposit Account:</strong><br>
-            Send funds to: <strong>03379827882</strong> (Easypaisa / JazzCash)<br>
-            <span style="color: #d97706; font-size: 0.78rem;">Submit your Transaction ID (TID) below for admin approval.</span>
+            Send funds to: <strong>03379827882</strong> (Easypaisa / JazzCash)[span_17](start_span)[span_17](end_span)<br>
+            <span style="font-size: 0.78rem;">Submit your Transaction ID (TID) below for admin approval.</span>
           </div>
 
-          <form id="tid-form" style="background: #fdfdfd; border: 1px solid #d1d5db; padding: 12px; border-radius: 10px; margin-bottom: 15px;">
-            <h5 style="margin-bottom: 8px; color: #374151;">📤 Submit TID for Wallet Recharge</h5>
+          <form id="tid-form" style="background: var(--card-bg); border: 1px solid var(--input-border); padding: 12px; border-radius: 10px; margin-bottom: 15px;">
+            <h5 style="margin-bottom: 8px;">📤 Submit TID for Wallet Recharge</h5>
             <div class="form-group">
               <label>Username / Name</label>
-              <input type="text" id="tid-username" readonly style="background: #f3f4f6;">
+              <input type="text" id="tid-username" readonly style="opacity: 0.7;">
             </div>
             <div class="form-group">
               <label>Amount Sent (PKR)</label>
@@ -620,8 +691,8 @@
 
     <!-- PROFESSIONAL FOOTER -->
     <div class="app-footer">
-      <p>&copy; 2026 <strong>GB Drive Network</strong>. All rights reserved.</p>
-      <p style="margin-top: 3px; color: #60a5fa;">Powered by <strong>Prime Solutions</strong> | Founder & CEO: <strong>Muhammad Nazim</strong></p>
+      <p>&copy; 2026 <strong>GB Drive Network</strong>. All rights reserved[span_18](start_span)[span_18](end_span).</p>
+      <p style="margin-top: 3px; color: #60a5fa;">Powered by <strong>Prime Solutions</strong>[span_19](start_span)[span_19](end_span) | Founder & CEO: <strong>Muhammad Nazim</strong>[span_20](start_span)[span_20](end_span)</p>
       <div class="footer-links">
         <a onclick="openModal('privacy-modal')">Privacy Policy</a>
         <a onclick="openModal('terms-modal')">Terms of Service</a>
@@ -630,7 +701,7 @@
   </div>
 
   <!-- Leaflet JS -->
-  <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+  <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js[span_21](start_span)"[span_21](end_span)></script>
 
   <!-- FIREBASE SDKs -->
   <script type="module">
@@ -659,8 +730,9 @@
     let currentLanguage = 'ur';
     let driverMarkers = {};
     let lastKnownRideCount = 0;
+    let discountApplied = false;
+    let isDarkMode = false;
 
-    // REMOVE SPLASH SCREEN AFTER 1.5 SECONDS
     window.addEventListener('load', () => {
       setTimeout(() => {
         const splash = document.getElementById('splash-screen');
@@ -670,6 +742,12 @@
         }
       }, 1500);
     });
+
+    window.toggleTheme = function() {
+      isDarkMode = !isDarkMode;
+      document.body.classList.toggle('dark-theme', isDarkMode);
+      document.getElementById('theme-btn').innerText = isDarkMode ? '☀️' : '🌙';
+    };
 
     window.openModal = function(id) {
       document.getElementById(id).classList.remove('hidden');
@@ -701,7 +779,45 @@
       }
     };
 
-    // EAGLE EYE SECRET TAP GESTURE (5 taps -> key 5426)
+    window.saveAdminPromoCode = async function() {
+      const code = document.getElementById('admin-new-code').value.trim().toUpperCase();
+      const discount = Number(document.getElementById('admin-new-discount').value);
+
+      if (!code || !discount) {
+        alert('Please enter valid promo code and discount percentage.');
+        return;
+      }
+
+      await set(ref(db, `promos/${code}`), discount);
+      alert(`Promo code '${code}' with ${discount}% discount saved successfully!`);
+      document.getElementById('admin-new-code').value = '';
+      document.getElementById('admin-new-discount').value = '';
+    };
+
+    window.applyPromoCode = async function() {
+      const code = document.getElementById('promo-code').value.trim().toUpperCase();
+      const fareInput = document.getElementById('fare');
+      const msg = document.getElementById('promo-msg');
+
+      if (!code) return;
+
+      const promoRef = ref(db, `promos/${code}`);
+      const snap = await get(promoRef);
+
+      if (snap.exists() && !discountApplied) {
+        const discountPercent = snap.val();
+        let currentFare = Number(fareInput.value);
+        let discounted = Math.round(currentFare * (1 - discountPercent / 100));
+        fareInput.value = discounted;
+        discountApplied = true;
+        msg.innerText = `🎉 Promo applied! ${discountPercent}% discount deducted.`;
+      } else if (discountApplied) {
+        msg.innerText = '⚠️ Promo code already used for this fare.';
+      } else {
+        msg.innerText = '❌ Invalid or expired Promo Code.';
+      }
+    };
+
     let headerTapCount = 0;
     let tapTimer = null;
     window.handleHeaderTap = function() {
@@ -713,11 +829,6 @@
         headerTapCount = 0;
         openModal('eagle-eye-modal');
       }
-    };
-
-    window.closeEagleEyeAdmin = function() {
-      closeModal('eagle-eye-modal');
-      document.getElementById('admin-key-input').value = '';
     };
 
     window.verifyAdminKey = function() {
@@ -746,7 +857,7 @@
         const container = document.getElementById('admin-payments-monitor');
         container.innerHTML = '';
         if (!data) {
-          container.innerHTML = '<p style="font-size: 0.85rem; color: #6b7280;">No pending payments.</p>';
+          container.innerHTML = '<p style="font-size: 0.85rem; opacity: 0.7;">No pending payments.</p>';
           return;
         }
 
@@ -756,7 +867,7 @@
             const div = document.createElement('div');
             div.className = 'ride-card';
             div.innerHTML = `
-              <div>User: <strong>${t.username}</strong> | Amount: <strong style="color:green;">PKR ${t.amount}</strong></div>
+              <div>User: <strong>${t.username}</strong> | Amount: <strong style="color:var(--accent);">PKR ${t.amount}</strong></div>
               <div>TID: <strong>${t.tid}</strong></div>
               <div style="display:flex; gap:6px; margin-top:6px;">
                 <button class="btn btn-accent" onclick="adminApproveTID('${id}', '${t.userId}', ${t.amount})" style="padding:4px 8px; font-size:0.75rem;">Approve</button>
@@ -773,7 +884,7 @@
         const container = document.getElementById('admin-rides-monitor');
         container.innerHTML = '';
         if (!data) {
-          container.innerHTML = '<p style="font-size: 0.85rem; color: #6b7280;">No active rides.</p>';
+          container.innerHTML = '<p style="font-size: 0.85rem; opacity: 0.7;">No active rides.</p>';
           return;
         }
 
@@ -782,7 +893,7 @@
           const div = document.createElement('div');
           div.className = 'ride-card';
           div.innerHTML = `
-            <div>ID: <strong>${id.substring(0,6)}...</strong> | Status: <strong style="color:blue;">${r.status}</strong></div>
+            <div>ID: <strong>${id.substring(0,6)}...</strong> | Status: <strong style="color:var(--primary);">${r.status}</strong></div>
             <div>Client: <strong>${r.clientName}</strong> | Fare: <strong>PKR ${r.fare}</strong></div>
             <button class="btn btn-danger" onclick="adminDeleteRide('${id}')" style="margin-top:6px; padding:4px 8px; font-size:0.75rem; width:auto;">Force Delete</button>
           `;
@@ -833,7 +944,7 @@
         status: 'Pending',
         timestamp: Date.now()
       }).then(() => {
-        document.getElementById('tid-status-msg').innerHTML = `<span style="color: #d97706;">⏳ TID Submitted! Status: Pending Admin Approval.</span>`;
+        document.getElementById('tid-status-msg').innerHTML = `<span style="color: var(--warning);">⏳ TID Submitted! Status: Pending Admin Approval.</span>`;
         document.getElementById('tid-amount').value = '';
         document.getElementById('tid-code').value = '';
       });
@@ -843,15 +954,14 @@
       currentLanguage = currentLanguage === 'ur' ? 'en' : 'ur';
       document.getElementById('lang-btn').innerText = currentLanguage === 'ur' ? 'English' : 'اردو';
       if (currentLanguage === 'en') {
-        document.getElementById('app-tagline').innerText = 'InDrive Official Style Platform (GB)';
+        document.getElementById('app-tagline').innerText = 'InDrive Official Super App (GB)';
       } else {
-        document.getElementById('app-tagline').innerText = 'ان ڈرائیو طرز کا آفیشل پلیٹ فارم (گلگت بلتستان)';
+        document.getElementById('app-tagline').innerText = 'ان ڈرائیو طرز کا آفیشل سپر ایپ (گلگت بلتستان)';
       }
     };
 
     let map = null;
     let userMarker = null;
-    let userCoords = null;
     let routeDistanceKm = 15.0;
     let searchDebounce = null;
 
@@ -868,7 +978,6 @@
         navigator.geolocation.getCurrentPosition((pos) => {
           const lat = pos.coords.latitude;
           const lng = pos.coords.longitude;
-          userCoords = [lat, lng];
 
           if (userMarker) map.removeLayer(userMarker);
           userMarker = L.marker([lat, lng]).addTo(map).bindPopup("Your Location").openPopup();
@@ -959,6 +1068,7 @@
       document.getElementById('calc-distance').innerText = `${routeDistanceKm.toFixed(1)} km`;
       document.getElementById('calc-fare').innerText = `${calculatedFare} PKR`;
       document.getElementById('fare').value = calculatedFare;
+      discountApplied = false;
       document.getElementById('fare-badge').classList.remove('hidden');
     };
 
@@ -974,10 +1084,10 @@
       const statusText = document.getElementById('driver-online-text');
       const toggleBtn = document.getElementById('driver-toggle-btn');
       if (isDriverOnline) {
-        statusText.innerText = 'ONLINE'; statusText.style.color = '#10b981';
+        statusText.innerText = 'ONLINE'; statusText.style.color = 'var(--accent)';
         toggleBtn.innerText = 'Go Offline'; toggleBtn.className = 'btn btn-warning';
       } else {
-        statusText.innerText = 'OFFLINE'; statusText.style.color = '#ef4444';
+        statusText.innerText = 'OFFLINE'; statusText.style.color = 'var(--danger)';
         toggleBtn.innerText = 'Go Online'; toggleBtn.className = 'btn btn-accent';
       }
     };
@@ -1092,7 +1202,7 @@
               <div class="ride-card">
                 <div>Partner: <strong>⭐ 4.9 (142 Rides Completed) - Expert Mountain Driver</strong></div>
                 <div>Name & Service: <strong>${bid.driverName} (${bid.vehicleType})</strong></div>
-                <div>Proposed Counter Bid: <strong style="color: green;">PKR ${bid.amount}</strong></div>
+                <div>Proposed Counter Bid: <strong style="color: var(--accent);">PKR ${bid.amount}</strong></div>
                 <div style="display:flex; gap:6px; margin-top:8px;">
                   <button class="btn btn-accent" onclick="window.acceptBid('${rideId}', '${bid.driverName}', '${bid.driverPhone}', ${bid.amount})">Accept Offer</button>
                 </div>
@@ -1102,15 +1212,50 @@
           statusDiv.innerHTML = html;
         } else if (ride.status === 'accepted') {
           statusDiv.innerHTML = `
-            <div class="ride-card" style="background: #d1fae5; border-color: #10b981;">
+            <div class="ride-card" style="background: rgba(16, 185, 129, 0.1); border-color: var(--accent);">
               ✅ <strong>Offer Accepted!</strong><br>
               Partner: ${ride.acceptedDriverName} (${ride.acceptedFare} PKR)<br>
-              🔐 <strong>Secure OTP Code: <span style="font-size: 1.2rem; color: #1e40af;">${ride.otpCode}</span></strong>
+              🔐 <strong>Secure OTP Code: <span style="font-size: 1.2rem; color: var(--primary);">${ride.otpCode}</span></strong>
+            </div>
+            <div class="chat-container">
+              <h5 style="margin-bottom:6px;">💬 In-App Live Chat</h5>
+              <div class="chat-messages" id="chat-box-${rideId}"></div>
+              <div style="display:flex; gap:6px;">
+                <input type="text" id="chat-input-${rideId}" placeholder="Type message..." style="flex:1; padding:6px; border-radius:6px; border:1px solid var(--input-border); background:var(--input-bg); color:var(--text);">
+                <button class="btn btn-accent" onclick="window.sendChatMessage('${rideId}')" style="width:auto; padding:6px 12px; margin:0;">Send</button>
+              </div>
+            </div>
+            <div style="margin-top:10px;">
+              <button class="btn btn-warning" onclick="window.completeRide('${rideId}')">🏁 Finish Ride & Rate Driver</button>
+            </div>
+          `;
+          listenToChatMessages(rideId);
+        } else if (ride.status === 'completed') {
+          statusDiv.innerHTML = `
+            <div class="ride-card" style="text-align:center;">
+              <h4>🎉 Ride Completed Successfully!</h4>
+              <p style="font-size:0.85rem; margin-bottom:10px;">Please rate your experience with ${ride.acceptedDriverName}:</p>
+              <div style="font-size:1.5rem; margin-bottom:10px; cursor:pointer;">
+                <span onclick="submitRating('${rideId}', 1)">⭐</span>
+                <span onclick="submitRating('${rideId}', 2)">⭐⭐</span>
+                <span onclick="submitRating('${rideId}', 3)">⭐⭐⭐</span>
+                <span onclick="submitRating('${rideId}', 4)">⭐⭐⭐⭐</span>
+                <span onclick="submitRating('${rideId}', 5)">⭐⭐⭐⭐⭐</span>
+              </div>
             </div>
           `;
         }
       });
     }
+
+    window.completeRide = function(rideId) {
+      update(ref(db, `rides/${rideId}`), { status: 'completed' });
+    };
+
+    window.submitRating = function(rideId, stars) {
+      alert(`Thank you! Rated ${stars} stars successfully.`);
+      location.reload();
+    };
 
     const ridesList = document.getElementById('rides-list');
     const ridesRef = ref(db, 'rides/');
@@ -1120,7 +1265,7 @@
       const data = snapshot.val();
       ridesList.innerHTML = '';
       if (!data) {
-        ridesList.innerHTML = '<p style="color: #6b7280; font-size: 0.85rem;">No active requests...</p>';
+        ridesList.innerHTML = '<p style="font-size: 0.85rem; opacity: 0.7;">No active requests...</p>';
         return;
       }
 
@@ -1136,7 +1281,7 @@
             <div class="ride-info">Client: <strong>${ride.clientName}</strong></div>
             <div class="ride-info">Route: <strong>${ride.pickup} ➔ ${ride.dropoff}</strong></div>
             <div class="ride-info">Luggage Tag: <strong>${ride.luggageTag}</strong></div>
-            <div class="ride-info">Client's Offered Fare: <strong style="color: green;">PKR ${ride.fare}</strong></div>
+            <div class="ride-info">Client's Offered Fare: <strong style="color: var(--accent);">PKR ${ride.fare}</strong></div>
             <div class="bid-input-group">
               <input type="number" id="bid-price-${rideId}" placeholder="Your Counter Bid" value="${ride.fare}">
               <button class="btn btn-accent" onclick="window.sendDriverBid('${rideId}')">Send Counter Bid</button>
@@ -1181,6 +1326,39 @@
         acceptedFare: fare
       });
     };
+
+    window.sendChatMessage = function(rideId) {
+      const input = document.getElementById(`chat-input-${rideId}`);
+      const text = input.value.trim();
+      if (!text) return;
+      const chatRef = ref(db, `chats/${rideId}`);
+      push(chatRef, {
+        senderId: currentUser.uid,
+        senderName: currentUserProfile.name,
+        text,
+        timestamp: Date.now()
+      }).then(() => { input.value = ''; });
+    };
+
+    function listenToChatMessages(rideId) {
+      const chatRef = ref(db, `chats/${rideId}`);
+      onValue(chatRef, (snapshot) => {
+        const data = snapshot.val();
+        const chatBox = document.getElementById(`chat-box-${rideId}`);
+        if (!chatBox) return;
+        chatBox.innerHTML = '';
+        if (data) {
+          Object.values(data).forEach(msg => {
+            const isMine = msg.senderId === currentUser.uid;
+            const div = document.createElement('div');
+            div.className = `chat-msg ${isMine ? 'msg-mine' : 'msg-other'}`;
+            div.innerHTML = `<strong>${isMine ? 'You' : msg.senderName}:</strong> ${msg.text}`;
+            chatBox.appendChild(div);
+          });
+          chatBox.scrollTop = chatBox.scrollHeight;
+        }
+      });
+    }
 
     function loadDriverWalletAndStats() {
       const walletRef = ref(db, `wallet/${currentUser.uid}`);
