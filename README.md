@@ -191,6 +191,16 @@
       align-items: center;
     }
 
+    .safety-notice {
+      background: #fef3c7;
+      color: #92400e;
+      padding: 10px;
+      border-radius: 8px;
+      font-size: 0.8rem;
+      margin-bottom: 15px;
+      border-left: 4px solid #f59e0b;
+    }
+
     .hidden { display: none !important; }
   </style>
 </head>
@@ -199,11 +209,11 @@
   <div class="app-container">
     <header>
       <h1>GB Drive</h1>
-      <p>Gilgit-Baltistan Live Ride & Bidding</p>
+      <p>Gilgit-Baltistan Live Ride & Safety Network</p>
       <button id="logout-btn" class="logout-btn hidden">Logout</button>
     </header>
 
-    <!-- AUTH SECTION (Login / Signup) -->
+    <!-- STEP 1: AUTHENTICATION SECTION (Login / Fast Login) -->
     <div id="auth-section" class="content">
       <h2 id="auth-title" style="text-align: center; margin-bottom: 15px;">Login to GB Drive</h2>
 
@@ -211,43 +221,6 @@
       <div style="text-align: center; margin: 10px 0; color: #9ca3af; font-size: 0.8rem;">OR EMAIL LOGIN</div>
 
       <form id="auth-form">
-        <!-- Extra Profile Fields for Registration -->
-        <div id="register-fields" class="hidden">
-          <div class="form-group">
-            <label>Select Your Account Type</label>
-            <select id="user-role" onchange="toggleDriverFields()">
-              <option value="passenger">Passenger</option>
-              <option value="driver">Driver</option>
-            </select>
-          </div>
-
-          <div class="form-group">
-            <label>Full Name</label>
-            <input type="text" id="user-name" placeholder="Enter full name">
-          </div>
-
-          <div class="form-group">
-            <label>WhatsApp Phone Number</label>
-            <input type="text" id="user-phone" placeholder="e.g. 03001234567">
-          </div>
-
-          <!-- Driver Specific Fields -->
-          <div id="driver-fields" class="hidden">
-            <div class="form-group">
-              <label>Vehicle Type</label>
-              <select id="vehicle-type">
-                <option value="Car">Car / Taxi</option>
-                <option value="Bike">Bike / Rickshaw</option>
-                <option value="Van">Van / Hiace</option>
-              </select>
-            </div>
-            <div class="form-group">
-              <label>Vehicle Number Plate</label>
-              <input type="text" id="vehicle-num" placeholder="e.g. GIL-1234">
-            </div>
-          </div>
-        </div>
-
         <div class="form-group">
           <label>Email Address</label>
           <input type="email" id="auth-email" placeholder="name@example.com" required>
@@ -266,7 +239,67 @@
       </div>
     </div>
 
-    <!-- MAIN APP DASHBOARD (Hidden until logged in) -->
+    <!-- STEP 2: MANDATORY FIRST-TIME SAFETY PROFILE FORM -->
+    <div id="profile-setup-section" class="content hidden">
+      <h2 style="text-align: center; margin-bottom: 10px;">Complete Safety Profile</h2>
+      <div class="safety-notice">
+        🔒 <b>Safety Verification:</b> Safety ke liye first-time login par apni details fill karna lazmi hai.
+      </div>
+
+      <form id="profile-setup-form">
+        <div class="form-group">
+          <label>Account Type</label>
+          <select id="setup-role" onchange="toggleDriverSetupFields()">
+            <option value="passenger">Passenger</option>
+            <option value="driver">Driver</option>
+          </select>
+        </div>
+
+        <div class="form-group">
+          <label>Full Name (Identity Name)</label>
+          <input type="text" id="setup-name" placeholder="Full Name as on CNIC" required>
+        </div>
+
+        <div class="form-group">
+          <label>CNIC / National Identity Number</label>
+          <input type="text" id="setup-cnic" placeholder="71101-XXXXXXX-X" required>
+        </div>
+
+        <div class="form-group">
+          <label>WhatsApp Phone Number</label>
+          <input type="text" id="setup-phone" placeholder="03001234567" required>
+        </div>
+
+        <div class="form-group">
+          <label>Emergency Contact Phone Number</label>
+          <input type="text" id="setup-emergency-phone" placeholder="Emergency Relative Phone" required>
+        </div>
+
+        <!-- Driver Specific Safety Details -->
+        <div id="driver-setup-fields" class="hidden">
+          <div class="form-group">
+            <label>Driving License Number</label>
+            <input type="text" id="setup-license" placeholder="License Number">
+          </div>
+          <div class="form-group">
+            <label>Vehicle Type</label>
+            <select id="setup-vehicle-type">
+              <option value="Car / Taxi">Car / Taxi</option>
+              <option value="Bike / Rickshaw">Bike / Rickshaw</option>
+              <option value="Van / Hiace">Van / Hiace</option>
+            </select>
+          </div>
+          <div class="form-group">
+            <label>Vehicle Number Plate</label>
+            <input type="text" id="setup-vehicle-num" placeholder="e.g. GIL-1234">
+          </div>
+        </div>
+
+        <button type="submit" class="btn btn-accent">Save Profile & Continue</button>
+      </form>
+    </div>
+
+    <!-- STEP 3: MAIN APP DASHBOARD (Hidden until logged in & profile verified) -->
     <div id="app-section" class="hidden">
       <div class="content" style="padding-bottom: 0;">
         <div class="user-badge">
@@ -352,30 +385,24 @@
     let currentUserProfile = null;
     let isSignUpMode = false;
 
-    // --- AUTH UI CONTROLS ---
+    // --- AUTH TOGGLE ---
     window.toggleAuthMode = function() {
       isSignUpMode = !isSignUpMode;
       document.getElementById('auth-title').innerText = isSignUpMode ? 'Register on GB Drive' : 'Login to GB Drive';
       document.getElementById('auth-submit-btn').innerText = isSignUpMode ? 'Sign Up' : 'Login';
       document.getElementById('auth-toggle-btn').innerText = isSignUpMode ? 'Already have an account? Login' : "Don't have an account? Sign Up";
-      
-      if (isSignUpMode) {
-        document.getElementById('register-fields').classList.remove('hidden');
-      } else {
-        document.getElementById('register-fields').classList.add('hidden');
-      }
     };
 
-    window.toggleDriverFields = function() {
-      const role = document.getElementById('user-role').value;
+    window.toggleDriverSetupFields = function() {
+      const role = document.getElementById('setup-role').value;
       if (role === 'driver') {
-        document.getElementById('driver-fields').classList.remove('hidden');
+        document.getElementById('driver-setup-fields').classList.remove('hidden');
       } else {
-        document.getElementById('driver-fields').classList.add('hidden');
+        document.getElementById('driver-setup-fields').classList.add('hidden');
       }
     };
 
-    // --- AUTHENTICATION LOGIC ---
+    // EMAIL LOGIN / SIGNUP
     const authForm = document.getElementById('auth-form');
     authForm.addEventListener('submit', async (e) => {
       e.preventDefault();
@@ -384,99 +411,112 @@
 
       try {
         if (isSignUpMode) {
-          const res = await createUserWithEmailAndPassword(auth, email, password);
-          const uid = res.user.uid;
-          
-          const role = document.getElementById('user-role').value;
-          const name = document.getElementById('user-name').value || 'User';
-          const phone = document.getElementById('user-phone').value || '';
-
-          const profileData = {
-            uid,
-            name,
-            phone,
-            email,
-            role,
-            createdAt: Date.now()
-          };
-
-          if (role === 'driver') {
-            profileData.vehicleType = document.getElementById('vehicle-type').value;
-            profileData.vehicleNum = document.getElementById('vehicle-num').value;
-          }
-
-          await set(ref(db, `users/${uid}`), profileData);
+          await createUserWithEmailAndPassword(auth, email, password);
         } else {
           await signInWithEmailAndPassword(auth, email, password);
         }
       } catch (err) {
-        alert('Authentication Error: ' + err.message);
+        alert('Auth Error: ' + err.message);
       }
     });
 
-    // Google Login
+    // GOOGLE LOGIN
     document.getElementById('google-login-btn').addEventListener('click', async () => {
       try {
-        const res = await signInWithPopup(auth, googleProvider);
-        const uid = res.user.uid;
-
-        // Check if user profile already exists
-        const snapshot = await get(ref(db, `users/${uid}`));
-        if (!snapshot.exists()) {
-          // Default Google user as Passenger
-          await set(ref(db, `users/${uid}`), {
-            uid,
-            name: res.user.displayName,
-            email: res.user.email,
-            phone: '',
-            role: 'passenger',
-            createdAt: Date.now()
-          });
-        }
+        await signInWithPopup(auth, googleProvider);
       } catch (err) {
         alert('Google Sign-In Error: ' + err.message);
       }
     });
 
-    // Logout
+    // LOGOUT
     document.getElementById('logout-btn').addEventListener('click', () => {
       signOut(auth);
     });
 
-    // AUTH STATE MONITORING
+    // --- MAIN SAFETY AUTH STATE MONITOR ---
     onAuthStateChanged(auth, async (user) => {
       if (user) {
         currentUser = user;
-        const snapshot = await get(ref(db, `users/${user.uid}`));
-        currentUserProfile = snapshot.val() || { role: 'passenger', name: user.email };
-
-        document.getElementById('auth-section').classList.add('hidden');
-        document.getElementById('app-section').classList.remove('hidden');
         document.getElementById('logout-btn').classList.remove('hidden');
+        document.getElementById('auth-section').classList.add('hidden');
 
-        document.getElementById('user-display-name').innerText = currentUserProfile.name || user.email;
-        document.getElementById('user-display-role').innerText = currentUserProfile.role;
+        const snapshot = await get(ref(db, `users/${user.uid}`));
+        const profile = snapshot.val();
 
-        // Load respective dashboard
-        if (currentUserProfile.role === 'driver') {
-          document.getElementById('driver-section').classList.remove('hidden');
-          document.getElementById('passenger-section').classList.add('hidden');
+        // Check if user has completed profile details
+        if (profile && profile.isProfileComplete) {
+          currentUserProfile = profile;
+          loadMainAppDashboard();
         } else {
-          document.getElementById('passenger-section').classList.remove('hidden');
-          document.getElementById('driver-section').classList.add('hidden');
+          // First Time Login -> Show Safety Setup Form
+          document.getElementById('profile-setup-section').classList.remove('hidden');
+          document.getElementById('app-section').classList.add('hidden');
+          document.getElementById('setup-name').value = user.displayName || '';
         }
-
-        initMap();
       } else {
         currentUser = null;
         currentUserProfile = null;
         document.getElementById('auth-section').classList.remove('hidden');
+        document.getElementById('profile-setup-section').classList.add('hidden');
         document.getElementById('app-section').classList.add('hidden');
         document.getElementById('logout-btn').classList.add('hidden');
       }
     });
 
-    // --- MAP & RIDE SYSTEM ---
+    // --- SAVE SAFETY PROFILE DATA ---
+    const profileSetupForm = document.getElementById('profile-setup-form');
+    profileSetupForm.addEventListener('submit', async (e) => {
+      e.preventDefault();
+
+      const role = document.getElementById('setup-role').value;
+      const name = document.getElementById('setup-name').value;
+      const cnic = document.getElementById('setup-cnic').value;
+      const phone = document.getElementById('setup-phone').value;
+      const emergencyPhone = document.getElementById('setup-emergency-phone').value;
+
+      const profileData = {
+        uid: currentUser.uid,
+        email: currentUser.email,
+        name,
+        cnic,
+        phone,
+        emergencyPhone,
+        role,
+        isProfileComplete: true,
+        updatedAt: Date.now()
+      };
+
+      if (role === 'driver') {
+        profileData.licenseNum = document.getElementById('setup-license').value;
+        profileData.vehicleType = document.getElementById('setup-vehicle-type').value;
+        profileData.vehicleNum = document.getElementById('setup-vehicle-num').value;
+      }
+
+      await set(ref(db, `users/${currentUser.uid}`), profileData);
+      currentUserProfile = profileData;
+
+      document.getElementById('profile-setup-section').classList.add('hidden');
+      loadMainAppDashboard();
+    });
+
+    function loadMainAppDashboard() {
+      document.getElementById('app-section').classList.remove('hidden');
+      document.getElementById('user-display-name').innerText = currentUserProfile.name;
+      document.getElementById('user-display-role').innerText = currentUserProfile.role;
+
+      if (currentUserProfile.role === 'driver') {
+        document.getElementById('driver-section').classList.remove('hidden');
+        document.getElementById('passenger-section').classList.add('hidden');
+      } else {
+        document.getElementById('passenger-section').classList.remove('hidden');
+        document.getElementById('driver-section').classList.add('hidden');
+      }
+
+      initMap();
+    }
+
+    // --- MAP & RIDE LOGIC ---
     let map = null;
     let pickupMarker = null;
     let dropoffMarker = null;
@@ -513,7 +553,7 @@
       });
     }
 
-    // Passenger Ride Submit
+    // PASSENGER RIDE REQUEST
     const rideForm = document.getElementById('ride-form');
     rideForm.addEventListener('submit', (e) => {
       e.preventDefault();
@@ -527,15 +567,16 @@
 
       set(newRideRef, {
         passengerId: currentUser.uid,
-        passengerName: currentUserProfile.name || 'Passenger',
-        phone: currentUserProfile.phone || '03000000000',
+        passengerName: currentUserProfile.name,
+        passengerPhone: currentUserProfile.phone,
+        passengerCnic: currentUserProfile.cnic,
         pickup,
         dropoff,
         fare: Number(fare),
         status: 'pending',
         createdAt: Date.now()
       }).then(() => {
-        alert('Ride Broadcasted successfully!');
+        alert('Ride Request Broadcasted successfully!');
         listenToMyRide(newRideRef.key);
       });
     });
@@ -551,12 +592,13 @@
         if (ride.status === 'pending' && !ride.bids) {
           statusDiv.innerHTML = `<div class="ride-card">⏳ Waiting for drivers to bid...</div>`;
         } else if (ride.bids) {
-          let html = `<h4>Drivers Offered Bids:</h4>`;
+          let html = `<h4>Verified Drivers Offered Bids:</h4>`;
           Object.keys(ride.bids).forEach(bidId => {
             const bid = ride.bids[bidId];
             html += `
               <div class="ride-card">
                 <div>Driver: <strong>${bid.driverName} (${bid.vehicleType || 'Vehicle'})</strong></div>
+                <div>Plate: ${bid.vehicleNum || 'N/A'}</div>
                 <div>Bid Fare: <strong style="color: green;">PKR ${bid.amount}</strong></div>
                 <div style="display:flex; gap:6px; margin-top:8px;">
                   <button class="btn btn-accent" onclick="window.acceptBid('${rideId}', '${bid.driverName}', '${bid.driverPhone}', ${bid.amount})">Accept Offer</button>
@@ -578,7 +620,7 @@
       });
     }
 
-    // Driver Live Rides Monitor
+    // DRIVER RIDES MONITORING
     const ridesList = document.getElementById('rides-list');
     const ridesRef = ref(db, 'rides/');
 
@@ -619,8 +661,9 @@
       set(newBidRef, {
         driverId: currentUser.uid,
         driverName: currentUserProfile.name,
-        driverPhone: currentUserProfile.phone || '03000000000',
+        driverPhone: currentUserProfile.phone,
         vehicleType: currentUserProfile.vehicleType || 'Taxi',
+        vehicleNum: currentUserProfile.vehicleNum || 'GIL-1234',
         amount: Number(price)
       }).then(() => {
         alert('Bid offer sent to passenger!');
