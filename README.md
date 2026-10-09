@@ -4,14 +4,14 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
   <!-- SEO & GOOGLE META TAGS -->
-  <title>GB Drive - Gilgit-Baltistan Ultimate InDrive Style Ride & Cargo App</title>
-  <meta name="description" content="GB Drive - Gilgit-Baltistan's #1 InDrive-style platform. Book city rides, intercity travel, freight cargo, and 4x4 jeeps with live bidding and verified driver profiles.">
-  <meta name="keywords" content="GB Drive, InDrive Pakistan, Gilgit Intercity Taxi, Skardu Cargo Delivery, Hunza 4x4 Jeep">
+  <title>GB Drive - Gilgit-Baltistan Official InDrive Style Platform</title>
+  <meta name="description" content="GB Drive - Gilgit-Baltistan's official InDrive-style platform. Book city rides, intercity travel, courier and freight delivery, and 4x4 jeeps with live bidding.">
+  <meta name="keywords" content="GB Drive, InDrive Pakistan, Gilgit Intercity, Skardu Freight Delivery, Hunza 4x4 Jeep">
   <meta name="author" content="GB Drive Network">
   <meta name="robots" content="index, follow">
 
-  <!-- Mapbox GL JS CSS -->
-  <link href="https://api.mapbox.com/mapbox-gl-js/v2.15.0/mapbox-gl.css" rel="stylesheet" />
+  <!-- Leaflet CSS for Maps -->
+  <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
   
   <style>
     :root {
@@ -81,7 +81,7 @@
       font-weight: 600;
     }
 
-    #map { height: 250px; width: 100%; }
+    #map { height: 240px; width: 100%; z-index: 1; }
 
     .content { padding: 15px; }
 
@@ -257,7 +257,7 @@
   <div class="app-container">
     <header>
       <h1>GB Drive</h1>
-      <p id="app-tagline">InDrive-Style Bidding & Cargo Network</p>
+      <p id="app-tagline">InDrive Official Style Platform (GB)</p>
       <div class="top-controls">
         <button class="top-btn" onclick="toggleLanguage()" id="lang-btn">English</button>
         <button id="logout-btn" class="top-btn hidden">Logout</button>
@@ -287,19 +287,19 @@
       </div>
     </div>
 
-    <!-- SAFETY & VERIFIED PROFILE SETUP -->
+    <!-- PROFILE SETUP SECTION -->
     <div id="profile-setup-section" class="content hidden">
-      <h2 style="text-align: center; margin-bottom: 10px;">InDrive-Style Verification</h2>
+      <h2 style="text-align: center; margin-bottom: 10px;">InDrive Verification & Profile</h2>
       <form id="profile-setup-form">
         <div class="form-group">
           <label>Account Type</label>
           <select id="setup-role" onchange="toggleDriverSetupFields()">
-            <option value="passenger">Passenger / Customer</option>
-            <option value="driver">Driver / Partner</option>
+            <option value="passenger">Passenger / Client</option>
+            <option value="driver">Driver / Courier / Partner</option>
           </select>
         </div>
         <div class="form-group">
-          <label>Full Name (CNIC Name)</label>
+          <label>Full Name</label>
           <input type="text" id="setup-name" placeholder="Full Name as on CNIC" required>
         </div>
         <div class="form-group">
@@ -311,21 +311,18 @@
           <input type="text" id="setup-phone" placeholder="03001234567" required>
         </div>
         <div class="form-group">
-          <label>Emergency Contact Phone</label>
+          <label>Emergency Contact</label>
           <input type="text" id="setup-emergency" placeholder="Emergency Relative Number" required>
         </div>
 
         <div id="driver-setup-fields" class="hidden">
           <div class="form-group">
-            <label>Driving License Number</label>
-            <input type="text" id="setup-license" placeholder="License Number">
-          </div>
-          <div class="form-group">
-            <label>Vehicle / Service Category</label>
+            <label>Service Category</label>
             <select id="setup-vehicle-type">
-              <option value="City Ride">City Ride (Car / Taxi)</option>
+              <option value="City Rides">City Rides (Local)</option>
               <option value="Intercity">Intercity Travel (Long Route)</option>
-              <option value="Freight & Cargo">Freight & Cargo Delivery (Mini-Truck)</option>
+              <option value="Courier">Courier Delivery (Packages up to 20kg)</option>
+              <option value="Freight">Freight & Cargo Delivery (Trucks)</option>
               <option value="Jeep 4x4">4x4 Jeep (Mountain Expedition)</option>
             </select>
           </div>
@@ -348,7 +345,7 @@
         </div>
 
         <button class="btn btn-danger" onclick="triggerSOSAlert()" style="font-size: 0.85rem; padding: 8px; margin-bottom: 10px;">
-          🚨 EMERGENCY SOS ALERT (Share Live Location)
+          🚨 EMERGENCY SOS ALERT
         </button>
 
         <button class="gps-btn" onclick="getCurrentGPSLocation()">
@@ -356,55 +353,56 @@
         </button>
 
         <div id="nearby-info" class="nearby-count hidden">
-          🚕 <span id="driver-count">0</span> Verified Drivers Online Nearby
+          🚗 <span id="driver-count">0</span> Verified Partners Online Nearby
         </div>
       </div>
 
-      <!-- MAP CONTAINER -->
+      <!-- LEAFLET MAP CONTAINER -->
       <div id="map"></div>
 
       <div class="content">
-        <!-- PASSENGER DASHBOARD (INDRIVE STYLE BOOKING & BIDDING) -->
+        <!-- PASSENGER DASHBOARD (INDRIVE OFFICIAL SERVICES) -->
         <div id="passenger-section" class="hidden">
           <div id="fare-badge" class="fare-calculator-badge hidden">
-            <div>📏 Distance: <strong id="calc-distance">0 km</strong></div>
-            <div>⛽ Recommended InDrive Fare: <strong id="calc-fare" style="color: #059669; font-size: 1.1rem;">0 PKR</strong></div>
+            <div>📏 Route Distance: <strong id="calc-distance">0 km</strong></div>
+            <div>💰 Suggested InDrive Fare: <strong id="calc-fare" style="color: #059669; font-size: 1.1rem;">0 PKR</strong></div>
           </div>
           
           <form id="ride-form" autocomplete="off">
             <div class="form-group">
-              <label>Service Mode</label>
-              <select id="ride-service-type" onchange="calculateFuelFare()">
-                <option value="City Ride">City Ride (Local Commute)</option>
-                <option value="Intercity">Intercity Travel (Gilgit to Skardu / Hunza)</option>
-                <option value="Freight & Cargo">Freight & Cargo (Parcel / Heavy Goods)</option>
-                <option value="Jeep 4x4">4x4 Jeep (Deosai / Fairy Meadows)</option>
+              <label>Select InDrive Service</label>
+              <select id="ride-service-type" onchange="calculateInDriveFare()">
+                <option value="City Rides">City Rides (Everyday Local Commute)</option>
+                <option value="Intercity">Intercity (City-to-City Travel)</option>
+                <option value="Courier">Courier (Door-to-door Package Delivery up to 20kg)</option>
+                <option value="Freight">Freight (Truck / Cargo Transport over 20kg)</option>
+                <option value="Jeep 4x4">4x4 Jeep (Deosai / Skardu Expedition)</option>
               </select>
             </div>
 
             <div class="form-group">
-              <label>Pickup Location</label>
-              <input type="text" id="pickup" placeholder="GPS or type starting point..." oninput="searchLocation('pickup')" required>
+              <label>Pickup Location / Address</label>
+              <input type="text" id="pickup" placeholder="GPS or type pickup location..." oninput="searchLocation('pickup')" required>
               <div id="pickup-suggestions" class="suggestions-box hidden"></div>
             </div>
 
             <div class="form-group">
-              <label>Dropoff Destination</label>
-              <input type="text" id="dropoff" placeholder="Type destination city or place..." oninput="searchLocation('dropoff')" required>
+              <label>Dropoff Destination / Address</label>
+              <input type="text" id="dropoff" placeholder="Type destination address..." oninput="searchLocation('dropoff')" required>
               <div id="dropoff-suggestions" class="suggestions-box hidden"></div>
             </div>
 
             <div class="form-group">
-              <label>Your Proposed Fare (Name Your Price - PKR)</label>
+              <label>Name Your Fare (Propose Your Price - PKR)</label>
               <input type="number" id="fare" placeholder="Enter what you want to pay" required>
             </div>
-            <button type="submit" class="btn">Propose Fare & Find Drivers</button>
+            <button type="submit" class="btn">Offer Fare & Request Service</button>
           </form>
 
           <div id="passenger-ride-status" style="margin-top: 15px;"></div>
         </div>
 
-        <!-- DRIVER DASHBOARD -->
+        <!-- DRIVER / PARTNER DASHBOARD -->
         <div id="driver-section" class="hidden">
           <div class="driver-dashboard-header">
             <div>Status: <strong id="driver-online-text" style="color: #10b981;">ONLINE</strong></div>
@@ -412,17 +410,18 @@
           </div>
 
           <div class="fare-calculator-badge" style="background: #eff6ff; border-color: #2563eb; color: #1e40af;">
-            💰 Driver Wallet & Earnings: <strong id="driver-daily-earnings" style="font-size: 1.1rem;">0 PKR</strong>
+            💰 Partner Earnings Wallet: <strong id="driver-daily-earnings" style="font-size: 1.1rem;">0 PKR</strong>
           </div>
 
-          <h3>Available Passenger Requests (Bidding)</h3>
+          <h3>Incoming Client Requests & Bidding</h3>
           <div id="rides-list" style="margin-top: 10px;"></div>
         </div>
       </div>
     </div>
   </div>
 
-  <script src="https://api.mapbox.com/mapbox-gl-js/v2.15.0/mapbox-gl.js"></script>
+  <!-- Leaflet JS -->
+  <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
 
   <!-- FIREBASE SDKs -->
   <script type="module">
@@ -455,27 +454,24 @@
       currentLanguage = currentLanguage === 'ur' ? 'en' : 'ur';
       document.getElementById('lang-btn').innerText = currentLanguage === 'ur' ? 'English' : 'اردو';
       if (currentLanguage === 'en') {
-        document.getElementById('app-tagline').innerText = 'InDrive-Style Bidding & Cargo Network';
+        document.getElementById('app-tagline').innerText = 'InDrive Official Style Platform (GB)';
       } else {
-        document.getElementById('app-tagline').innerText = 'ان ڈرائیو طرز کی بڈنگ اور کارگو نیٹ ورک';
+        document.getElementById('app-tagline').innerText = 'ان ڈرائیو طرز کا آفیشل پلیٹ فارم (گلگت بلتستان)';
       }
     };
 
-    mapboxgl.accessToken = 'pk.eyJ1IjoibXJrhaW43NzUiLCJhIjoiY212MTdqbnY4MDI5eXpzc2JmMW9iZmptbyJ9.-oubT8UYwpjhgXHwE-NXWw';
     let map = null;
     let userMarker = null;
     let userCoords = null;
-    let routeDistanceKm = 0;
+    let routeDistanceKm = 15.0;
     let searchDebounce = null;
 
-    function initMapbox() {
+    function initLeafletMap() {
       if (map) return;
-      map = new mapboxgl.Map({
-        container: 'map',
-        style: 'mapbox://styles/mapbox/streets-v12',
-        center: [74.8726, 35.8039], // Gilgit-Baltistan Central Region
-        zoom: 8
-      });
+      map = L.map('map').setView([35.8039, 74.8726], 8);
+      L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+        attribution: '© OpenStreetMap contributors'
+      }).addTo(map);
     }
 
     window.getCurrentGPSLocation = function() {
@@ -483,14 +479,12 @@
         navigator.geolocation.getCurrentPosition((pos) => {
           const lat = pos.coords.latitude;
           const lng = pos.coords.longitude;
-          userCoords = [lng, lat];
+          userCoords = [lat, lng];
 
-          if (userMarker) userMarker.remove();
-          userMarker = new mapboxgl.Marker({ color: '#2563eb' })
-            .setLngLat(userCoords)
-            .addTo(map);
+          if (userMarker) map.removeLayer(userMarker);
+          userMarker = L.marker([lat, lng]).addTo(map).bindPopup("Your Location").openPopup();
 
-          map.flyTo({ center: userCoords, zoom: 12 });
+          map.setView([lat, lng], 13);
           document.getElementById('pickup').value = `Current GPS Location (${lat.toFixed(4)}, ${lng.toFixed(4)})`;
 
           if (currentUserProfile && currentUserProfile.role === 'driver') {
@@ -507,7 +501,7 @@
         name: currentUserProfile.name,
         lat,
         lng,
-        vehicleType: currentUserProfile.vehicleType || 'City Ride',
+        serviceType: currentUserProfile.vehicleType || 'City Rides',
         updatedAt: Date.now()
       });
     }
@@ -521,14 +515,11 @@
           Object.values(data).forEach(d => {
             count++;
             if (!driverMarkers[d.driverId]) {
-              const el = document.createElement('div');
-              el.innerHTML = '🚗';
-              el.style.fontSize = '20px';
-              driverMarkers[d.driverId] = new mapboxgl.Marker(el)
-                .setLngLat([d.lng, d.lat])
-                .addTo(map);
+              driverMarkers[d.driverId] = L.marker([d.lat, d.lng])
+                .addTo(map)
+                .bindPopup(`🚗 ${d.name} (${d.serviceType})`);
             } else {
-              driverMarkers[d.driverId].setLngLat([d.lng, d.lat]);
+              driverMarkers[d.driverId].setLatLng([d.lat, d.lng]);
             }
           });
         }
@@ -557,7 +548,7 @@
             div.onclick = () => {
               document.getElementById(type).value = item.display_name.split(',')[0];
               suggestionsBox.classList.add('hidden');
-              calculateDistanceDummy();
+              calculateInDriveFare();
             };
             suggestionsBox.appendChild(div);
           });
@@ -566,20 +557,16 @@
       }, 300);
     };
 
-    function calculateDistanceDummy() {
-      const mode = document.getElementById('ride-service-type').value;
-      routeDistanceKm = (mode === 'Intercity') ? 120.0 : 15.0;
-      window.calculateFuelFare();
-    }
-
-    window.calculateFuelFare = function() {
-      const mode = document.getElementById('ride-service-type').value;
+    window.calculateInDriveFare = function() {
+      const service = document.getElementById('ride-service-type').value;
       let ratePerKm = 50;
-      if (mode === 'Intercity') ratePerKm = 70;
-      else if (mode === 'Freight & Cargo') ratePerKm = 90;
-      else if (mode === 'Jeep 4x4') ratePerKm = 130;
+      if (service === 'Intercity') { ratePerKm = 70; routeDistanceKm = 100.0; }
+      else if (service === 'Courier') { ratePerKm = 60; routeDistanceKm = 10.0; }
+      else if (service === 'Freight') { ratePerKm = 110; routeDistanceKm = 50.0; }
+      else if (service === 'Jeep 4x4') { ratePerKm = 140; routeDistanceKm = 40.0; }
+      else { routeDistanceKm = 15.0; }
 
-      let calculatedFare = Math.round(300 + (routeDistanceKm * ratePerKm));
+      let calculatedFare = Math.round(250 + (routeDistanceKm * ratePerKm));
       document.getElementById('calc-distance').innerText = `${routeDistanceKm.toFixed(1)} km`;
       document.getElementById('calc-fare').innerText = `${calculatedFare} PKR`;
       document.getElementById('fare').value = calculatedFare;
@@ -589,7 +576,7 @@
     window.triggerSOSAlert = function() {
       if (!currentUserProfile) return;
       const emergencyNo = currentUserProfile.emergencyPhone || '03000000000';
-      const message = `EMERGENCY SOS ALERT! I am in danger during GB Drive Ride.`;
+      const message = `EMERGENCY SOS ALERT! I need immediate help during GB Drive service.`;
       window.open(`https://wa.me/${emergencyNo}?text=${encodeURIComponent(message)}`, '_blank');
     };
 
@@ -647,7 +634,7 @@
         phone: document.getElementById('setup-phone').value,
         emergencyPhone: document.getElementById('setup-emergency').value,
         role: document.getElementById('setup-role').value,
-        vehicleType: document.getElementById('setup-vehicle-type') ? document.getElementById('setup-vehicle-type').value : 'City Ride',
+        vehicleType: document.getElementById('setup-vehicle-type') ? document.getElementById('setup-vehicle-type').value : 'City Rides',
         isProfileComplete: true
       };
       await set(ref(db, `users/${currentUser.uid}`), profileData);
@@ -670,7 +657,7 @@
         document.getElementById('driver-section').classList.add('hidden');
         listenToNearbyDrivers();
       }
-      initMapbox();
+      initLeafletMap();
       getCurrentGPSLocation();
     }
 
@@ -682,41 +669,41 @@
       const otpCode = Math.floor(1000 + Math.random() * 9000);
 
       set(newRideRef, {
-        passengerId: currentUser.uid,
-        passengerName: currentUserProfile.name,
-        passengerPhone: currentUserProfile.phone,
+        clientId: currentUser.uid,
+        clientName: currentUserProfile.name,
+        clientPhone: currentUserProfile.phone,
         pickup: document.getElementById('pickup').value,
         dropoff: document.getElementById('dropoff').value,
         fare: Number(document.getElementById('fare').value),
-        serviceMode: document.getElementById('ride-service-type').value,
+        serviceType: document.getElementById('ride-service-type').value,
         otpCode,
         status: 'pending',
         createdAt: Date.now()
       }).then(() => {
-        alert('InDrive Bidding Request Posted Successfully!');
-        listenToMyRide(newRideRef.key);
+        alert('Request posted successfully! Waiting for partner bids...');
+        listenToMyRequest(newRideRef.key);
       });
     });
 
-    function listenToMyRide(rideId) {
+    function listenToMyRequest(rideId) {
       const rideRef = ref(db, `rides/${rideId}`);
       const statusDiv = document.getElementById('passenger-ride-status');
       onValue(rideRef, (snapshot) => {
         const ride = snapshot.val();
         if (!ride) return;
         if (ride.status === 'pending' && !ride.bids) {
-          statusDiv.innerHTML = `<div class="ride-card">⏳ Waiting for drivers to offer bids...</div>`;
+          statusDiv.innerHTML = `<div class="ride-card">⏳ Looking for partners & couriers...</div>`;
         } else if (ride.bids && ride.status === 'pending') {
-          let html = `<h4>Driver Bids Received:</h4>`;
+          let html = `<h4>Partner & Driver Bids Received:</h4>`;
           Object.keys(ride.bids).forEach(bidId => {
             const bid = ride.bids[bidId];
             html += `
               <div class="ride-card">
-                <div>Driver: <strong>⭐ 4.9 (142 Rides)</strong></div>
-                <div>Name & Vehicle: <strong>${bid.driverName} (${bid.vehicleType})</strong></div>
-                <div>Offered Bid Fare: <strong style="color: green;">PKR ${bid.amount}</strong></div>
+                <div>Partner: <strong>⭐ 4.9 (Verified)</strong></div>
+                <div>Name & Service: <strong>${bid.driverName} (${bid.vehicleType})</strong></div>
+                <div>Proposed Counter Bid: <strong style="color: green;">PKR ${bid.amount}</strong></div>
                 <div style="display:flex; gap:6px; margin-top:8px;">
-                  <button class="btn btn-accent" onclick="window.acceptBid('${rideId}', '${bid.driverName}', '${bid.driverPhone}', ${bid.amount})">Accept Driver Offer</button>
+                  <button class="btn btn-accent" onclick="window.acceptBid('${rideId}', '${bid.driverName}', '${bid.driverPhone}', ${bid.amount})">Accept Offer</button>
                 </div>
               </div>
             `;
@@ -725,9 +712,9 @@
         } else if (ride.status === 'accepted') {
           statusDiv.innerHTML = `
             <div class="ride-card" style="background: #d1fae5; border-color: #10b981;">
-              ✅ <strong>Driver Assigned!</strong><br>
-              Driver: ${ride.acceptedDriverName} (${ride.acceptedFare} PKR)<br>
-              🔐 <strong>Verification OTP: <span style="font-size: 1.2rem; color: #1e40af;">${ride.otpCode}</span></strong>
+              ✅ <strong>Offer Accepted!</strong><br>
+              Partner: ${ride.acceptedDriverName} (${ride.acceptedFare} PKR)<br>
+              🔐 <strong>Secure OTP Code: <span style="font-size: 1.2rem; color: #1e40af;">${ride.otpCode}</span></strong>
             </div>
             <div class="chat-container">
               <h5 style="margin-bottom:6px;">💬 In-App Live Chat</h5>
@@ -751,7 +738,7 @@
       const data = snapshot.val();
       ridesList.innerHTML = '';
       if (!data) {
-        ridesList.innerHTML = '<p style="color: #6b7280; font-size: 0.85rem;">No active passenger requests...</p>';
+        ridesList.innerHTML = '<p style="color: #6b7280; font-size: 0.85rem;">No active requests...</p>';
         return;
       }
       Object.keys(data).forEach(rideId => {
@@ -760,13 +747,13 @@
           const card = document.createElement('div');
           card.className = 'ride-card';
           card.innerHTML = `
-            <h4>Mode: ${ride.serviceMode}</h4>
-            <div class="ride-info">Passenger: <strong>${ride.passengerName}</strong></div>
+            <h4>Service: ${ride.serviceType}</h4>
+            <div class="ride-info">Client: <strong>${ride.clientName}</strong></div>
             <div class="ride-info">Route: <strong>${ride.pickup} ➔ ${ride.dropoff}</strong></div>
-            <div class="ride-info">Proposed Fare: <strong style="color: green;">PKR ${ride.fare}</strong></div>
+            <div class="ride-info">Client's Offered Fare: <strong style="color: green;">PKR ${ride.fare}</strong></div>
             <div class="bid-input-group">
               <input type="number" id="bid-price-${rideId}" placeholder="Your Counter Bid" value="${ride.fare}">
-              <button class="btn btn-accent" onclick="window.sendDriverBid('${rideId}')">Send Bid</button>
+              <button class="btn btn-accent" onclick="window.sendDriverBid('${rideId}')">Send Counter Bid</button>
             </div>
           `;
           ridesList.appendChild(card);
@@ -777,14 +764,14 @@
     window.sendDriverBid = function(rideId) {
       const price = document.getElementById(`bid-price-${rideId}`).value;
       const bidsRef = ref(db, `rides/${rideId}/bids`);
-      const newRideRef = push(bidsRef);
-      set(newRideRef, {
+      const newBidRef = push(bidsRef);
+      set(newBidRef, {
         driverId: currentUser.uid,
         driverName: currentUserProfile.name,
         driverPhone: currentUserProfile.phone,
-        vehicleType: currentUserProfile.vehicleType || 'City Ride',
+        vehicleType: currentUserProfile.vehicleType || 'City Rides',
         amount: Number(price)
-      }).then(() => alert('Counter bid submitted to passenger!'));
+      }).then(() => alert('Counter bid sent to client successfully!'));
     };
 
     window.acceptBid = function(rideId, driverName, driverPhone, fare) {
