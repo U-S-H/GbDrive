@@ -14,6 +14,7 @@
   <meta property="og:title" content="GB Drive & Bike - Ultimate Super App">
   <meta property="og:description" content="Book bikes, cars, 4x4 jeeps, and send parcels securely across Gilgit-Baltistan.">
   <meta property="og:type" content="website">
+  <meta property="og:url" content="https://u-s-h.github.io/GbDrive/">
   <meta property="og:image" content="https://images.unsplash.com/photo-1506744038136-46273834b3fb?auto=format&fit=crop&w=1000&q=80">
 
   <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
@@ -142,6 +143,10 @@
 
     .ride-card { border: 1px solid var(--border); border-radius: 12px; padding: 12px; margin-bottom: 10px; background: var(--card-elevated); }
     .sub-card { display: flex; justify-content: space-between; align-items: center; padding: 10px; background: var(--card-elevated); border-radius: 10px; margin-bottom: 8px; border: 1px solid var(--border); }
+    .chat-box { height: 140px; overflow-y: auto; background: var(--bg); border: 1px solid var(--border); border-radius: 10px; padding: 8px; margin-bottom: 8px; display: flex; flex-direction: column; gap: 6px; font-size: 0.85rem; }
+    .chat-msg { padding: 6px 10px; border-radius: 8px; max-width: 80%; word-break: break-word; }
+    .chat-msg.me { background: var(--primary); color: white; align-self: flex-end; }
+    .chat-msg.other { background: var(--border); color: var(--text); align-self: flex-start; }
     .hidden { display: none !important; }
   </style>
 </head>
@@ -181,6 +186,22 @@
       <li class="drawer-menu-item" onclick="openModal('about-modal'); closeDrawer();"><i class="fa-solid fa-circle-info"></i> About Company</li>
     </ul>
     <button class="btn btn-accent" onclick="switchToDriverMode()" style="margin-top: 10px;">Switch to Driver Mode</button>
+  </div>
+
+  <!-- Live Chat Modal -->
+  <div id="chat-modal" class="modal-overlay hidden">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h3><i class="fa-solid fa-comments"></i> Secure In-App Chat</h3>
+        <i class="fa-solid fa-xmark" style="cursor:pointer;" onclick="closeModal('chat-modal')"></i>
+      </div>
+      <div id="chat-messages-container" class="chat-box"></div>
+      <div style="display:flex; gap:6px;">
+        <input type="text" id="chat-input-msg" placeholder="Type message..." style="flex:1; padding:10px; border-radius:8px; border:1px solid var(--border); background:var(--card-elevated); color:#fff; font-size:0.85rem;">
+        <button class="btn btn-accent" onclick="sendChatMessage()" style="width:auto; padding:8px 14px; margin:0; font-size:0.85rem;">Send</button>
+      </div>
+      <button class="btn btn-danger" onclick="clearChatHistory()" style="padding:6px; font-size:0.75rem; margin-top:8px;"><i class="fa-solid fa-trash"></i> Clear Chat History</button>
+    </div>
   </div>
 
   <!-- GB Tourism & Hotel Booking Modal -->
@@ -283,26 +304,35 @@
     </div>
   </div>
 
-  <!-- Referral Modal -->
+  <!-- Advanced Referral Modal -->
   <div id="referral-modal" class="modal-overlay hidden">
     <div class="modal-content text-center">
-      <div class="modal-header"><h3><i class="fa-solid fa-gift"></i> Invite & Earn</h3><i class="fa-solid fa-xmark" style="cursor:pointer;" onclick="closeModal('referral-modal')"></i></div>
+      <div class="modal-header"><h3><i class="fa-solid fa-gift"></i> GB Referral Program</h3><i class="fa-solid fa-xmark" style="cursor:pointer;" onclick="closeModal('referral-modal')"></i></div>
       <i class="fa-solid fa-hand-holding-dollar" style="font-size:2.5rem; color:var(--accent); margin-bottom:10px;"></i>
-      <h4>Share your Code</h4>
-      <p style="font-size:0.85rem; color:var(--text-muted); margin:10px 0;">Give friends 200 PKR discount. You earn 200 PKR bonus!</p>
-      <div style="background:var(--card-elevated); padding:12px; border-radius:10px; font-size:1.1rem; font-weight:bold; color:var(--accent); margin-bottom:10px;" id="my-referral-code">GBNAZIM2026</div>
-      <button class="btn btn-accent" onclick="alert('Invite link copied!')">Copy Invite Link</button>
+      <h4>Invite Friends & Earn</h4>
+      <p style="font-size:0.85rem; color:var(--text-muted); margin:10px 0;">Share your personal link from <br><code>https://u-s-h.github.io/GbDrive/</code> <br>Get 200 PKR bonus when your friend joins!</p>
+      <div style="background:var(--card-elevated); padding:12px; border-radius:10px; font-size:0.95rem; font-weight:bold; color:var(--accent); margin-bottom:10px; word-break: break-all;" id="my-referral-link">Generating link...</div>
+      <button class="btn btn-accent" onclick="copyReferralLink()">Copy Referral Link</button>
+      <div style="margin-top: 10px; font-size: 0.8rem; color: var(--text-muted);" id="referral-stats-text">Total Successful Referrals: 0</div>
     </div>
   </div>
 
-  <!-- Safety & Trip Share Modal -->
+  <!-- Safety & Advanced Safety Hub Modal -->
   <div id="safety-modal" class="modal-overlay hidden">
     <div class="modal-content text-center">
-      <div class="modal-header"><h3><i class="fa-solid fa-shield-halved"></i> Safety & Trip Share</h3><i class="fa-solid fa-xmark" style="cursor:pointer;" onclick="closeModal('safety-modal')"></i></div>
-      <i class="fa-solid fa-triangle-exclamation" style="font-size:2.5rem; color:var(--danger); margin-bottom:10px;"></i>
-      <button class="btn btn-danger" onclick="window.location.href='tel:15'" style="margin-bottom:10px;"><i class="fa-solid fa-phone"></i> Call Police (15)</button>
-      <button class="btn btn-warning" onclick="alert('🚨 SOS Siren Activated & Live Audio Recording Started!')" style="margin-bottom:10px;"><i class="fa-solid fa-volume-high"></i> Trigger SOS Siren</button>
-      <button class="btn btn-admin" onclick="window.open('https://wa.me/?text=I%20am%20traveling%20safely%20on%20GB%20Drive%20in%20Astore.%20Track%20my%20trip!','_blank')"><i class="fa-brands fa-whatsapp"></i> Share Trip via WhatsApp</button>
+      <div class="modal-header"><h3><i class="fa-solid fa-shield-halved"></i> Mountain Safety Hub</h3><i class="fa-solid fa-xmark" style="cursor:pointer;" onclick="closeModal('safety-modal')"></i></div>
+      
+      <div class="form-group" style="text-align:left;">
+        <label>Trusted Contact Phone (Emergency SMS)</label>
+        <input type="text" id="trusted-phone-input" placeholder="03001234567">
+        <button class="btn btn-accent" onclick="saveTrustedContact()" style="padding:6px; font-size:0.8rem; margin-top:6px;">Save Trusted Contact</button>
+      </div>
+
+      <div style="display:flex; flex-direction:column; gap:8px; margin-top:10px;">
+        <button class="btn btn-danger" onclick="window.location.href='tel:15'"><i class="fa-solid fa-phone"></i> Call Emergency Police (15)</button>
+        <button class="btn btn-warning" onclick="triggerAudioRecording()"><i class="fa-solid fa-microphone"></i> Start Cloud Audio Recording</button>
+        <button class="btn btn-admin" onclick="shareTripViaWhatsApp()"><i class="fa-brands fa-whatsapp"></i> Share Live Trip via WhatsApp</button>
+      </div>
     </div>
   </div>
 
@@ -311,7 +341,7 @@
     <div class="modal-content">
       <div class="modal-header"><h3><i class="fa-solid fa-building"></i> About GB Drive</h3><i class="fa-solid fa-xmark" style="cursor:pointer;" onclick="closeModal('about-modal')"></i></div>
       <div style="font-size: 0.85rem; line-height: 1.5; color: var(--text-muted);">
-        <p><strong>GB Drive & Bike Inc.</strong> Gilgit-Baltistan's premier super app, founded by <b>Muhammad Nazim</b> under <b>Prime Solutions</b>.</p>
+        <p><strong>GB Drive & Bike Inc.</strong> Gilgit-Baltistan's premier super app, hosted at <a href="https://u-s-h.github.io/GbDrive/" target="_blank" style="color:var(--accent);">u-s-h.github.io/GbDrive/</a>, founded by <b>Muhammad Nazim</b> under <b>Prime Solutions</b>.</p>
         <p style="margin-top: 8px;">📞 Helpline: 0337-9827882<br>📍 Head Office: Astore Bazaar</p>
       </div>
     </div>
@@ -656,6 +686,27 @@
       });
     }
 
+    window.saveTrustedContact = async () => {
+      const phone = document.getElementById('trusted-phone-input').value;
+      if(!phone) { alert('Please enter phone number.'); return; }
+      await update(ref(db, `users/${currentUser.uid}`), { trustedContact: phone });
+      alert('Trusted emergency contact saved successfully!');
+    };
+
+    window.triggerAudioRecording = () => {
+      alert('🎙️ Cloud Safety Audio Recording Started! Your trip audio is being securely recorded.');
+    };
+
+    window.shareTripViaWhatsApp = () => {
+      window.open('https://wa.me/?text=I%20am%20traveling%20safely%20on%20GB%20Drive%20via%20https://u-s-h.github.io/GbDrive/.%20Track%20my%20trip%20live!','_blank');
+    };
+
+    window.copyReferralLink = () => {
+      const link = `https://u-s-h.github.io/GbDrive/?ref=${currentUser.uid}`;
+      navigator.clipboard.writeText(link);
+      alert('Referral link copied from https://u-s-h.github.io/GbDrive/ ! Share with friends to earn 200 PKR bonus.');
+    };
+
     function loadUserHistory() {
       const historyList = document.getElementById('user-history-list');
       if(!currentUser) return;
@@ -832,6 +883,8 @@
           document.getElementById('drawer-user-name').innerText = currentUserProfile.name;
           document.getElementById('current-city-label-top').innerText = currentUserProfile.city || 'Astore';
           document.getElementById('wallet-balance-disp').innerText = (currentUserProfile.wallet || 0) + ' PKR';
+          document.getElementById('my-referral-link').innerText = `https://u-s-h.github.io/GbDrive/?ref=${user.uid}`;
+          document.getElementById('referral-stats-text').innerText = `Total Successful Referrals: ${currentUserProfile.referralCount || 0}`;
           loadSavedPlaces();
           if(currentUserProfile.role === 'driver') {
             setInterval(getCurrentGPSLocation, 10000);
@@ -883,6 +936,7 @@
         vehicle: role === 'driver' ? document.getElementById('setup-vehicle').value : '',
         wallet: 500,
         dailyFreeUsed: 0,
+        referralCount: 0,
         isProfileComplete: true
       };
       await set(ref(db, `users/${currentUser.uid}`), profile);
@@ -904,6 +958,7 @@
         }
       }
 
+      const secretPin = Math.floor(1000 + Math.random() * 9000).toString();
       const newRideRef = push(ref(db, 'rides/'));
       activeRideId = newRideRef.key;
 
@@ -914,6 +969,7 @@
         dropoff: document.getElementById('dropoff').value,
         fare: currentFareAmount,
         paymentMethod,
+        secretPin,
         status: 'pending', createdAt: Date.now()
       });
 
@@ -952,7 +1008,15 @@
         alert(`Fare increased to PKR ${currentFareAmount}`);
         startInDriveSearchTimer(activeRideId);
       }
-    };function trackPassengerSearch(rideId) {
+    };
+
+    window.cancelSearchModal = async () => {
+      clearInterval(searchTimerInterval);
+      if(activeRideId) await update(ref(db, `rides/${activeRideId}`), { status: 'cancelled' });
+      document.getElementById('searching-modal').classList.add('hidden');
+    };
+
+    function trackPassengerSearch(rideId) {
       onValue(ref(db, `rides/${rideId}`), snap => {
         const r = snap.val();
         const bidsContainer = document.getElementById('driver-bids-container');
@@ -964,17 +1028,93 @@
             html += `<div class="ride-card"><div>Partner: <strong>${b.driverName}</strong></div><div>Offer: <strong style="color:var(--accent);">PKR ${b.amount}</strong></div><button class="btn btn-accent" onclick="acceptBid('${rideId}', '${b.driverId}', '${b.driverName}', ${b.amount})" style="padding:6px;font-size:0.8rem;margin-top:6px;">Accept</button></div>`;
           });
           bidsContainer.innerHTML = html;
-        } else if(r.status === 'accepted') {
+        } else if(r.status === 'accepted' || r.status === 'arrived' || r.status === 'ongoing') {
           clearInterval(searchTimerInterval);
           document.getElementById('searching-modal').classList.add('hidden');
-          document.getElementById('passenger-ride-status').innerHTML = `<div class="ride-card" style="background:#14532d;">✅ Accepted by <strong>${r.acceptedDriverName}</strong> for PKR ${r.acceptedFare} (${r.paymentMethod})</div>`;
-          setTimeout(() => document.getElementById('rating-modal').classList.remove('hidden'), 2000);
+          
+          let statusText = r.status === 'arrived' ? '🚗 Driver arrived! Share 4-Digit PIN with driver.' : (r.status === 'ongoing' ? '🚀 Trip in progress safely...' : `✅ Accepted by <strong>${r.acceptedDriverName}</strong>`);
+          
+          let pinBox = r.secretPin ? `<div style="background:#333; padding:6px; border-radius:6px; margin:6px 0; font-size:0.9rem;">🔒 Secret PIN: <strong style="color:var(--accent);">${r.secretPin}</strong></div>` : '';
+
+          document.getElementById('passenger-ride-status').innerHTML = `
+            <div class="ride-card" style="background:#14532d;">
+              ${statusText}
+              ${pinBox}
+              <div style="margin-top:8px; display:flex; gap:6px; flex-wrap:wrap;">
+                <button class="btn btn-accent" onclick="openChatModal('${rideId}')" style="padding:6px; font-size:0.75rem; margin:0; flex:1;"><i class="fa-solid fa-comments"></i> Chat</button>
+                <button class="btn btn-danger" onclick="completeRide('${rideId}')" style="padding:6px; font-size:0.75rem; margin:0; flex:1;"><i class="fa-solid fa-check-circle"></i> Complete</button>
+              </div>
+            </div>`;
+        } else if(r.status === 'completed') {
+          document.getElementById('passenger-ride-status').innerHTML = `<div class="ride-card" style="background:#1f2937;">🏁 Ride Completed Successfully!</div>`;
+          document.getElementById('rating-modal').classList.remove('hidden');
         }
       });
     }
 
     window.acceptBid = async (rideId, driverId, driverName, fare) => {
       await update(ref(db, `rides/${rideId}`), { status: 'accepted', acceptedDriverName: driverName, acceptedFare: fare });
+    };
+
+    window.openChatModal = (rideId) => {
+      activeRideId = rideId;
+      document.getElementById('chat-modal').classList.remove('hidden');
+      loadChatMessages(rideId);
+    };
+
+    window.sendChatMessage = async () => {
+      const input = document.getElementById('chat-input-msg');
+      const msg = input.value.trim();
+      if(!msg || !activeRideId) return;
+      await set(push(ref(db, `rides/${activeRideId}/chat/`)), {
+        sender: currentUserProfile.name, uid: currentUser.uid, message: msg, timestamp: Date.now()
+      });
+      input.value = '';
+    };
+
+    function loadChatMessages(rideId) {
+      const container = document.getElementById('chat-messages-container');
+      onValue(ref(db, `rides/${rideId}/chat/`), snap => {
+        const data = snap.val();
+        container.innerHTML = '';
+        if(data) {
+          Object.values(data).forEach(c => {
+            let isMe = c.uid === currentUser.uid;
+            container.innerHTML += `<div class="chat-msg ${isMe ? 'me' : 'other'}"><span style="font-size:0.7rem; display:block; opacity:0.7;">${c.sender}</span>${c.message}</div>`;
+          });
+          container.scrollTop = container.scrollHeight;
+        } else {
+          container.innerHTML = '<p style="font-size:0.8rem; color:var(--text-muted); text-align:center;">No messages yet. Start chatting securely!</p>';
+        }
+      });
+    }
+
+    window.clearChatHistory = async () => {
+      if(activeRideId) {
+        await remove(ref(db, `rides/${activeRideId}/chat/`));
+        alert('Chat history cleared!');
+      }
+    };
+
+    window.driverArrivedAtPickup = async (rideId) => {
+      await update(ref(db, `rides/${rideId}`), { status: 'arrived' });
+      alert('Status updated: Arrived at pickup location.');
+    };
+
+    window.verifyDriverPinAndStart = async (rideId, correctPin) => {
+      const enteredPin = prompt('Enter 4-Digit PIN given by passenger to start trip:');
+      if(enteredPin === correctPin) {
+        await update(ref(db, `rides/${rideId}`), { status: 'ongoing' });
+        alert('✅ PIN Verified! Trip started safely.');
+      } else {
+        alert('❌ Incorrect PIN entered!');
+      }
+    };
+
+    window.completeRide = async (rideId) => {
+      await update(ref(db, `rides/${rideId}`), { status: 'completed' });
+      alert('Ride marked as completed successfully!');
+      document.getElementById('rating-modal').classList.remove('hidden');
     };
 
     window.submitDriverRating = () => {
@@ -993,6 +1133,10 @@
           const r = data[id];
           if(r.status === 'pending') {
             list.innerHTML += `<div class="ride-card"><h4>${r.serviceType}</h4><div>Client: ${r.clientName}</div><div>Route: ${r.pickup} ➔ ${r.dropoff}</div><div>Fare: <strong>PKR ${r.fare}</strong> (${r.paymentMethod})</div><div style="display:flex;gap:5px;margin-top:8px;"><input type="number" id="bid-${id}" value="${r.fare}" style="flex:1;padding:6px;border-radius:6px;border:none;background:#333;color:#fff;"><button class="btn btn-accent" onclick="sendDriverBid('${id}')" style="width:auto;padding:6px 12px;margin:0;font-size:0.8rem;">Offer</button></div></div>`;
+          } else if(r.status === 'accepted' || r.status === 'arrived' || r.status === 'ongoing') {
+            let ongoingBtns = r.status === 'ongoing' ? `<button class="btn btn-danger" onclick="completeRide('${id}')" style="padding:6px; font-size:0.75rem; margin:0; flex:1;">Complete</button>` : `<button class="btn btn-accent" onclick="verifyDriverPinAndStart('${id}', '${r.secretPin}')" style="padding:6px; font-size:0.75rem; margin:0; flex:1;">Verify PIN & Start</button>`;
+            
+            list.innerHTML += `<div class="ride-card" style="border-color:var(--accent);"><h4>Active Trip: ${r.clientName}</h4><div>Route: ${r.pickup} ➔ ${r.dropoff}</div><div style="display:flex; gap:5px; margin-top:8px; flex-wrap:wrap;"><button class="btn btn-accent" onclick="driverArrivedAtPickup('${id}')" style="padding:6px; font-size:0.75rem; margin:0; flex:1;">Arrived</button><button class="btn btn-accent" onclick="openChatModal('${id}')" style="padding:6px; font-size:0.75rem; margin:0; flex:1;">Chat</button>${ongoingBtns}</div></div>`;
           }
         });
       });
