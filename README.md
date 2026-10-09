@@ -4,20 +4,19 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
   <!-- SEO & GOOGLE META TAGS -->
-  <title>GB Drive - Gilgit-Baltistan Live Taxi & Ride Sharing App</title>
-  <meta name="description" content="GB Drive - Gilgit-Baltistan's #1 intelligent ride-sharing platform. Book rides with live map tracking, fair fuel-based pricing, bidding system, and complete safety verification.">
-  <meta name="keywords" content="GB Drive, Gilgit Taxi, Skardu Ride Sharing, Hunza Taxi Service, InDrive Gilgit, Uber Pakistan, Ride Bidding App">
+  <title>GB Drive - Gilgit-Baltistan Ultimate Ride Sharing & Taxi App</title>
+  <meta name="description" content="GB Drive - Gilgit-Baltistan's #1 intelligent ride-sharing platform. Book 4x4 jeeps, local taxis, bikes with live GPS tracking, bidding system, and complete safety verification.">
+  <meta name="keywords" content="GB Drive, Gilgit Taxi, Skardu Ride Sharing, Hunza 4x4 Jeep, InDrive Gilgit, Uber Pakistan, Yango Pakistan">
   <meta name="author" content="GB Drive Network">
   <meta name="robots" content="index, follow">
 
   <!-- OPEN GRAPH / SOCIAL MEDIA META TAGS -->
-  <meta property="og:title" content="GB Drive - Smart Taxi & Ride Sharing">
-  <meta property="og:description" content="Book affordable rides in Gilgit-Baltistan with live GPS tracking and fair bidding prices.">
+  <meta property="og:title" content="GB Drive - Smart Taxi & 4x4 Rental">
+  <meta property="og:description" content="Book affordable rides and 4x4 jeeps in Gilgit-Baltistan with live GPS tracking and fair bidding prices.">
   <meta property="og:type" content="website">
-  <meta property="og:image" content="https://images.unsplash.com/photo-1449965408869-eaa3f722e40d?auto=format&fit=crop&w=1200&q=80">
-  
-  <!-- Leaflet CSS for Maps -->
-  <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
+
+  <!-- Mapbox GL JS CSS -->
+  <link href="https://api.mapbox.com/mapbox-gl-js/v2.15.0/mapbox-gl.css" rel="stylesheet" />
   
   <style>
     :root {
@@ -65,15 +64,8 @@
       position: relative;
     }
 
-    header h1 {
-      font-size: 1.5rem;
-      font-weight: 700;
-    }
-
-    header p {
-      font-size: 0.8rem;
-      opacity: 0.9;
-    }
+    header h1 { font-size: 1.5rem; font-weight: 700; }
+    header p { font-size: 0.8rem; opacity: 0.9; }
 
     .top-controls {
       position: absolute;
@@ -94,24 +86,25 @@
       font-weight: 600;
     }
 
-    #map {
-      height: 220px;
+    #map { height: 230px; width: 100%; }
+
+    .content { padding: 15px; }
+
+    .gps-btn {
+      background: #3b82f6;
+      color: white;
+      border: none;
+      padding: 8px;
+      border-radius: 8px;
       width: 100%;
-      z-index: 1;
-    }
-
-    .content {
-      padding: 15px;
-    }
-
-    .map-instruction {
-      font-size: 0.8rem;
-      color: #6b7280;
-      text-align: center;
+      font-size: 0.85rem;
+      font-weight: 600;
+      cursor: pointer;
       margin-bottom: 10px;
-      background: #eff6ff;
-      padding: 6px;
-      border-radius: 6px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 6px;
     }
 
     .fare-calculator-badge {
@@ -167,9 +160,7 @@
       border-bottom: 1px solid #f3f4f6;
     }
 
-    .suggestion-item:hover {
-      background: #eff6ff;
-    }
+    .suggestion-item:hover { background: #eff6ff; }
 
     .btn {
       width: 100%;
@@ -181,7 +172,6 @@
       font-size: 1rem;
       font-weight: 600;
       cursor: pointer;
-      transition: background 0.2s;
       margin-top: 5px;
     }
 
@@ -198,37 +188,11 @@
       background: #fafafa;
     }
 
-    .ride-card h4 {
-      color: var(--primary);
-      margin-bottom: 6px;
-      font-size: 0.95rem;
-    }
+    .ride-card h4 { color: var(--primary); margin-bottom: 6px; font-size: 0.95rem; }
+    .ride-info { font-size: 0.85rem; margin-bottom: 4px; }
 
-    .ride-info {
-      font-size: 0.85rem;
-      margin-bottom: 4px;
-    }
-
-    .bid-input-group {
-      display: flex;
-      gap: 6px;
-      margin-top: 8px;
-    }
-
-    .bid-input-group input {
-      flex: 1;
-      padding: 8px;
-      border: 1px solid #d1d5db;
-      border-radius: 6px;
-    }
-
-    .auth-toggle {
-      text-align: center;
-      margin-top: 12px;
-      font-size: 0.85rem;
-      color: var(--primary);
-      cursor: pointer;
-    }
+    .bid-input-group { display: flex; gap: 6px; margin-top: 8px; }
+    .bid-input-group input { flex: 1; padding: 8px; border: 1px solid #d1d5db; border-radius: 6px; }
 
     .user-badge {
       background: #e0e7ff;
@@ -250,6 +214,17 @@
       padding: 10px;
       border-radius: 8px;
       margin-bottom: 12px;
+    }
+
+    .nearby-count {
+      background: #d1fae5;
+      color: #065f46;
+      padding: 6px 10px;
+      border-radius: 6px;
+      font-size: 0.8rem;
+      font-weight: 600;
+      margin-bottom: 10px;
+      text-align: center;
     }
 
     .chat-container {
@@ -276,15 +251,8 @@
       max-width: 80%;
     }
 
-    .msg-mine {
-      background: #dbeafe;
-      margin-left: auto;
-      text-align: right;
-    }
-
-    .msg-other {
-      background: #f3f4f6;
-    }
+    .msg-mine { background: #dbeafe; margin-left: auto; text-align: right; }
+    .msg-other { background: #f3f4f6; }
 
     .hidden { display: none !important; }
   </style>
@@ -294,14 +262,14 @@
   <div class="app-container">
     <header>
       <h1>GB Drive</h1>
-      <p id="app-tagline">Intelligent Smart Taxi Network</p>
+      <p id="app-tagline">Gilgit-Baltistan Ultimate Taxi & 4x4 Network</p>
       <div class="top-controls">
         <button class="top-btn" onclick="toggleLanguage()" id="lang-btn">English</button>
         <button id="logout-btn" class="top-btn hidden">Logout</button>
       </div>
     </header>
 
-    <!-- STEP 1: AUTHENTICATION -->
+    <!-- AUTH SECTION -->
     <div id="auth-section" class="content">
       <h2 id="auth-title" style="text-align: center; margin-bottom: 15px;">Login to GB Drive</h2>
       <button id="google-login-btn" class="btn btn-google">Continue with Google</button>
@@ -324,9 +292,9 @@
       </div>
     </div>
 
-    <!-- STEP 2: SAFETY PROFILE FORM -->
+    <!-- SAFETY PROFILE SETUP -->
     <div id="profile-setup-section" class="content hidden">
-      <h2 style="text-align: center; margin-bottom: 10px;">Safety Verification</h2>
+      <h2 style="text-align: center; margin-bottom: 10px;">Safety Verification & Profile</h2>
       <form id="profile-setup-form">
         <div class="form-group">
           <label>Account Type</label>
@@ -358,11 +326,12 @@
             <input type="text" id="setup-license" placeholder="License Number">
           </div>
           <div class="form-group">
-            <label>Vehicle Type</label>
+            <label>Vehicle / Tour Category</label>
             <select id="setup-vehicle-type">
               <option value="Car">Car / Taxi (Petrol)</option>
               <option value="Bike">Bike / Rickshaw</option>
               <option value="Van">Van / Hiace (Diesel)</option>
+              <option value="Jeep 4x4">4x4 Jeep (Deosai / Fairy Meadows)</option>
             </select>
           </div>
           <div class="form-group">
@@ -375,7 +344,7 @@
       </form>
     </div>
 
-    <!-- STEP 3: MAIN APP DASHBOARD -->
+    <!-- MAIN APP DASHBOARD -->
     <div id="app-section" class="hidden">
       <div class="content" style="padding-bottom: 0;">
         <div class="user-badge">
@@ -383,67 +352,58 @@
           <strong id="user-display-role" style="text-transform: uppercase;">PASSENGER</strong>
         </div>
 
-        <!-- EMERGENCY SOS BUTTON -->
         <button class="btn btn-danger" onclick="triggerSOSAlert()" style="font-size: 0.85rem; padding: 8px; margin-bottom: 10px;">
           🚨 EMERGENCY SOS ALERT (Share Live Location)
         </button>
+
+        <button class="gps-btn" onclick="getCurrentGPSLocation()">
+          🎯 Turn On Live GPS Location
+        </button>
+
+        <div id="nearby-info" class="nearby-count hidden">
+          🚕 <span id="driver-count">0</span> Drivers Online Nearby You
+        </div>
       </div>
 
-      <!-- Map Container -->
+      <!-- MAP CONTAINER -->
       <div id="map"></div>
 
       <div class="content">
         <!-- PASSENGER DASHBOARD -->
         <div id="passenger-section" class="hidden">
-          <div class="map-instruction" id="map-instr-text">
-            📍 Location type karein ya map par click karke route choose karein.
-          </div>
-
           <div id="fare-badge" class="fare-calculator-badge hidden">
             <div>📏 Distance: <strong id="calc-distance">0 km</strong></div>
-            <div>⛽ Fuel Fare Estimate: <strong id="calc-fare" style="color: #059669; font-size: 1.1rem;">0 PKR</strong></div>
+            <div>⛽ Fuel / Tour Fare Estimate: <strong id="calc-fare" style="color: #059669; font-size: 1.1rem;">0 PKR</strong></div>
           </div>
           
           <form id="ride-form" autocomplete="off">
             <div class="form-group">
-              <label id="lbl-vehicle-type">Vehicle Type</label>
+              <label>Vehicle / Tour Category</label>
               <select id="ride-vehicle-type" onchange="calculateFuelFare()">
-                <option value="Car">Car / Taxi (Petrol ~ PKR 48/km)</option>
+                <option value="Car">Car / Taxi (~ PKR 48/km)</option>
                 <option value="Bike">Bike / Rickshaw (~ PKR 16/km)</option>
-                <option value="Van">Van / Hiace (Diesel ~ PKR 58/km)</option>
+                <option value="Van">Van / Hiace (~ PKR 58/km)</option>
+                <option value="Jeep 4x4">4x4 Jeep / Tour Package (Special Rates)</option>
               </select>
             </div>
 
             <div class="form-group">
-              <label id="lbl-pickup">Pickup Location</label>
-              <input type="text" id="pickup" placeholder="Type location e.g. Gilgit Bazaar" oninput="searchLocation('pickup')" required>
+              <label>Pickup Location</label>
+              <input type="text" id="pickup" placeholder="GPS or type location..." oninput="searchLocation('pickup')" required>
               <div id="pickup-suggestions" class="suggestions-box hidden"></div>
             </div>
 
-            <!-- OPTIONAL VIA-STOP -->
             <div class="form-group">
-              <label>Via Stop (Optional)</label>
-              <input type="text" id="via-stop" placeholder="Optional stop on the way" oninput="searchLocation('via-stop')">
-              <div id="via-stop-suggestions" class="suggestions-box hidden"></div>
-            </div>
-
-            <div class="form-group">
-              <label id="lbl-dropoff">Dropoff Location</label>
-              <input type="text" id="dropoff" placeholder="Type location e.g. Skardu Airport" oninput="searchLocation('dropoff')" required>
+              <label>Dropoff / Tour Destination</label>
+              <input type="text" id="dropoff" placeholder="Type destination e.g. Skardu / Hunza..." oninput="searchLocation('dropoff')" required>
               <div id="dropoff-suggestions" class="suggestions-box hidden"></div>
             </div>
 
-            <!-- SCHEDULE FOR LATER -->
             <div class="form-group">
-              <label>Schedule Date & Time (Optional)</label>
-              <input type="datetime-local" id="schedule-time">
-            </div>
-
-            <div class="form-group">
-              <label id="lbl-fare">Your Offer Fare (PKR)</label>
+              <label>Your Offer Fare (PKR)</label>
               <input type="number" id="fare" placeholder="Recommended fare auto-applies" required>
             </div>
-            <button type="submit" class="btn" id="btn-offer-ride">Offer Ride Now</button>
+            <button type="submit" class="btn">Offer Ride Now</button>
           </form>
 
           <div id="passenger-ride-status" style="margin-top: 15px;"></div>
@@ -457,36 +417,24 @@
           </div>
 
           <div class="fare-calculator-badge" style="background: #eff6ff; border-color: #2563eb; color: #1e40af;">
-            💰 Driver Wallet Earnings: <strong id="driver-daily-earnings" style="font-size: 1.1rem;">0 PKR</strong>
+            💰 Easypaisa/JazzCash Wallet Balance: <strong id="driver-daily-earnings" style="font-size: 1.1rem;">0 PKR</strong>
           </div>
 
-          <h3>Available Live Rides</h3>
-          <div id="rides-list" style="margin-top: 10px;">
-            <p style="color: #6b7280; font-size: 0.85rem;">Searching for passenger requests...</p>
-          </div>
+          <h3>Available Live Rides Nearby</h3>
+          <div id="rides-list" style="margin-top: 10px;"></div>
         </div>
       </div>
     </div>
   </div>
 
-  <!-- Leaflet JS -->
-  <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+  <script src="https://api.mapbox.com/mapbox-gl-js/v2.15.0/mapbox-gl.js"></script>
 
   <!-- FIREBASE SDKs -->
   <script type="module">
     import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
-    import { 
-      getAuth, 
-      signInWithEmailAndPassword, 
-      createUserWithEmailAndPassword, 
-      GoogleAuthProvider, 
-      signInWithPopup, 
-      onAuthStateChanged, 
-      signOut 
-    } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-auth.js";
+    import { getAuth, signInWithEmailAndPassword, createUserWithEmailAndPassword, GoogleAuthProvider, signInWithPopup, onAuthStateChanged, signOut } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-auth.js";
     import { getDatabase, ref, push, set, onValue, update, get } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-database.js";
 
-    // Firebase Config
     const firebaseConfig = {
       apiKey: "AIzaSyBe5Q5jXpx3UvrHC9WOky9UWeDnP9SPfZI",
       authDomain: "verbose-6c008.firebaseapp.com",
@@ -504,101 +452,197 @@
 
     let currentUser = null;
     let currentUserProfile = null;
-    let isSignUpMode = false;
     let isDriverOnline = true;
     let currentLanguage = 'ur';
+    let driverMarkers = {};
 
-    // LANGUAGE SWITCHER ENGINE
     window.toggleLanguage = function() {
       currentLanguage = currentLanguage === 'ur' ? 'en' : 'ur';
       document.getElementById('lang-btn').innerText = currentLanguage === 'ur' ? 'English' : 'اردو';
-      
       if (currentLanguage === 'en') {
-        document.getElementById('app-tagline').innerText = 'Intelligent Smart Taxi Network';
-        document.getElementById('lbl-email').innerText = 'Email Address';
-        document.getElementById('lbl-password').innerText = 'Password';
-        document.getElementById('btn-offer-ride').innerText = 'Offer Ride Now';
-        document.getElementById('map-instr-text').innerText = '📍 Type location or click on map to choose route.';
+        document.getElementById('app-tagline').innerText = 'Gilgit-Baltistan Ultimate Taxi & 4x4 Network';
       } else {
-        document.getElementById('app-tagline').innerText = 'گلگت بلتستان اسمارٹ ٹیکسی سروس';
-        document.getElementById('lbl-email').innerText = 'ای میل ایڈریس';
-        document.getElementById('lbl-password').innerText = 'پاس ورڈ';
-        document.getElementById('btn-offer-ride').innerText = 'رائڈ آفر کریں';
-        document.getElementById('map-instr-text').innerText = '📍 لوکیشن ٹائپ کریں یا میپ پر کلک کریں۔';
+        document.getElementById('app-tagline').innerText = 'گلگت بلتستان اسمارٹ ٹیکسی اور 4x4 نیٹ ورک';
       }
     };
 
-    // AUTH TOGGLE
-    window.toggleAuthMode = function() {
-      isSignUpMode = !isSignUpMode;
-      document.getElementById('auth-title').innerText = isSignUpMode ? 'Register on GB Drive' : 'Login to GB Drive';
-      document.getElementById('auth-submit-btn').innerText = isSignUpMode ? 'Sign Up' : 'Login';
-      document.getElementById('auth-toggle-btn').innerText = isSignUpMode ? 'Already have an account? Login' : "Don't have an account? Sign Up";
-    };
+    mapboxgl.accessToken = 'pk.eyJ1IjoibWFwYm94IiwiYSI6ImNpejY4M29iazA2Z2gycXA4N2pmbDZmangifQ.-g_vE53SD2WrJ6tFX7QHmA';
+    let map = null;
+    let userMarker = null;
+    let userCoords = null;
+    let routeDistanceKm = 0;
+    let searchDebounce = null;
 
-    window.toggleDriverSetupFields = function() {
-      const role = document.getElementById('setup-role').value;
-      if (role === 'driver') {
-        document.getElementById('driver-setup-fields').classList.remove('hidden');
-      } else {
-        document.getElementById('driver-setup-fields').classList.add('hidden');
+    function initMapbox() {
+      if (map) return;
+      map = new mapboxgl.Map({
+        container: 'map',
+        style: 'mapbox://styles/mapbox/streets-v12',
+        center: [74.3144, 35.9208],
+        zoom: 12
+      });
+    }
+
+    window.getCurrentGPSLocation = function() {
+      if (navigator.geolocation) {
+        navigator.geolocation.getCurrentPosition((pos) => {
+          const lat = pos.coords.latitude;
+          const lng = pos.coords.longitude;
+          userCoords = [lng, lat];
+
+          if (userMarker) userMarker.remove();
+          userMarker = new mapboxgl.Marker({ color: '#2563eb' })
+            .setLngLat(userCoords)
+            .addTo(map);
+
+          map.flyTo({ center: userCoords, zoom: 14 });
+          document.getElementById('pickup').value = `Current GPS Location (${lat.toFixed(4)}, ${lng.toFixed(4)})`;
+
+          if (currentUserProfile && currentUserProfile.role === 'driver') {
+            updateDriverGPSLocation(lat, lng);
+          }
+        });
       }
     };
 
-    // AUTH ACTIONS
-    const authForm = document.getElementById('auth-form');
-    authForm.addEventListener('submit', async (e) => {
-      e.preventDefault();
-      const email = document.getElementById('auth-email').value;
-      const password = document.getElementById('auth-password').value;
+    function updateDriverGPSLocation(lat, lng) {
+      if (!isDriverOnline) return;
+      set(ref(db, `active_drivers/${currentUser.uid}`), {
+        driverId: currentUser.uid,
+        name: currentUserProfile.name,
+        lat,
+        lng,
+        vehicleType: currentUserProfile.vehicleType || 'Taxi',
+        updatedAt: Date.now()
+      });
+    }
 
-      try {
-        if (isSignUpMode) {
-          await createUserWithEmailAndPassword(auth, email, password);
-        } else {
-          await signInWithEmailAndPassword(auth, email, password);
+    function listenToNearbyDrivers() {
+      const driversRef = ref(db, 'active_drivers');
+      onValue(driversRef, (snapshot) => {
+        const data = snapshot.val();
+        let count = 0;
+        if (data) {
+          Object.values(data).forEach(d => {
+            count++;
+            if (!driverMarkers[d.driverId]) {
+              const el = document.createElement('div');
+              el.innerHTML = '🚕';
+              el.style.fontSize = '20px';
+              driverMarkers[d.driverId] = new mapboxgl.Marker(el)
+                .setLngLat([d.lng, d.lat])
+                .addTo(map);
+            } else {
+              driverMarkers[d.driverId].setLngLat([d.lng, d.lat]);
+            }
+          });
         }
-      } catch (err) { alert('Auth Error: ' + err.message); }
-    });
+        document.getElementById('driver-count').innerText = count;
+        document.getElementById('nearby-info').classList.remove('hidden');
+      });
+    }
 
-    document.getElementById('google-login-btn').addEventListener('click', async () => {
-      try { await signInWithPopup(auth, googleProvider); } catch (err) { alert('Google Login Error: ' + err.message); }
-    });
+    window.searchLocation = function(type) {
+      const query = document.getElementById(type).value;
+      const suggestionsBox = document.getElementById(`${type}-suggestions`);
+      if (query.length < 3) { suggestionsBox.classList.add('hidden'); return; }
 
-    document.getElementById('logout-btn').addEventListener('click', () => signOut(auth));
+      clearTimeout(searchDebounce);
+      searchDebounce = setTimeout(async () => {
+        try {
+          const res = await fetch(`https://nominatim.openstreetmap.org/search?format=json&q=${encodeURIComponent(query)}&countrycodes=pk&limit=5`);
+          const data = await res.json();
+          suggestionsBox.innerHTML = '';
+          if (data.length === 0) { suggestionsBox.classList.add('hidden'); return; }
+
+          data.forEach(item => {
+            const div = document.createElement('div');
+            div.className = 'suggestion-item';
+            div.innerText = item.display_name;
+            div.onclick = () => {
+              document.getElementById(type).value = item.display_name.split(',')[0];
+              suggestionsBox.classList.add('hidden');
+              calculateDistanceDummy();
+            };
+            suggestionsBox.appendChild(div);
+          });
+          suggestionsBox.classList.remove('hidden');
+        } catch (e) { console.error(e); }
+      }, 300);
+    };
+
+    function calculateDistanceDummy() {
+      routeDistanceKm = 15.0; // Estimated route distance for demo
+      window.calculateFuelFare();
+    }
+
+    window.calculateFuelFare = function() {
+      const vehicleType = document.getElementById('ride-vehicle-type').value;
+      let ratePerKm = 48;
+      if (vehicleType === 'Bike') ratePerKm = 16;
+      else if (vehicleType === 'Van') ratePerKm = 58;
+      else if (vehicleType === 'Jeep 4x4') ratePerKm = 120; // Special 4x4 rate
+
+      let calculatedFare = Math.round(200 + (routeDistanceKm * ratePerKm));
+      document.getElementById('calc-distance').innerText = `${routeDistanceKm.toFixed(1)} km`;
+      document.getElementById('calc-fare').innerText = `${calculatedFare} PKR`;
+      document.getElementById('fare').value = calculatedFare;
+      document.getElementById('fare-badge').classList.remove('hidden');
+    };
+
+    window.triggerSOSAlert = function() {
+      if (!currentUserProfile) return;
+      const emergencyNo = currentUserProfile.emergencyPhone || '03000000000';
+      const message = `EMERGENCY SOS ALERT! I am in danger during GB Drive Ride.`;
+      window.open(`https://wa.me/${emergencyNo}?text=${encodeURIComponent(message)}`, '_blank');
+    };
+
+    window.toggleDriverOnlineStatus = function() {
+      isDriverOnline = !isDriverOnline;
+      const statusText = document.getElementById('driver-online-text');
+      const toggleBtn = document.getElementById('driver-toggle-btn');
+      if (isDriverOnline) {
+        statusText.innerText = 'ONLINE'; statusText.style.color = '#10b981';
+        toggleBtn.innerText = 'Go Offline'; toggleBtn.className = 'btn btn-warning';
+      } else {
+        statusText.innerText = 'OFFLINE'; statusText.style.color = '#ef4444';
+        toggleBtn.innerText = 'Go Online'; toggleBtn.className = 'btn btn-accent';
+      }
+    };
 
     onAuthStateChanged(auth, async (user) => {
       if (user) {
         currentUser = user;
         document.getElementById('logout-btn').classList.remove('hidden');
         document.getElementById('auth-section').classList.add('hidden');
-
         const snapshot = await get(ref(db, `users/${user.uid}`));
         const profile = snapshot.val();
-
         if (profile && profile.isProfileComplete) {
           currentUserProfile = profile;
           loadMainAppDashboard();
         } else {
           document.getElementById('profile-setup-section').classList.remove('hidden');
-          document.getElementById('app-section').classList.add('hidden');
-          document.getElementById('setup-name').value = user.displayName || '';
         }
       } else {
-        currentUser = null;
-        currentUserProfile = null;
         document.getElementById('auth-section').classList.remove('hidden');
-        document.getElementById('profile-setup-section').classList.add('hidden');
-        document.getElementById('app-section').classList.add('hidden');
-        document.getElementById('logout-btn').classList.add('hidden');
       }
     });
 
-    // PROFILE SETUP
+    const authForm = document.getElementById('auth-form');
+    authForm.addEventListener('submit', async (e) => {
+      e.preventDefault();
+      await signInWithEmailAndPassword(auth, document.getElementById('auth-email').value, document.getElementById('auth-password').value);
+    });
+
+    document.getElementById('google-login-btn').addEventListener('click', async () => {
+      await signInWithPopup(auth, googleProvider);
+    });
+
+    document.getElementById('logout-btn').addEventListener('click', () => signOut(auth));
+
     const profileSetupForm = document.getElementById('profile-setup-form');
     profileSetupForm.addEventListener('submit', async (e) => {
       e.preventDefault();
-      const role = document.getElementById('setup-role').value;
       const profileData = {
         uid: currentUser.uid,
         email: currentUser.email,
@@ -606,17 +650,10 @@
         cnic: document.getElementById('setup-cnic').value,
         phone: document.getElementById('setup-phone').value,
         emergencyPhone: document.getElementById('setup-emergency').value,
-        role,
-        isProfileComplete: true,
-        updatedAt: Date.now()
+        role: document.getElementById('setup-role').value,
+        vehicleType: document.getElementById('setup-vehicle-type') ? document.getElementById('setup-vehicle-type').value : 'Car',
+        isProfileComplete: true
       };
-
-      if (role === 'driver') {
-        profileData.licenseNum = document.getElementById('setup-license').value;
-        profileData.vehicleType = document.getElementById('setup-vehicle-type').value;
-        profileData.vehicleNum = document.getElementById('setup-vehicle-num').value;
-      }
-
       await set(ref(db, `users/${currentUser.uid}`), profileData);
       currentUserProfile = profileData;
       document.getElementById('profile-setup-section').classList.add('hidden');
@@ -631,194 +668,37 @@
       if (currentUserProfile.role === 'driver') {
         document.getElementById('driver-section').classList.remove('hidden');
         document.getElementById('passenger-section').classList.add('hidden');
-        loadDriverEarnings();
+        loadDriverWallet();
       } else {
         document.getElementById('passenger-section').classList.remove('hidden');
         document.getElementById('driver-section').classList.add('hidden');
+        listenToNearbyDrivers();
       }
-
-      initMap();
+      initMapbox();
+      getCurrentGPSLocation();
     }
 
-    // EMERGENCY SOS TRIGGER
-    window.triggerSOSAlert = function() {
-      if (!currentUserProfile) return;
-      const emergencyNo = currentUserProfile.emergencyPhone || '03000000000';
-      const mapLink = pickupMarker ? `https://maps.google.com/?q=${pickupMarker.getLatLng().lat},${pickupMarker.getLatLng().lng}` : 'Live Location';
-      const message = `EMERGENCY SOS ALERT! I am in danger during GB Drive Ride. Track Location: ${mapLink}`;
-      
-      window.open(`https://wa.me/${emergencyNo}?text=${encodeURIComponent(message)}`, '_blank');
-    };
-
-    // DRIVER ONLINE/OFFLINE TOGGLE
-    window.toggleDriverOnlineStatus = function() {
-      isDriverOnline = !isDriverOnline;
-      const statusText = document.getElementById('driver-online-text');
-      const toggleBtn = document.getElementById('driver-toggle-btn');
-
-      if (isDriverOnline) {
-        statusText.innerText = 'ONLINE';
-        statusText.style.color = '#10b981';
-        toggleBtn.innerText = 'Go Offline';
-        toggleBtn.className = 'btn btn-warning';
-      } else {
-        statusText.innerText = 'OFFLINE';
-        statusText.style.color = '#ef4444';
-        toggleBtn.innerText = 'Go Online';
-        toggleBtn.className = 'btn btn-accent';
-      }
-    };
-
-    // LEAFLET MAP & AUTOCOMPLETE
-    let map = null;
-    let pickupMarker = null;
-    let dropoffMarker = null;
-    let routePolyline = null;
-    let clickState = 'pickup';
-    let routeDistanceKm = 0;
-    let searchDebounce = null;
-
-    function initMap() {
-      if (map) return;
-
-      map = L.map('map').setView([35.9208, 74.3144], 12);
-      L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', { attribution: '© OpenStreetMap' }).addTo(map);
-
-      map.on('click', (e) => {
-        const { lat, lng } = e.latlng;
-        if (clickState === 'pickup') {
-          setPickupPoint(lat, lng, `Pin (${lat.toFixed(4)}, ${lng.toFixed(4)})`);
-          clickState = 'dropoff';
-        } else {
-          setDropoffPoint(lat, lng, `Pin (${lat.toFixed(4)}, ${lng.toFixed(4)})`);
-          clickState = 'pickup';
-        }
-      });
-    }
-
-    window.searchLocation = function(type) {
-      const query = document.getElementById(type).value;
-      const suggestionsBox = document.getElementById(`${type}-suggestions`);
-
-      if (query.length < 3) {
-        suggestionsBox.classList.add('hidden');
-        return;
-      }
-
-      clearTimeout(searchDebounce);
-      searchDebounce = setTimeout(async () => {
-        try {
-          const res = await fetch(`https://nominatim.openstreetmap.org/search?format=json&q=${encodeURIComponent(query)}&countrycodes=pk&limit=5`);
-          const data = await res.json();
-
-          suggestionsBox.innerHTML = '';
-          if (data.length === 0) {
-            suggestionsBox.classList.add('hidden');
-            return;
-          }
-
-          data.forEach(item => {
-            const div = document.createElement('div');
-            div.className = 'suggestion-item';
-            div.innerText = item.display_name;
-            div.onclick = () => {
-              document.getElementById(type).value = item.display_name.split(',')[0];
-              suggestionsBox.classList.add('hidden');
-
-              const lat = parseFloat(item.lat);
-              const lon = parseFloat(item.lon);
-
-              if (type === 'pickup') setPickupPoint(lat, lon, item.display_name);
-              else setDropoffPoint(lat, lon, item.display_name);
-            };
-            suggestionsBox.appendChild(div);
-          });
-
-          suggestionsBox.classList.remove('hidden');
-        } catch (e) { console.error(e); }
-      }, 300);
-    };
-
-    function setPickupPoint(lat, lng, label) {
-      if (pickupMarker) map.removeLayer(pickupMarker);
-      pickupMarker = L.marker([lat, lng]).addTo(map).bindPopup('Pickup: ' + label).openPopup();
-      document.getElementById('pickup').value = label;
-      map.setView([lat, lng], 13);
-      updateRoute();
-    }
-
-    function setDropoffPoint(lat, lng, label) {
-      if (dropoffMarker) map.removeLayer(dropoffMarker);
-      dropoffMarker = L.marker([lat, lng]).addTo(map).bindPopup('Dropoff: ' + label).openPopup();
-      document.getElementById('dropoff').value = label;
-      updateRoute();
-    }
-
-    function updateRoute() {
-      if (pickupMarker && dropoffMarker) {
-        if (routePolyline) map.removeLayer(routePolyline);
-
-        const pLat = pickupMarker.getLatLng();
-        const dLat = dropoffMarker.getLatLng();
-
-        routePolyline = L.polyline([pLat, dLat], { color: '#2563eb', weight: 4 }).addTo(map);
-        map.fitBounds(routePolyline.getBounds(), { padding: [20, 20] });
-
-        const distanceMeters = pLat.distanceTo(dLat);
-        routeDistanceKm = (distanceMeters / 1000) * 1.35;
-        calculateFuelFare();
-      }
-    }
-
-    window.calculateFuelFare = function() {
-      if (!routeDistanceKm) return;
-
-      const vehicleType = document.getElementById('ride-vehicle-type').value;
-      let ratePerKm = 48;
-
-      if (vehicleType === 'Bike') ratePerKm = 16;
-      else if (vehicleType === 'Van') ratePerKm = 58;
-
-      let calculatedFare = Math.round(120 + (routeDistanceKm * ratePerKm));
-
-      document.getElementById('calc-distance').innerText = `${routeDistanceKm.toFixed(1)} km`;
-      document.getElementById('calc-fare').innerText = `${calculatedFare} PKR`;
-      document.getElementById('fare').value = calculatedFare;
-      document.getElementById('fare-badge').classList.remove('hidden');
-    };
-
-    // RIDE BROADCAST WITH OTP GENERATION & SCHEDULING
+    // RIDE BROADCAST & BIDDING
     const rideForm = document.getElementById('ride-form');
     rideForm.addEventListener('submit', (e) => {
       e.preventDefault();
-
-      const pickup = document.getElementById('pickup').value;
-      const viaStop = document.getElementById('via-stop').value || 'None';
-      const dropoff = document.getElementById('dropoff').value;
-      const scheduleTime = document.getElementById('schedule-time').value || 'Immediate';
-      const fare = document.getElementById('fare').value;
-      const vehicleType = document.getElementById('ride-vehicle-type').value;
-      const otpCode = Math.floor(1000 + Math.random() * 9000);
-
       const ridesRef = ref(db, 'rides/');
       const newRideRef = push(ridesRef);
+      const otpCode = Math.floor(1000 + Math.random() * 9000);
 
       set(newRideRef, {
         passengerId: currentUser.uid,
         passengerName: currentUserProfile.name,
         passengerPhone: currentUserProfile.phone,
-        pickup,
-        viaStop,
-        dropoff,
-        scheduleTime,
-        distanceKm: routeDistanceKm.toFixed(1),
-        vehicleType,
-        fare: Number(fare),
+        pickup: document.getElementById('pickup').value,
+        dropoff: document.getElementById('dropoff').value,
+        fare: Number(document.getElementById('fare').value),
+        vehicleType: document.getElementById('ride-vehicle-type').value,
         otpCode,
         status: 'pending',
         createdAt: Date.now()
       }).then(() => {
-        alert('Ride Request Posted!');
+        alert('Ride Broadcasted Successfully!');
         listenToMyRide(newRideRef.key);
       });
     });
@@ -826,13 +706,11 @@
     function listenToMyRide(rideId) {
       const rideRef = ref(db, `rides/${rideId}`);
       const statusDiv = document.getElementById('passenger-ride-status');
-
       onValue(rideRef, (snapshot) => {
         const ride = snapshot.val();
         if (!ride) return;
-
         if (ride.status === 'pending' && !ride.bids) {
-          statusDiv.innerHTML = `<div class="ride-card">⏳ Broadcasted! Waiting for drivers...</div>`;
+          statusDiv.innerHTML = `<div class="ride-card">⏳ Waiting for drivers to bid...</div>`;
         } else if (ride.bids && ride.status === 'pending') {
           let html = `<h4>Drivers Offered Bids:</h4>`;
           Object.keys(ride.bids).forEach(bidId => {
@@ -853,12 +731,10 @@
             <div class="ride-card" style="background: #d1fae5; border-color: #10b981;">
               ✅ <strong>Ride Accepted!</strong><br>
               Driver: ${ride.acceptedDriverName} (${ride.acceptedFare} PKR)<br>
-              🔐 <strong>Your Start Ride OTP: <span style="font-size: 1.2rem; color: #1e40af;">${ride.otpCode}</span></strong>
+              🔐 <strong>Start OTP: <span style="font-size: 1.2rem; color: #1e40af;">${ride.otpCode}</span></strong>
             </div>
-
-            <!-- IN-APP CHAT -->
             <div class="chat-container">
-              <h5 style="margin-bottom:6px;">💬 In-App Live Chat with Driver</h5>
+              <h5 style="margin-bottom:6px;">💬 In-App Live Chat</h5>
               <div class="chat-messages" id="chat-box-${rideId}"></div>
               <div style="display:flex; gap:6px;">
                 <input type="text" id="chat-input-${rideId}" placeholder="Type message..." style="flex:1; padding:6px; border-radius:6px; border:1px solid #ccc;">
@@ -871,7 +747,6 @@
       });
     }
 
-    // DRIVER RIDES MONITOR & OTP VERIFY
     const ridesList = document.getElementById('rides-list');
     const ridesRef = ref(db, 'rides/');
 
@@ -879,54 +754,25 @@
       if (!currentUserProfile || currentUserProfile.role !== 'driver' || !isDriverOnline) return;
       const data = snapshot.val();
       ridesList.innerHTML = '';
-
       if (!data) {
         ridesList.innerHTML = '<p style="color: #6b7280; font-size: 0.85rem;">No active ride requests...</p>';
         return;
       }
-
       Object.keys(data).forEach(rideId => {
         const ride = data[rideId];
         if (ride.status === 'pending') {
           const card = document.createElement('div');
           card.className = 'ride-card';
           card.innerHTML = `
-            <h4>Passenger: ${ride.passengerName} (${ride.vehicleType || 'Taxi'})</h4>
+            <h4>Passenger: ${ride.passengerName} (${ride.vehicleType})</h4>
             <div class="ride-info">Route: <strong>${ride.pickup} ➔ ${ride.dropoff}</strong></div>
-            <div class="ride-info">Via Stop: <strong>${ride.viaStop || 'None'}</strong></div>
-            <div class="ride-info">Schedule: <strong>${ride.scheduleTime || 'Immediate'}</strong></div>
-            <div class="ride-info">Distance: <strong>${ride.distanceKm || 'N/A'} km</strong></div>
-            <div class="ride-info">Offered Fuel Fare: <strong style="color: green;">PKR ${ride.fare}</strong></div>
+            <div class="ride-info">Offered Fare: <strong style="color: green;">PKR ${ride.fare}</strong></div>
             <div class="bid-input-group">
               <input type="number" id="bid-price-${rideId}" placeholder="Counter Fare" value="${ride.fare}">
               <button class="btn btn-accent" onclick="window.sendDriverBid('${rideId}')">Send Bid</button>
             </div>
           `;
           ridesList.appendChild(card);
-        } else if (ride.status === 'accepted' && ride.acceptedDriverPhone === currentUserProfile.phone) {
-          const card = document.createElement('div');
-          card.className = 'ride-card';
-          card.style.background = '#eff6ff';
-          card.innerHTML = `
-            <h4>Active Trip with ${ride.passengerName}</h4>
-            <div class="ride-info">Fare: <strong>PKR ${ride.acceptedFare}</strong></div>
-            <div class="bid-input-group">
-              <input type="number" id="verify-otp-${rideId}" placeholder="Enter Passenger 4-Digit OTP">
-              <button class="btn btn-accent" onclick="window.verifyRideOTP('${rideId}', ${ride.otpCode}, ${ride.acceptedFare})">Start & Complete Ride</button>
-            </div>
-
-            <!-- IN-APP CHAT FOR DRIVER -->
-            <div class="chat-container" style="margin-top:10px;">
-              <h5 style="margin-bottom:6px;">💬 Live Chat with Passenger</h5>
-              <div class="chat-messages" id="chat-box-${rideId}"></div>
-              <div style="display:flex; gap:6px;">
-                <input type="text" id="chat-input-${rideId}" placeholder="Type message..." style="flex:1; padding:6px; border-radius:6px; border:1px solid #ccc;">
-                <button class="btn btn-accent" onclick="window.sendChatMessage('${rideId}')" style="width:auto; padding:6px 12px; margin:0;">Send</button>
-              </div>
-            </div>
-          `;
-          ridesList.appendChild(card);
-          listenToChatMessages(rideId);
         }
       });
     });
@@ -935,14 +781,13 @@
       const price = document.getElementById(`bid-price-${rideId}`).value;
       const bidsRef = ref(db, `rides/${rideId}/bids`);
       const newBidRef = push(bidsRef);
-
       set(newBidRef, {
         driverId: currentUser.uid,
         driverName: currentUserProfile.name,
         driverPhone: currentUserProfile.phone,
         vehicleType: currentUserProfile.vehicleType || 'Taxi',
         amount: Number(price)
-      }).then(() => alert('Bid offer sent to passenger!'));
+      }).then(() => alert('Bid offer sent!'));
     };
 
     window.acceptBid = function(rideId, driverName, driverPhone, fare) {
@@ -955,43 +800,21 @@
       });
     };
 
-    window.verifyRideOTP = function(rideId, correctOtp, fareAmount) {
-      const enteredOtp = document.getElementById(`verify-otp-${rideId}`).value;
-      if (Number(enteredOtp) === correctOtp) {
-        const rideRef = ref(db, `rides/${rideId}`);
-        update(rideRef, { status: 'completed' }).then(() => {
-          alert('Ride Completed Successfully!');
-          const earningsRef = ref(db, `earnings/${currentUser.uid}/${Date.now()}`);
-          set(earningsRef, { amount: fareAmount });
-          loadDriverEarnings();
-        });
-      } else {
-        alert('Incorrect OTP Code!');
-      }
-    };
-
-    function loadDriverEarnings() {
-      const earningsRef = ref(db, `earnings/${currentUser.uid}`);
-      onValue(earningsRef, (snapshot) => {
+    function loadDriverWallet() {
+      const walletRef = ref(db, `wallet/${currentUser.uid}`);
+      onValue(walletRef, (snapshot) => {
         const data = snapshot.val();
-        let total = 0;
-        if (data) {
-          Object.values(data).forEach(item => total += item.amount);
-        }
+        let total = data ? data.balance || 0 : 5000; // Starting wallet balance demo
         document.getElementById('driver-daily-earnings').innerText = `${total} PKR`;
       });
     }
 
-    // IN-APP CHAT LOGIC
     window.sendChatMessage = function(rideId) {
       const input = document.getElementById(`chat-input-${rideId}`);
       const text = input.value.trim();
       if (!text) return;
-
       const chatRef = ref(db, `chats/${rideId}`);
-      const newMsgRef = push(chatRef);
-
-      set(newMsgRef, {
+      push(chatRef, {
         senderId: currentUser.uid,
         senderName: currentUserProfile.name,
         text,
@@ -1005,7 +828,6 @@
         const data = snapshot.val();
         const chatBox = document.getElementById(`chat-box-${rideId}`);
         if (!chatBox) return;
-
         chatBox.innerHTML = '';
         if (data) {
           Object.values(data).forEach(msg => {
