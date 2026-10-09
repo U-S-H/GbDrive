@@ -1,687 +1,349 @@
-<html lang="en">
+<html lang="ur" dir="ltr">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>IronGuard Cane Corso | Elite Italian Mastiffs</title>
-    <!-- Google Fonts -->
-    <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@600;700;900&family=Plus+Jakarta+Sans:wght@300;400;500;600&display=swap" rel="stylesheet">
-    <!-- FontAwesome Icons -->
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-    <style>
-        :root {
-            --primary: #c5a059;
-            --primary-dark: #a4823f;
-            --bg-dark: #121212;
-            --bg-card: #1a1a1a;
-            --bg-lighter: #222222;
-            --text-main: #e0e0e0;
-            --text-muted: #999999;
-            --white: #ffffff;
-            --transition: all 0.3s ease;
-        }
-
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-            scroll-behavior: smooth;
-        }
-
-        body {
-            font-family: 'Plus Jakarta Sans', sans-serif;
-            background-color: var(--bg-dark);
-            color: var(--text-main);
-            line-height: 1.6;
-            overflow-x: hidden;
-        }
-
-        h1, h2, h3, h4 {
-            font-family: 'Cinzel', serif;
-            letter-spacing: 1px;
-        }
-
-        a {
-            text-decoration: none;
-            color: inherit;
-        }
-
-        ul {
-            list-style: none;
-        }
-
-        .container {
-            max-width: 1200px;
-            margin: 0 auto;
-            padding: 0 20px;
-            width: 100%;
-        }
-
-        /* Header & Navigation */
-        header {
-            background-color: rgba(18, 18, 18, 0.95);
-            backdrop-filter: blur(10px);
-            border-bottom: 1px solid rgba(197, 160, 89, 0.2);
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            z-index: 1000;
-        }
-
-        .nav-container {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            height: 75px;
-        }
-
-        .logo {
-            font-family: 'Cinzel', serif;
-            font-size: 18px;
-            font-weight: 700;
-            color: var(--white);
-            display: flex;
-            align-items: center;
-            gap: 8px;
-            letter-spacing: 1px;
-        }
-
-        .logo span {
-            color: var(--primary);
-        }
-
-        .nav-links {
-            display: flex;
-            gap: 25px;
-            align-items: center;
-        }
-
-        .nav-links a {
-            font-weight: 500;
-            font-size: 13px;
-            text-transform: uppercase;
-            letter-spacing: 1px;
-            color: var(--text-main);
-            transition: var(--transition);
-        }
-
-        .nav-links a:hover {
-            color: var(--primary);
-        }
-
-        .btn {
-            background-color: var(--primary);
-            color: var(--bg-dark);
-            padding: 10px 22px;
-            border-radius: 4px;
-            font-weight: 600;
-            font-size: 12px;
-            text-transform: uppercase;
-            letter-spacing: 1px;
-            transition: var(--transition);
-            border: none;
-            cursor: pointer;
-            display: inline-block;
-            text-align: center;
-        }
-
-        .btn:hover {
-            background-color: var(--primary-dark);
-            transform: translateY(-2px);
-        }
-
-        .hamburger {
-            display: none;
-            cursor: pointer;
-            font-size: 24px;
-            color: var(--white);
-            background: none;
-            border: none;
-        }
-
-        /* Hero Section */
-        .hero {
-            padding: 140px 0 80px;
-            background: linear-gradient(rgba(18, 18, 18, 0.85), rgba(18, 18, 18, 0.95)), 
-                        url('https://images.unsplash.com/photo-1600804340584-c7db2eacf0bf?auto=format&fit=crop&w=1600&q=80') no-repeat center center/cover;
-            min-height: auto;
-            display: flex;
-            align-items: center;
-        }
-
-        .hero-grid {
-            display: grid;
-            grid-template-columns: 1fr 1fr;
-            gap: 40px;
-            align-items: center;
-        }
-
-        .hero-content h1 {
-            font-size: 42px;
-            color: var(--white);
-            margin-bottom: 20px;
-            line-height: 1.1;
-        }
-
-        .hero-content h1 span {
-            color: var(--primary);
-        }
-
-        .hero-content p {
-            color: var(--text-muted);
-            font-size: 15px;
-            margin-bottom: 25px;
-        }
-
-        .hero-btns {
-            display: flex;
-            gap: 15px;
-            flex-wrap: wrap;
-        }
-
-        .btn-outline {
-            background-color: transparent;
-            border: 2px solid var(--primary);
-            color: var(--primary);
-            padding: 8px 22px;
-            border-radius: 4px;
-            font-weight: 600;
-            font-size: 12px;
-            text-transform: uppercase;
-            letter-spacing: 1px;
-            transition: var(--transition);
-            display: inline-block;
-            text-align: center;
-        }
-
-        .btn-outline:hover {
-            background-color: var(--primary);
-            color: var(--bg-dark);
-        }
-
-        .hero-badge {
-            background: rgba(26, 26, 26, 0.9);
-            border: 1px solid rgba(197, 160, 89, 0.3);
-            padding: 25px;
-            border-radius: 8px;
-            backdrop-filter: blur(10px);
-        }
-
-        .hero-badge h3 {
-            color: var(--primary);
-            font-size: 18px;
-            margin-bottom: 10px;
-        }
-
-        .hero-badge p {
-            font-size: 13px;
-            color: var(--text-muted);
-            margin: 0;
-        }
-
-        /* Section Layouts */
-        .section-padding {
-            padding: 75px 0;
-        }
-
-        .section-title {
-            text-align: center;
-            margin-bottom: 45px;
-        }
-
-        .section-title h2 {
-            font-size: 30px;
-            color: var(--white);
-            margin-bottom: 12px;
-        }
-
-        .section-title p {
-            color: var(--text-muted);
-            max-width: 600px;
-            margin: 0 auto;
-            font-size: 14px;
-        }
-
-        /* Features / Traits Grid */
-        .features-grid {
-            display: grid;
-            grid-template-columns: repeat(3, 1fr);
-            gap: 25px;
-        }
-
-        .feature-card {
-            background: var(--bg-card);
-            border: 1px solid rgba(255, 255, 255, 0.05);
-            padding: 30px 20px;
-            border-radius: 8px;
-            transition: var(--transition);
-            position: relative;
-            overflow: hidden;
-        }
-
-        .feature-card i {
-            font-size: 30px;
-            color: var(--primary);
-            margin-bottom: 15px;
-        }
-
-        .feature-card h3 {
-            font-size: 17px;
-            margin-bottom: 10px;
-            color: var(--white);
-        }
-
-        .feature-card p {
-            color: var(--text-muted);
-            font-size: 13px;
-        }
-
-        /* Bloodline / Gallery */
-        .gallery-section {
-            background-color: var(--bg-card);
-            border-top: 1px solid rgba(255, 255, 255, 0.03);
-            border-bottom: 1px solid rgba(255, 255, 255, 0.03);
-        }
-
-        .gallery-grid {
-            display: grid;
-            grid-template-columns: repeat(3, 1fr);
-            gap: 25px;
-        }
-
-        .gallery-item {
-            background: var(--bg-lighter);
-            border-radius: 8px;
-            overflow: hidden;
-            border: 1px solid rgba(255, 255, 255, 0.05);
-        }
-
-        .gallery-img {
-            height: 240px;
-            width: 100%;
-            object-fit: cover;
-        }
-
-        .gallery-info {
-            padding: 20px;
-        }
-
-        .gallery-info h3 {
-            font-size: 16px;
-            color: var(--white);
-            margin-bottom: 5px;
-        }
-
-        .gallery-info p {
-            color: var(--primary);
-            font-weight: 500;
-            font-size: 12px;
-            text-transform: uppercase;
-        }
-
-        /* Standards Section */
-        .standards-grid {
-            display: grid;
-            grid-template-columns: 1fr 1fr;
-            gap: 40px;
-            align-items: center;
-        }
-
-        .standards-list {
-            display: flex;
-            flex-direction: column;
-            gap: 20px;
-        }
-
-        .standard-item {
-            display: flex;
-            gap: 15px;
-            align-items: flex-start;
-        }
-
-        .standard-icon {
-            background-color: var(--bg-card);
-            color: var(--primary);
-            border: 1px solid rgba(197, 160, 89, 0.2);
-            width: 45px;
-            height: 45px;
-            border-radius: 50%;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            flex-shrink: 0;
-            font-size: 16px;
-        }
-
-        .standard-text h3 {
-            font-size: 16px;
-            color: var(--white);
-            margin-bottom: 3px;
-        }
-
-        .standard-text p {
-            color: var(--text-muted);
-            font-size: 13px;
-        }
-
-        .standards-image img {
-            width: 100%;
-            border-radius: 8px;
-            border: 1px solid rgba(197, 160, 89, 0.2);
-            height: 350px;
-            object-fit: cover;
-        }
-
-        /* Contact Section */
-        .contact-section {
-            background: linear-gradient(135deg, var(--bg-card) 0%, var(--bg-dark) 100%);
-        }
-
-        .contact-form {
-            max-width: 700px;
-            margin: 0 auto;
-            background: var(--bg-dark);
-            padding: 35px;
-            border-radius: 10px;
-            border: 1px solid rgba(197, 160, 89, 0.2);
-        }
-
-        .form-group {
-            margin-bottom: 18px;
-        }
-
-        .form-row {
-            display: grid;
-            grid-template-columns: 1fr 1fr;
-            gap: 18px;
-        }
-
-        .form-control {
-            width: 100%;
-            padding: 13px;
-            background: var(--bg-card);
-            border: 1px solid rgba(255, 255, 255, 0.1);
-            border-radius: 6px;
-            color: var(--white);
-            font-family: 'Plus Jakarta Sans', sans-serif;
-            font-size: 13px;
-            outline: none;
-        }
-
-        .form-control:focus {
-            border-color: var(--primary);
-        }
-
-        textarea.form-control {
-            resize: vertical;
-            height: 110px;
-        }
-
-        .contact-form .btn {
-            width: 100%;
-            padding: 13px;
-            font-size: 13px;
-        }
-
-        /* Footer */
-        footer {
-            background-color: var(--bg-dark);
-            color: var(--text-muted);
-            padding: 25px 0;
-            text-align: center;
-            font-size: 12px;
-            border-top: 1px solid rgba(255,255,255,0.05);
-        }
-
-        footer p span {
-            color: var(--primary);
-        }
-
-        /* FULL MOBILE OPTIMIZATION FIX */
-        @media screen and (max-width: 768px) {
-            .hero-grid, 
-            .standards-grid, 
-            .features-grid, 
-            .gallery-grid, 
-            .form-row {
-                grid-template-columns: 1fr !important;
-            }
-
-            .hero {
-                padding: 120px 0 50px;
-                text-align: center;
-            }
-
-            .hero-content h1 {
-                font-size: 28px;
-            }
-
-            .hero-btns {
-                justify-content: center;
-            }
-
-            .nav-links {
-                display: none;
-                flex-direction: column;
-                position: absolute;
-                top: 75px;
-                left: 0;
-                width: 100%;
-                background: var(--bg-dark);
-                padding: 20px 0;
-                border-bottom: 1px solid rgba(197, 160, 89, 0.2);
-                text-align: center;
-                gap: 15px;
-                box-shadow: 0 10px 20px rgba(0,0,0,0.8);
-            }
-
-            .nav-links.active {
-                display: flex;
-            }
-
-            .hamburger {
-                display: block;
-            }
-
-            .section-title h2 {
-                font-size: 24px;
-            }
-
-            .contact-form {
-                padding: 20px;
-            }
-
-            .standards-image img {
-                height: 250px;
-            }
-        }
-    </style>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>GB Drive - Gilgit-Baltistan Ride Sharing</title>
+  <style>
+    :root {
+      --primary: #2563eb;
+      --primary-dark: #1d4ed8;
+      --accent: #10b981;
+      --bg: #f3f4f6;
+      --card-bg: #ffffff;
+      --text: #1f2937;
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
+    }
+
+    body {
+      background-color: var(--bg);
+      color: var(--text);
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      min-height: 100vh;
+      padding: 15px;
+    }
+
+    .app-container {
+      width: 100%;
+      max-width: 480px;
+      background: var(--card-bg);
+      border-radius: 16px;
+      box-shadow: 0 10px 25px rgba(0, 0, 0, 0.08);
+      overflow: hidden;
+      margin-top: 10px;
+    }
+
+    header {
+      background: var(--primary);
+      color: white;
+      padding: 20px;
+      text-align: center;
+    }
+
+    header h1 {
+      font-size: 1.6rem;
+      font-weight: 700;
+    }
+
+    header p {
+      font-size: 0.85rem;
+      opacity: 0.9;
+      margin-top: 4px;
+    }
+
+    .role-switcher {
+      display: flex;
+      background: #e5e7eb;
+      padding: 4px;
+      margin: 15px;
+      border-radius: 10px;
+    }
+
+    .role-btn {
+      flex: 1;
+      padding: 10px;
+      border: none;
+      background: transparent;
+      font-weight: 600;
+      color: #6b7280;
+      border-radius: 8px;
+      cursor: pointer;
+      transition: all 0.2s;
+    }
+
+    .role-btn.active {
+      background: white;
+      color: var(--primary);
+      box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+    }
+
+    .content {
+      padding: 20px;
+    }
+
+    .form-group {
+      margin-bottom: 15px;
+    }
+
+    .form-group label {
+      display: block;
+      font-size: 0.85rem;
+      font-weight: 600;
+      margin-bottom: 6px;
+      color: #4b5563;
+    }
+
+    .form-group input, .form-group select {
+      width: 100%;
+      padding: 12px 14px;
+      border: 1px solid #d1d5db;
+      border-radius: 8px;
+      font-size: 0.95rem;
+      outline: none;
+      transition: border-color 0.2s;
+    }
+
+    .form-group input:focus {
+      border-color: var(--primary);
+    }
+
+    .btn {
+      width: 100%;
+      padding: 12px;
+      border: none;
+      border-radius: 8px;
+      background: var(--primary);
+      color: white;
+      font-size: 1rem;
+      font-weight: 600;
+      cursor: pointer;
+      transition: background 0.2s;
+    }
+
+    .btn:hover {
+      background: var(--primary-dark);
+    }
+
+    .btn-accent {
+      background: var(--accent);
+    }
+
+    .btn-accent:hover {
+      background: #059669;
+    }
+
+    .ride-card {
+      border: 1px solid #e5e7eb;
+      border-radius: 12px;
+      padding: 15px;
+      margin-bottom: 12px;
+      background: #fafafa;
+    }
+
+    .ride-card h4 {
+      color: var(--primary);
+      margin-bottom: 8px;
+    }
+
+    .ride-info {
+      font-size: 0.9rem;
+      margin-bottom: 4px;
+    }
+
+    .fare-tag {
+      display: inline-block;
+      background: #d1fae5;
+      color: #065f46;
+      font-weight: 700;
+      padding: 4px 8px;
+      border-radius: 6px;
+      margin-top: 6px;
+    }
+
+    .bid-input-group {
+      display: flex;
+      gap: 8px;
+      margin-top: 10px;
+    }
+
+    .bid-input-group input {
+      flex: 1;
+      padding: 8px;
+      border: 1px solid #d1d5db;
+      border-radius: 6px;
+    }
+
+    .hidden {
+      display: none;
+    }
+  </style>
 </head>
 <body>
 
-    <!-- Header -->
+  <div class="app-container">
     <header>
-        <div class="container nav-container">
-            <a href="#" class="logo"><i class="fa-solid fa-shield-dog"></i>IronGuard <span>Cane Corso</span></a>
-            <nav>
-                <ul class="nav-links" id="navLinks">
-                    <li><a href="#home">Home</a></li>
-                    <li><a href="#traits">Traits</a></li>
-                    <li><a href="#bloodline">Bloodline</a></li>
-                    <li><a href="#standards">Standards</a></li>
-                    <li><a href="#contact" class="btn">Reserve Puppy</a></li>
-                </ul>
-            </nav>
-            <button class="hamburger" id="hamburger" aria-label="Toggle Navigation">
-                <i class="fa-solid fa-bars"></i>
-            </button>
-        </div>
+      <h1>GB Drive</h1>
+      <p>Gilgit-Baltistan Local Ride & Bid Service</p>
     </header>
 
-    <!-- Hero Section -->
-    <section class="hero" id="home">
-        <div class="container hero-grid">
-            <div class="hero-content">
-                <h1>The Ultimate Guardian: <span>Royalty & Strength</span></h1>
-                <p>Welcome to IronGuard Cane Corso. We breed exceptional Italian Mastiffs characterized by unrivaled loyalty, regal stature, and noble protection instincts.</p>
-                <div class="hero-btns">
-                    <a href="#bloodline" class="btn">View Bloodline</a>
-                    <a href="#contact" class="btn-outline">Inquire Now</a>
-                </div>
-            </div>
-            <div class="hero-badge">
-                <h3>Elite Italian Bloodlines</h3>
-                <p>Meticulously bred for structural soundness, stable temperament, and traditional working conformation.</p>
-            </div>
+    <!-- Role Switcher -->
+    <div class="role-switcher">
+      <button class="role-btn active" id="btn-passenger-view" onclick="switchRole('passenger')">Passenger</button>
+      <button class="role-btn" id="btn-driver-view" onclick="switchRole('driver')">Driver</button>
+    </div>
+
+    <div class="content">
+      <!-- PASSENGER VIEW -->
+      <div id="passenger-section">
+        <h3>Book a Ride</h3>
+        <form id="ride-form" style="margin-top: 15px;">
+          <div class="form-group">
+            <label>Pickup Location</label>
+            <input type="text" id="pickup" placeholder="e.g. Gilgit Airport / Skardu Bazaar" required>
+          </div>
+          <div class="form-group">
+            <label>Dropoff Location</label>
+            <input type="text" id="dropoff" placeholder="e.g. Hunza / Astore Main Bazaar" required>
+          </div>
+          <div class="form-group">
+            <label>Your Offer Price (PKR)</label>
+            <input type="number" id="fare" placeholder="e.g. 1500" required>
+          </div>
+          <button type="submit" class="btn">Offer Ride</button>
+        </form>
+
+        <div id="passenger-status" style="margin-top: 20px;"></div>
+      </div>
+
+      <!-- DRIVER VIEW -->
+      <div id="driver-section" class="hidden">
+        <h3>Available Rides</h3>
+        <div id="rides-list" style="margin-top: 15px;">
+          <p style="color: #6b7280; font-size: 0.9rem;">No active ride requests...</p>
         </div>
-    </section>
+      </div>
+    </div>
+  </div>
 
-    <!-- Traits Section -->
-    <section class="section-padding" id="traits">
-        <div class="container">
-            <div class="section-title">
-                <h2>The Cane Corso Legacy</h2>
-                <p>A powerful apex protector possessing intelligence, confidence, and intense devotion to family.</p>
+  <!-- FIREBASE SDKs -->
+  <script type="module">
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
+    import { getDatabase, ref, push, set, onValue, update } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-database.js";
+
+    // Firebase Config
+    const firebaseConfig = {
+      apiKey: "AIzaSyBe5Q5jXpx3UvrHC9WOky9UWeDnP9SPfZI",
+      authDomain: "verbose-6c008.firebaseapp.com",
+      databaseURL: "https://verbose-6c008-default-rtdb.firebaseio.com",
+      projectId: "verbose-6c008",
+      storageBucket: "verbose-6c008.firebasestorage.app",
+      messagingSenderId: "867100945312",
+      appId: "1:867100945312:web:315dfb48fb34496cee12c5"
+    };
+
+    // Initialize Firebase
+    const app = initializeApp(firebaseConfig);
+    const db = getDatabase(app);
+
+    // Ride Request Submit (Passenger)
+    const rideForm = document.getElementById('ride-form');
+    rideForm.addEventListener('submit', (e) => {
+      e.preventDefault();
+
+      const pickup = document.getElementById('pickup').value;
+      const dropoff = document.getElementById('dropoff').value;
+      const fare = document.getElementById('fare').value;
+
+      const ridesRef = ref(db, 'rides/');
+      const newRideRef = push(ridesRef);
+
+      set(newRideRef, {
+        pickup,
+        dropoff,
+        fare: Number(fare),
+        status: 'pending',
+        createdAt: Date.now()
+      }).then(() => {
+        alert('Ride request successfully posted!');
+        rideForm.reset();
+      }).catch(err => {
+        alert('Error: ' + err.message);
+      });
+    });
+
+    // Realtime Rides Monitoring (Driver)
+    const ridesList = document.getElementById('rides-list');
+    const ridesRef = ref(db, 'rides/');
+
+    onValue(ridesRef, (snapshot) => {
+      const data = snapshot.val();
+      ridesList.innerHTML = '';
+
+      if (!data) {
+        ridesList.innerHTML = '<p style="color: #6b7280; font-size: 0.9rem;">No active ride requests...</p>';
+        return;
+      }
+
+      Object.keys(data).forEach(rideId => {
+        const ride = data[rideId];
+        if (ride.status === 'pending') {
+          const card = document.createElement('div');
+          card.className = 'ride-card';
+          card.innerHTML = `
+            <h4>Route: ${ride.pickup} ➔ ${ride.dropoff}</h4>
+            <div class="ride-info">Offered Fare: <strong>PKR ${ride.fare}</strong></div>
+            <div class="bid-input-group">
+              <input type="number" id="counter-${rideId}" placeholder="Counter Fare (PKR)" value="${ride.fare}">
+              <button class="btn btn-accent" onclick="window.sendCounterBid('${rideId}')">Send Bid</button>
             </div>
-            <div class="features-grid">
-                <div class="feature-card">
-                    <i class="fa-solid fa-shield-halved"></i>
-                    <h3>Supreme Protection</h3>
-                    <p>Natural guard dogs with an innate sense of territory, offering unmatched security and watchfulness.</p>
-                </div>
-                <div class="feature-card">
-                    <i class="fa-solid fa-brain"></i>
-                    <h3>High Intelligence</h3>
-                    <p>Highly trainable and eager to work, responding exceptionally well to consistent, confident leadership.</p>
-                </div>
-                <div class="feature-card">
-                    <i class="fa-solid fa-heart"></i>
-                    <h3>Family Devotion</h3>
-                    <p>Deeply affectionate and gentle with family members, forming an unbreakable bond with their owners.</p>
-                </div>
-            </div>
-        </div>
-    </section>
+          `;
+          ridesList.appendChild(card);
+        }
+      });
+    });
 
-    <!-- Bloodline / Gallery -->
-    <section class="section-padding gallery-section" id="bloodline">
-        <div class="container">
-            <div class="section-title">
-                <h2>Sire & Dam Showcase</h2>
-                <p>Inspect our premier adult lines and upcoming champion litters.</p>
-            </div>
-            <div class="gallery-grid">
-                <div class="gallery-item">
-                    <img src="https://images.unsplash.com/photo-1629851722915-467aef34d28d?auto=format&fit=crop&w=600&q=80" alt="Cane Corso Sire" class="gallery-img">
-                    <div class="gallery-info">
-                        <h3>Titan (Sire)</h3>
-                        <p>Black Brindle • Champion Line</p>
-                    </div>
-                </div>
-                <div class="gallery-item">
-                    <img src="https://images.unsplash.com/photo-1543466835-00a7907e9de1?auto=format&fit=crop&w=600&q=80" alt="Cane Corso Dam" class="gallery-img">
-                    <div class="gallery-info">
-                        <h3>Athena (Dam)</h3>
-                        <p>Formentino • Imported Bloodline</p>
-                    </div>
-                </div>
-                <div class="gallery-item">
-                    <img src="https://images.unsplash.com/photo-1583511655857-d19b40a7a54e?auto=format&fit=crop&w=600&q=80" alt="Cane Corso Puppy" class="gallery-img">
-                    <div class="gallery-info">
-                        <h3>Current Litter</h3>
-                        <p>Available for Reservation</p>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </section>
+    // Send Counter Offer / Accept Ride
+    window.sendCounterBid = function(rideId) {
+      const bidInput = document.getElementById(`counter-${rideId}`);
+      const bidPrice = bidInput.value;
 
-    <!-- Breed Standards Section -->
-    <section class="section-padding" id="standards">
-        <div class="container">
-            <div class="standards-grid">
-                <div class="standards-list">
-                    <div class="section-title" style="text-align: left; margin-bottom: 20px;">
-                        <h2>Breeding Standards</h2>
-                        <p style="margin: 0; text-align: left;">We uphold rigorous health and genetic criteria to preserve the integrity of the breed.</p>
-                    </div>
-                    <div class="standard-item">
-                        <div class="standard-icon"><i class="fa-solid fa-notes-medical"></i></div>
-                        <div class="standard-text">
-                            <h3>Health Clearances</h3>
-                            <p>Rigorous veterinary screenings including hip and elbow evaluations, and cardiac clearances.</p>
-                        </div>
-                    </div>
-                    <div class="standard-item">
-                        <div class="standard-icon"><i class="fa-solid fa-users-viewfinder"></i></div>
-                        <div class="standard-text">
-                            <h3>Early Socialization</h3>
-                            <p>Puppies are exposed to various environments, sounds, and stimuli from early weeks for balanced nerves.</p>
-                        </div>
-                    </div>
-                    <div class="standard-item">
-                        <div class="standard-icon"><i class="fa-solid fa-file-contract"></i></div>
-                        <div class="standard-text">
-                            <h3>Pedigree Registration</h3>
-                            <p>Full certified pedigree documentation provided with health guarantees for every puppy.</p>
-                        </div>
-                    </div>
-                </div>
-                <div class="standards-image">
-                    <img src="https://images.unsplash.com/photo-1561585973-206e12488a03?auto=format&fit=crop&w=800&q=80" alt="Cane Corso Guard">
-                </div>
-            </div>
-        </div>
-    </section>
+      const rideRef = ref(db, `rides/${rideId}`);
+      update(rideRef, {
+        driverBid: Number(bidPrice),
+        status: 'bid_offered'
+      }).then(() => {
+        alert('Offer sent to passenger!');
+      });
+    };
+  </script>
 
-    <!-- Contact Section -->
-    <section class="section-padding contact-section" id="contact">
-        <div class="container">
-            <div class="section-title">
-                <h2>Reservation & Inquiry</h2>
-                <p>Secure a spot for our upcoming litters or schedule a kennel consultation.</p>
-            </div>
-            <form class="contact-form" onsubmit="event.preventDefault(); alert('Your reservation inquiry has been sent successfully. We will contact you soon.');">
-                <div class="form-row">
-                    <div class="form-group">
-                        <input type="text" class="form-control" placeholder="Full Name" required>
-                    </div>
-                    <div class="form-group">
-                        <input type="email" class="form-control" placeholder="Email Address" required>
-                    </div>
-                </div>
-                <div class="form-group">
-                    <input type="text" class="form-control" placeholder="Phone Number / Location">
-                </div>
-                <div class="form-group">
-                    <textarea class="form-control" placeholder="Tell us about your experience with large breeds or inquiry details..." required></textarea>
-                </div>
-                <button type="submit" class="btn">Submit Reservation Request</button>
-            </form>
-        </div>
-    </section>
+  <script>
+    // Toggle UI Role Views
+    function switchRole(role) {
+      const passengerSec = document.getElementById('passenger-section');
+      const driverSec = document.getElementById('driver-section');
+      const btnPassenger = document.getElementById('btn-passenger-view');
+      const btnDriver = document.getElementById('btn-driver-view');
 
-    <!-- Footer -->
-    <footer>
-        <div class="container">
-            <p>&copy; 2026 IronGuard Cane Corso. All Rights Reserved. Designed for elite protection by <span>Prime Solutions</span>.</p>
-        </div>
-    </footer>
-
-    <!-- JavaScript for Mobile Menu -->
-    <script>
-        const hamburger = document.getElementById('hamburger');
-        const navLinks = document.getElementById('navLinks');
-
-        hamburger.addEventListener('click', () => {
-            navLinks.classList.toggle('active');
-        });
-
-        document.querySelectorAll('.nav-links a').forEach(link => {
-            link.addEventListener('click', () => {
-                navLinks.classList.remove('active');
-            });
-        });
-    </script>
+      if (role === 'passenger') {
+        passengerSec.classList.remove('hidden');
+        driverSec.classList.add('hidden');
+        btnPassenger.classList.add('active');
+        btnDriver.classList.remove('active');
+      } else {
+        passengerSec.classList.add('hidden');
+        driverSec.classList.remove('hidden');
+        btnDriver.classList.add('active');
+        btnPassenger.classList.remove('active');
+      }
+    }
+  </script>
 </body>
 </html>
