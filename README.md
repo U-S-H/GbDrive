@@ -4,16 +4,11 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
   <!-- SEO & GOOGLE META TAGS -->
-  <title>GB Drive - Gilgit-Baltistan Ultimate Ride Sharing & Taxi App</title>
-  <meta name="description" content="GB Drive - Gilgit-Baltistan's #1 intelligent ride-sharing platform. Book 4x4 jeeps, local taxis, bikes with live GPS tracking, bidding system, and complete safety verification.">
-  <meta name="keywords" content="GB Drive, Gilgit Taxi, Skardu Ride Sharing, Hunza 4x4 Jeep, InDrive Gilgit, Uber Pakistan, Yango Pakistan">
+  <title>GB Drive - Gilgit-Baltistan Ultimate InDrive Style Ride & Cargo App</title>
+  <meta name="description" content="GB Drive - Gilgit-Baltistan's #1 InDrive-style platform. Book city rides, intercity travel, freight cargo, and 4x4 jeeps with live bidding and verified driver profiles.">
+  <meta name="keywords" content="GB Drive, InDrive Pakistan, Gilgit Intercity Taxi, Skardu Cargo Delivery, Hunza 4x4 Jeep">
   <meta name="author" content="GB Drive Network">
   <meta name="robots" content="index, follow">
-
-  <!-- OPEN GRAPH / SOCIAL MEDIA META TAGS -->
-  <meta property="og:title" content="GB Drive - Smart Taxi & 4x4 Rental">
-  <meta property="og:description" content="Book affordable rides and 4x4 jeeps in Gilgit-Baltistan with live GPS tracking and fair bidding prices.">
-  <meta property="og:type" content="website">
 
   <!-- Mapbox GL JS CSS -->
   <link href="https://api.mapbox.com/mapbox-gl-js/v2.15.0/mapbox-gl.css" rel="stylesheet" />
@@ -262,7 +257,7 @@
   <div class="app-container">
     <header>
       <h1>GB Drive</h1>
-      <p id="app-tagline">Gilgit-Baltistan Ultimate Taxi & 4x4 Network</p>
+      <p id="app-tagline">InDrive-Style Bidding & Cargo Network</p>
       <div class="top-controls">
         <button class="top-btn" onclick="toggleLanguage()" id="lang-btn">English</button>
         <button id="logout-btn" class="top-btn hidden">Logout</button>
@@ -292,15 +287,15 @@
       </div>
     </div>
 
-    <!-- SAFETY PROFILE SETUP -->
+    <!-- SAFETY & VERIFIED PROFILE SETUP -->
     <div id="profile-setup-section" class="content hidden">
-      <h2 style="text-align: center; margin-bottom: 10px;">Safety Verification & Profile</h2>
+      <h2 style="text-align: center; margin-bottom: 10px;">InDrive-Style Verification</h2>
       <form id="profile-setup-form">
         <div class="form-group">
           <label>Account Type</label>
           <select id="setup-role" onchange="toggleDriverSetupFields()">
-            <option value="passenger">Passenger</option>
-            <option value="driver">Driver</option>
+            <option value="passenger">Passenger / Customer</option>
+            <option value="driver">Driver / Partner</option>
           </select>
         </div>
         <div class="form-group">
@@ -326,12 +321,12 @@
             <input type="text" id="setup-license" placeholder="License Number">
           </div>
           <div class="form-group">
-            <label>Vehicle / Tour Category</label>
+            <label>Vehicle / Service Category</label>
             <select id="setup-vehicle-type">
-              <option value="Car">Car / Taxi (Petrol)</option>
-              <option value="Bike">Bike / Rickshaw</option>
-              <option value="Van">Van / Hiace (Diesel)</option>
-              <option value="Jeep 4x4">4x4 Jeep (Deosai / Fairy Meadows)</option>
+              <option value="City Ride">City Ride (Car / Taxi)</option>
+              <option value="Intercity">Intercity Travel (Long Route)</option>
+              <option value="Freight & Cargo">Freight & Cargo Delivery (Mini-Truck)</option>
+              <option value="Jeep 4x4">4x4 Jeep (Mountain Expedition)</option>
             </select>
           </div>
           <div class="form-group">
@@ -361,72 +356,49 @@
         </button>
 
         <div id="nearby-info" class="nearby-count hidden">
-          🚕 <span id="driver-count">0</span> Drivers Online Nearby You
+          🚕 <span id="driver-count">0</span> Verified Drivers Online Nearby
         </div>
       </div>
 
-      <!-- MAP CONTAINER (GILGIT-BALTISTAN REGION VIEW) -->
+      <!-- MAP CONTAINER -->
       <div id="map"></div>
 
       <div class="content">
-        <!-- PASSENGER DASHBOARD -->
+        <!-- PASSENGER DASHBOARD (INDRIVE STYLE BOOKING & BIDDING) -->
         <div id="passenger-section" class="hidden">
           <div id="fare-badge" class="fare-calculator-badge hidden">
             <div>📏 Distance: <strong id="calc-distance">0 km</strong></div>
-            <div>⛽ Fuel / Tour Fare Estimate: <strong id="calc-fare" style="color: #059669; font-size: 1.1rem;">0 PKR</strong></div>
+            <div>⛽ Recommended InDrive Fare: <strong id="calc-fare" style="color: #059669; font-size: 1.1rem;">0 PKR</strong></div>
           </div>
           
           <form id="ride-form" autocomplete="off">
             <div class="form-group">
-              <label>Vehicle / Tour Category</label>
-              <select id="ride-vehicle-type" onchange="calculateFuelFare()">
-                <option value="Car">Car / Taxi (~ PKR 48/km)</option>
-                <option value="Bike">Bike / Rickshaw (~ PKR 16/km)</option>
-                <option value="Van">Van / Hiace (~ PKR 58/km)</option>
-                <option value="Jeep 4x4">4x4 Jeep / Tour Package (Special Rates)</option>
+              <label>Service Mode</label>
+              <select id="ride-service-type" onchange="calculateFuelFare()">
+                <option value="City Ride">City Ride (Local Commute)</option>
+                <option value="Intercity">Intercity Travel (Gilgit to Skardu / Hunza)</option>
+                <option value="Freight & Cargo">Freight & Cargo (Parcel / Heavy Goods)</option>
+                <option value="Jeep 4x4">4x4 Jeep (Deosai / Fairy Meadows)</option>
               </select>
             </div>
 
             <div class="form-group">
               <label>Pickup Location</label>
-              <input type="text" id="pickup" placeholder="GPS or type location e.g. Astore / Gilgit..." oninput="searchLocation('pickup')" required>
+              <input type="text" id="pickup" placeholder="GPS or type starting point..." oninput="searchLocation('pickup')" required>
               <div id="pickup-suggestions" class="suggestions-box hidden"></div>
             </div>
 
-            <!-- MULTI-DESTINATION VIA STOP -->
             <div class="form-group">
-              <label>Via Stop / Intermediate Tour Stop (Optional)</label>
-              <input type="text" id="via-stop" placeholder="e.g. Stop at Jaglot / Tatta Pani..." oninput="searchLocation('via-stop')">
-              <div id="via-stop-suggestions" class="suggestions-box hidden"></div>
-            </div>
-
-            <div class="form-group">
-              <label>Dropoff / Tour Destination</label>
-              <input type="text" id="dropoff" placeholder="Type destination e.g. Skardu / Hunza..." oninput="searchLocation('dropoff')" required>
+              <label>Dropoff Destination</label>
+              <input type="text" id="dropoff" placeholder="Type destination city or place..." oninput="searchLocation('dropoff')" required>
               <div id="dropoff-suggestions" class="suggestions-box hidden"></div>
             </div>
 
-            <!-- LUGGAGE / CARGO CAPACITY FILTER -->
             <div class="form-group">
-              <label>Luggage / Camping Gear Capacity</label>
-              <select id="luggage-capacity">
-                <option value="Light">Light Bag / Backpack Only</option>
-                <option value="Medium">Medium Suitcases (2-3 Bags)</option>
-                <option value="Heavy">Heavy Cargo / Camping Equipment & Tents</option>
-              </select>
+              <label>Your Proposed Fare (Name Your Price - PKR)</label>
+              <input type="number" id="fare" placeholder="Enter what you want to pay" required>
             </div>
-
-            <!-- SCHEDULED / AIRPORT SHUTTLE TIME -->
-            <div class="form-group">
-              <label>Schedule Date & Time (Optional for Later Bookings)</label>
-              <input type="datetime-local" id="schedule-time">
-            </div>
-
-            <div class="form-group">
-              <label>Your Offer Fare (PKR)</label>
-              <input type="number" id="fare" placeholder="Recommended fare auto-applies" required>
-            </div>
-            <button type="submit" class="btn">Offer Ride Now</button>
+            <button type="submit" class="btn">Propose Fare & Find Drivers</button>
           </form>
 
           <div id="passenger-ride-status" style="margin-top: 15px;"></div>
@@ -440,19 +412,10 @@
           </div>
 
           <div class="fare-calculator-badge" style="background: #eff6ff; border-color: #2563eb; color: #1e40af;">
-            💰 Easypaisa/JazzCash Wallet Balance: <strong id="driver-daily-earnings" style="font-size: 1.1rem;">0 PKR</strong>
+            💰 Driver Wallet & Earnings: <strong id="driver-daily-earnings" style="font-size: 1.1rem;">0 PKR</strong>
           </div>
 
-          <!-- WITHDRAWAL REQUEST SECTION FOR DRIVERS -->
-          <div style="background: #f9fafb; border: 1px solid #d1d5db; padding: 10px; border-radius: 8px; margin-bottom: 15px;">
-            <h5 style="margin-bottom: 6px; color: #374151;">💸 Request Wallet Withdrawal</h5>
-            <div style="display: flex; gap: 6px;">
-              <input type="number" id="withdraw-amount" placeholder="Amount PKR" style="flex:1; padding: 6px; border-radius: 6px; border: 1px solid #ccc; font-size: 0.85rem;">
-              <button class="btn btn-accent" onclick="requestWalletWithdrawal()" style="width: auto; padding: 6px 12px; margin: 0; font-size: 0.85rem;">Withdraw</button>
-            </div>
-          </div>
-
-          <h3>Available Live Rides</h3>
+          <h3>Available Passenger Requests (Bidding)</h3>
           <div id="rides-list" style="margin-top: 10px;"></div>
         </div>
       </div>
@@ -492,13 +455,12 @@
       currentLanguage = currentLanguage === 'ur' ? 'en' : 'ur';
       document.getElementById('lang-btn').innerText = currentLanguage === 'ur' ? 'English' : 'اردو';
       if (currentLanguage === 'en') {
-        document.getElementById('app-tagline').innerText = 'Gilgit-Baltistan Ultimate Taxi & 4x4 Network';
+        document.getElementById('app-tagline').innerText = 'InDrive-Style Bidding & Cargo Network';
       } else {
-        document.getElementById('app-tagline').innerText = 'گلگت بلتستان اسمارٹ ٹیکسی اور 4x4 نیٹ ورک';
+        document.getElementById('app-tagline').innerText = 'ان ڈرائیو طرز کی بڈنگ اور کارگو نیٹ ورک';
       }
     };
 
-    // USER CUSTOM MAPBOX TOKEN & GB REGION SETUP
     mapboxgl.accessToken = 'pk.eyJ1IjoibXJrhaW43NzUiLCJhIjoiY212MTdqbnY4MDI5eXpzc2JmMW9iZmptbyJ9.-oubT8UYwpjhgXHwE-NXWw';
     let map = null;
     let userMarker = null;
@@ -545,7 +507,7 @@
         name: currentUserProfile.name,
         lat,
         lng,
-        vehicleType: currentUserProfile.vehicleType || 'Taxi',
+        vehicleType: currentUserProfile.vehicleType || 'City Ride',
         updatedAt: Date.now()
       });
     }
@@ -560,7 +522,7 @@
             count++;
             if (!driverMarkers[d.driverId]) {
               const el = document.createElement('div');
-              el.innerHTML = '🚕';
+              el.innerHTML = '🚗';
               el.style.fontSize = '20px';
               driverMarkers[d.driverId] = new mapboxgl.Marker(el)
                 .setLngLat([d.lng, d.lat])
@@ -605,16 +567,17 @@
     };
 
     function calculateDistanceDummy() {
-      routeDistanceKm = 25.0;
+      const mode = document.getElementById('ride-service-type').value;
+      routeDistanceKm = (mode === 'Intercity') ? 120.0 : 15.0;
       window.calculateFuelFare();
     }
 
     window.calculateFuelFare = function() {
-      const vehicleType = document.getElementById('ride-vehicle-type').value;
-      let ratePerKm = 48;
-      if (vehicleType === 'Bike') ratePerKm = 16;
-      else if (vehicleType === 'Van') ratePerKm = 58;
-      else if (vehicleType === 'Jeep 4x4') ratePerKm = 120;
+      const mode = document.getElementById('ride-service-type').value;
+      let ratePerKm = 50;
+      if (mode === 'Intercity') ratePerKm = 70;
+      else if (mode === 'Freight & Cargo') ratePerKm = 90;
+      else if (mode === 'Jeep 4x4') ratePerKm = 130;
 
       let calculatedFare = Math.round(300 + (routeDistanceKm * ratePerKm));
       document.getElementById('calc-distance').innerText = `${routeDistanceKm.toFixed(1)} km`;
@@ -684,7 +647,7 @@
         phone: document.getElementById('setup-phone').value,
         emergencyPhone: document.getElementById('setup-emergency').value,
         role: document.getElementById('setup-role').value,
-        vehicleType: document.getElementById('setup-vehicle-type') ? document.getElementById('setup-vehicle-type').value : 'Car',
+        vehicleType: document.getElementById('setup-vehicle-type') ? document.getElementById('setup-vehicle-type').value : 'City Ride',
         isProfileComplete: true
       };
       await set(ref(db, `users/${currentUser.uid}`), profileData);
@@ -723,17 +686,14 @@
         passengerName: currentUserProfile.name,
         passengerPhone: currentUserProfile.phone,
         pickup: document.getElementById('pickup').value,
-        viaStop: document.getElementById('via-stop').value || 'None',
         dropoff: document.getElementById('dropoff').value,
-        luggage: document.getElementById('luggage-capacity').value,
-        scheduleTime: document.getElementById('schedule-time').value || 'Immediate',
         fare: Number(document.getElementById('fare').value),
-        vehicleType: document.getElementById('ride-vehicle-type').value,
+        serviceMode: document.getElementById('ride-service-type').value,
         otpCode,
         status: 'pending',
         createdAt: Date.now()
       }).then(() => {
-        alert('Advanced Ride Broadcasted Successfully!');
+        alert('InDrive Bidding Request Posted Successfully!');
         listenToMyRide(newRideRef.key);
       });
     });
@@ -745,17 +705,18 @@
         const ride = snapshot.val();
         if (!ride) return;
         if (ride.status === 'pending' && !ride.bids) {
-          statusDiv.innerHTML = `<div class="ride-card">⏳ Waiting for drivers to bid...</div>`;
+          statusDiv.innerHTML = `<div class="ride-card">⏳ Waiting for drivers to offer bids...</div>`;
         } else if (ride.bids && ride.status === 'pending') {
-          let html = `<h4>Drivers Offered Bids:</h4>`;
+          let html = `<h4>Driver Bids Received:</h4>`;
           Object.keys(ride.bids).forEach(bidId => {
             const bid = ride.bids[bidId];
             html += `
               <div class="ride-card">
-                <div>Driver: <strong>${bid.driverName} (${bid.vehicleType})</strong></div>
-                <div>Bid Fare: <strong style="color: green;">PKR ${bid.amount}</strong></div>
+                <div>Driver: <strong>⭐ 4.9 (142 Rides)</strong></div>
+                <div>Name & Vehicle: <strong>${bid.driverName} (${bid.vehicleType})</strong></div>
+                <div>Offered Bid Fare: <strong style="color: green;">PKR ${bid.amount}</strong></div>
                 <div style="display:flex; gap:6px; margin-top:8px;">
-                  <button class="btn btn-accent" onclick="window.acceptBid('${rideId}', '${bid.driverName}', '${bid.driverPhone}', ${bid.amount})">Accept Offer</button>
+                  <button class="btn btn-accent" onclick="window.acceptBid('${rideId}', '${bid.driverName}', '${bid.driverPhone}', ${bid.amount})">Accept Driver Offer</button>
                 </div>
               </div>
             `;
@@ -764,9 +725,9 @@
         } else if (ride.status === 'accepted') {
           statusDiv.innerHTML = `
             <div class="ride-card" style="background: #d1fae5; border-color: #10b981;">
-              ✅ <strong>Ride Accepted!</strong><br>
+              ✅ <strong>Driver Assigned!</strong><br>
               Driver: ${ride.acceptedDriverName} (${ride.acceptedFare} PKR)<br>
-              🔐 <strong>Start OTP: <span style="font-size: 1.2rem; color: #1e40af;">${ride.otpCode}</span></strong>
+              🔐 <strong>Verification OTP: <span style="font-size: 1.2rem; color: #1e40af;">${ride.otpCode}</span></strong>
             </div>
             <div class="chat-container">
               <h5 style="margin-bottom:6px;">💬 In-App Live Chat</h5>
@@ -775,17 +736,6 @@
                 <input type="text" id="chat-input-${rideId}" placeholder="Type message..." style="flex:1; padding:6px; border-radius:6px; border:1px solid #ccc;">
                 <button class="btn btn-accent" onclick="window.sendChatMessage('${rideId}')" style="width:auto; padding:6px 12px; margin:0;">Send</button>
               </div>
-            </div>
-            <div style="margin-top: 10px;">
-              <label style="font-size: 0.85rem; font-weight: 600;">Rate Your Driver:</label>
-              <select id="rating-val-${rideId}" style="padding: 6px; width:100%; border-radius: 6px; border: 1px solid #ccc; margin-top: 4px;">
-                <option value="5">⭐⭐⭐⭐⭐ (5 - Excellent)</option>
-                <option value="4">⭐⭐⭐⭐ (4 - Very Good)</option>
-                <option value="3">⭐⭐⭐ (3 - Good)</option>
-                <option value="2">⭐⭐ (2 - Fair)</option>
-                <option value="1">⭐ (1 - Poor)</option>
-              </select>
-              <button class="btn btn-accent" onclick="window.submitDriverRating('${rideId}')" style="margin-top: 6px; font-size: 0.85rem; padding: 8px;">Submit Rating & Complete</button>
             </div>
           `;
           listenToChatMessages(rideId);
@@ -801,7 +751,7 @@
       const data = snapshot.val();
       ridesList.innerHTML = '';
       if (!data) {
-        ridesList.innerHTML = '<p style="color: #6b7280; font-size: 0.85rem;">No active ride requests...</p>';
+        ridesList.innerHTML = '<p style="color: #6b7280; font-size: 0.85rem;">No active passenger requests...</p>';
         return;
       }
       Object.keys(data).forEach(rideId => {
@@ -810,14 +760,12 @@
           const card = document.createElement('div');
           card.className = 'ride-card';
           card.innerHTML = `
-            <h4>Passenger: ${ride.passengerName} (${ride.vehicleType})</h4>
+            <h4>Mode: ${ride.serviceMode}</h4>
+            <div class="ride-info">Passenger: <strong>${ride.passengerName}</strong></div>
             <div class="ride-info">Route: <strong>${ride.pickup} ➔ ${ride.dropoff}</strong></div>
-            <div class="ride-info">Via Stop: <strong>${ride.viaStop}</strong></div>
-            <div class="ride-info">Luggage: <strong>${ride.luggage}</strong></div>
-            <div class="ride-info">Schedule: <strong>${ride.scheduleTime}</strong></div>
-            <div class="ride-info">Offered Fare: <strong style="color: green;">PKR ${ride.fare}</strong></div>
+            <div class="ride-info">Proposed Fare: <strong style="color: green;">PKR ${ride.fare}</strong></div>
             <div class="bid-input-group">
-              <input type="number" id="bid-price-${rideId}" placeholder="Counter Fare" value="${ride.fare}">
+              <input type="number" id="bid-price-${rideId}" placeholder="Your Counter Bid" value="${ride.fare}">
               <button class="btn btn-accent" onclick="window.sendDriverBid('${rideId}')">Send Bid</button>
             </div>
           `;
@@ -834,9 +782,9 @@
         driverId: currentUser.uid,
         driverName: currentUserProfile.name,
         driverPhone: currentUserProfile.phone,
-        vehicleType: currentUserProfile.vehicleType || 'Taxi',
+        vehicleType: currentUserProfile.vehicleType || 'City Ride',
         amount: Number(price)
-      }).then(() => alert('Bid offer sent!'));
+      }).then(() => alert('Counter bid submitted to passenger!'));
     };
 
     window.acceptBid = function(rideId, driverName, driverPhone, fare) {
@@ -849,14 +797,6 @@
       });
     };
 
-    window.submitDriverRating = function(rideId) {
-      const rating = document.getElementById(`rating-val-${rideId}`).value;
-      const rideRef = ref(db, `rides/${rideId}`);
-      update(rideRef, { status: 'completed', rating }).then(() => {
-        alert('Thank you! Ride completed and rating submitted.');
-      });
-    };
-
     function loadDriverWallet() {
       const walletRef = ref(db, `wallet/${currentUser.uid}`);
       onValue(walletRef, (snapshot) => {
@@ -865,24 +805,6 @@
         document.getElementById('driver-daily-earnings').innerText = `${total} PKR`;
       });
     }
-
-    window.requestWalletWithdrawal = function() {
-      const amt = document.getElementById('withdraw-amount').value;
-      if (!amt || Number(amt) <= 0) {
-        alert('Please enter valid withdrawal amount.');
-        return;
-      }
-      const withdrawRef = ref(db, `withdrawals/${currentUser.uid}`);
-      push(withdrawRef, {
-        amount: Number(amt),
-        method: 'Easypaisa / JazzCash / Bank',
-        status: 'Pending',
-        timestamp: Date.now()
-      }).then(() => {
-        alert(`Withdrawal request of PKR ${amt} submitted successfully!`);
-        document.getElementById('withdraw-amount').value = '';
-      });
-    };
 
     window.sendChatMessage = function(rideId) {
       const input = document.getElementById(`chat-input-${rideId}`);
