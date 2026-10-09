@@ -340,9 +340,9 @@
     let map = null, userMarker = null;
     function initMap() {
       map = L.map('map', { zoomControl: false }).setView([35.3472, 75.0833], 13);
-      // CartoDB Dark Matter tile layer integrated via GCP/Carto API endpoint
-      L.tileLayer('https://gcp-asia-northeast1.api.carto.com/basemaps/dark_all/{z}/{x}/{y}{r}.png', {
-        attribution: '&copy; CartoDB',
+      // Integrated specific CARTO MCP endpoint template
+      L.tileLayer('https://gcp-asia-northeast1.api.carto.com/mcp/ac_ye8le860/{z}/{x}/{y}.png', {
+        attribution: '&copy; CARTO',
         maxZoom: 20
       }).addTo(map);
     }
@@ -439,7 +439,7 @@
           document.getElementById('profile-setup-section').classList.remove('hidden');
         }
       } else {
-        document.getElementById('auth-overlay').classList.add('hidden');
+        document.getElementById('auth-overlay').classList.remove('hidden');
       }
     });
 
