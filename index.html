@@ -45,7 +45,7 @@
 
     .app-container { width: 100%; max-width: 450px; height: 100vh; background: var(--bg); position: relative; display: flex; flex-direction: column; box-shadow: 0 0 30px rgba(0,0,0,0.8); overflow: hidden; }
 
-    #map { position: absolute; top: 0; left: 0; width: 100%; height: 100%; z-index: 1; }
+    #map { position: absolute; top: 0; left: 0; width: 100%; height: 100%; z-index: 1; filter: brightness(0.8) invert(1) contrast(1.2) hue-rotate(200deg); }
 
     .top-floating-bar {
       position: absolute; top: 15px; left: 15px; right: 15px; z-index: 10;
@@ -244,7 +244,7 @@
       </div>
     </div>
 
-    <!-- Profile Setup with Document Upload -->
+    <!-- Profile Setup -->
     <div id="profile-setup-section" class="modal-overlay hidden" style="z-index: 9998;">
       <div class="modal-content">
         <h3 style="margin-bottom: 12px; text-align: center;">Complete Profile & Verification</h3>
@@ -376,13 +376,12 @@
     function initMap() {
       map = L.map('map', { zoomControl: false }).setView([35.3472, 75.0833], 15);
       
-      // Exact InDrive-like dark matter vector styling with full labels
-      L.tileLayer('https://{s}.basemaps.cartocdn.com/rastertiles/voyager/{z}/{x}/{y}{r}.png', {
-        attribution: '&copy; CARTO',
-        maxZoom: 20
+      // Using standard open-source tiles with automatic dark styling filter
+      L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+        attribution: '&copy; OpenStreetMap contributors',
+        maxZoom: 19
       }).addTo(map);
 
-      // Adding precise Astore & GB landmarks just like InDrive app view
       const gbLandmarks = [
         { name: "Eidgah Das", coords: [35.3520, 75.0890], type: "Area" },
         { name: "Usmani Masjid", coords: [35.3460, 75.0810], type: "Landmark" },
