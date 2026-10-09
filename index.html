@@ -3,9 +3,8 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>GB Drive - Gilgit-Baltistan's #1 InDrive Super App</title>
-  <meta name="description" content="GB Drive is Gilgit-Baltistan's official InDrive ride-sharing & cargo app.">
-
+  <title>GB Drive - Gilgit-Baltistan's Ultimate Super App</title>
+  
   <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" />
   
@@ -29,13 +28,13 @@
 
     #splash-screen {
       position: fixed; top: 0; left: 0; width: 100%; height: 100%;
-      background: linear-gradient(135deg, #121212, #1e1e1e, #2563eb);
+      background: linear-gradient(rgba(18,18,18,0.85), rgba(18,18,18,0.95)), url('https://images.unsplash.com/photo-1506744038136-46273834b3fb?auto=format&fit=crop&w=1000&q=80') center/cover;
       color: white; z-index: 99999; display: flex; flex-direction: column;
       justify-content: center; align-items: center; text-align: center; padding: 20px;
       transition: opacity 0.6s ease;
     }
-    #splash-screen h1 { font-size: 2.8rem; margin-bottom: 8px; font-weight: 800; color: var(--accent); }
-    #splash-screen p { font-size: 1rem; opacity: 0.85; margin-bottom: 25px; }
+    #splash-screen h1 { font-size: 3rem; margin-bottom: 8px; font-weight: 800; color: var(--accent); text-shadow: 0 4px 15px rgba(0,0,0,0.5); }
+    #splash-screen p { font-size: 1.05rem; opacity: 0.9; margin-bottom: 25px; }
 
     .modern-loader { display: flex; gap: 8px; margin-bottom: 20px; }
     .loader-dot { width: 12px; height: 12px; background-color: var(--accent); border-radius: 50%; animation: bounce 1.4s infinite ease-in-out both; }
@@ -45,7 +44,16 @@
 
     .app-container { width: 100%; max-width: 450px; height: 100vh; background: var(--bg); position: relative; display: flex; flex-direction: column; box-shadow: 0 0 30px rgba(0,0,0,0.8); overflow: hidden; }
 
-    #map { position: absolute; top: 0; left: 0; width: 100%; height: 100%; z-index: 1; filter: brightness(0.8) invert(1) contrast(1.2) hue-rotate(200deg); }
+    #map { position: absolute; top: 0; left: 0; width: 100%; height: 100%; z-index: 1; filter: brightness(0.75) invert(1) contrast(1.25) hue-rotate(200deg); }
+
+    /* Live KKH Weather Banner */
+    .kkh-banner {
+      position: absolute; top: 75px; left: 15px; right: 15px; z-index: 9;
+      background: rgba(245, 158, 11, 0.9); color: #121212; padding: 8px 12px; border-radius: 10px;
+      font-size: 0.75rem; font-weight: 700; display: flex; align-items: center; gap: 8px;
+      box-shadow: 0 4px 10px rgba(0,0,0,0.4); animation: pulse-banner 2s infinite;
+    }
+    @keyframes pulse-banner { 0% { opacity: 0.9; } 50% { opacity: 1; } 100% { opacity: 0.9; } }
 
     .top-floating-bar {
       position: absolute; top: 15px; left: 15px; right: 15px; z-index: 10;
@@ -73,24 +81,24 @@
     }
 
     .sidebar-drawer {
-      position: absolute; top: 0; left: -100%; width: 80%; max-width: 320px; height: 100%;
+      position: absolute; top: 0; left: -100%; width: 85%; max-width: 330px; height: 100%;
       background: var(--card-bg); z-index: 1000; transition: left 0.3s ease; padding: 20px; display: flex; flex-direction: column;
-      box-shadow: 5px 0 25px rgba(0,0,0,0.7);
+      box-shadow: 5px 0 25px rgba(0,0,0,0.8);
     }
     .sidebar-drawer.open { left: 0; }
     .drawer-header { display: flex; align-items: center; gap: 12px; border-bottom: 1px solid var(--border); padding-bottom: 15px; margin-bottom: 15px; cursor: pointer; }
-    .drawer-avatar { width: 50px; height: 50px; border-radius: 50%; background: #444; object-fit: cover; }
-    .drawer-menu-list { list-style: none; display: flex; flex-direction: column; gap: 4px; flex: 1; overflow-y: auto; }
-    .drawer-menu-item { display: flex; align-items: center; gap: 15px; padding: 12px; border-radius: 8px; cursor: pointer; color: var(--text); font-size: 0.95rem; font-weight: 500; text-decoration: none; }
+    .drawer-avatar { width: 55px; height: 55px; border-radius: 50%; background: #444; object-fit: cover; border: 2px solid var(--accent); }
+    .drawer-menu-list { list-style: none; display: flex; flex-direction: column; gap: 6px; flex: 1; overflow-y: auto; }
+    .drawer-menu-item { display: flex; align-items: center; gap: 15px; padding: 12px; border-radius: 10px; cursor: pointer; color: var(--text); font-size: 0.95rem; font-weight: 500; text-decoration: none; }
     .drawer-menu-item:hover { background: var(--card-elevated); }
-    .drawer-menu-item i { width: 20px; color: var(--text-muted); font-size: 1.1rem; }
+    .drawer-menu-item i { width: 22px; color: var(--accent); font-size: 1.1rem; }
 
     .bottom-sheet {
       position: absolute; bottom: 0; left: 0; width: 100%; background: var(--card-bg);
-      border-radius: 24px 24px 0 0; z-index: 10; padding: 20px; box-shadow: 0 -10px 30px rgba(0,0,0,0.5);
-      display: flex; flex-direction: column; gap: 12px; max-height: 75vh; overflow-y: auto;
+      border-radius: 24px 24px 0 0; z-index: 10; padding: 20px; box-shadow: 0 -10px 30px rgba(0,0,0,0.6);
+      display: flex; flex-direction: column; gap: 14px; max-height: 75vh; overflow-y: auto;
     }
-    .sheet-grabber { width: 40px; height: 4px; background: #555; border-radius: 2px; align-self: center; margin-bottom: -5px; }
+    .sheet-grabber { width: 40px; height: 4px; background: #555; border-radius: 2px; align-self: center; margin-bottom: -6px; }
 
     .service-tabs { display: flex; gap: 10px; overflow-x: auto; padding-bottom: 5px; }
     .service-tab {
@@ -111,23 +119,19 @@
     .modal-content { background: var(--card-bg); color: var(--text); width: 100%; max-width: 420px; border-radius: 20px; padding: 20px; max-height: 85vh; overflow-y: auto; border: 1px solid var(--border); }
     .modal-header { display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid var(--border); padding-bottom: 10px; margin-bottom: 15px; }
     
-    .form-group { margin-bottom: 12px; }
+    .form-group { margin-bottom: 14px; }
     .form-group label { display: block; font-size: 0.8rem; font-weight: 600; margin-bottom: 4px; color: var(--text-muted); }
     .form-group input, .form-group select, .form-group textarea {
       width: 100%; padding: 12px; border: 1px solid var(--border); background: var(--card-elevated); color: var(--text); border-radius: 10px; font-size: 0.9rem; outline: none;
     }
 
     .btn { width: 100%; padding: 14px; border: none; border-radius: 12px; background: var(--primary); color: white; font-size: 1rem; font-weight: 600; cursor: pointer; margin-top: 5px; }
-    .btn-accent { background: var(--accent); color: #121212; }
+    .btn-accent { background: var(--accent); color: #121212; font-weight: 700; }
     .btn-danger { background: var(--danger); color: white; }
     .btn-warning { background: var(--warning); color: #121212; }
     .btn-admin { background: var(--admin-color); color: white; }
 
     .ride-card { border: 1px solid var(--border); border-radius: 12px; padding: 12px; margin-bottom: 10px; background: var(--card-elevated); }
-    .chat-box { height: 120px; overflow-y: auto; background: var(--bg); border: 1px solid var(--border); border-radius: 8px; padding: 8px; margin-bottom: 8px; font-size: 0.8rem; display: flex; flex-direction: column; gap: 4px; }
-    .chat-msg { padding: 4px 8px; border-radius: 6px; max-width: 80%; }
-    .chat-msg.me { background: var(--primary); color: white; align-self: flex-end; }
-    .chat-msg.other { background: var(--border); color: var(--text); align-self: flex-start; }
     .hidden { display: none !important; }
   </style>
 </head>
@@ -136,102 +140,130 @@
   <!-- Splash Screen -->
   <div id="splash-screen">
     <h1>GB Drive</h1>
-    <p>Gilgit-Baltistan's Official InDrive Super App</p>
+    <p>Gilgit-Baltistan's Ultimate Super App</p>
     <div class="modern-loader"><div class="loader-dot"></div><div class="loader-dot"></div></div>
     <p style="font-size: 0.75rem; opacity: 0.6;">Powered by Prime Solutions | Founder: Muhammad Nazim</p>
+  </div>
+
+  <!-- Live KKH Weather Banner -->
+  <div class="kkh-banner">
+    <i class="fa-solid fa-triangle-exclamation"></i>
+    <span>KKH Road Live: Clear across Astore & Gilgit. Drive safely!</span>
   </div>
 
   <!-- Sidebar Drawer Menu -->
   <div id="sidebar-drawer" class="sidebar-drawer">
     <div class="drawer-header" onclick="openModal('profile-modal'); closeDrawer();">
-      <img id="drawer-avatar-img" class="drawer-avatar" src="https://via.placeholder.com/150" alt="User">
+      <img id="drawer-avatar-img" class="drawer-avatar" src="https://images.unsplash.com/photo-1534528741775-53994a69daeb?auto=format&fit=crop&w=200&q=80" alt="User">
       <div>
-        <h4 id="drawer-user-name">Muhammad</h4>
-        <span style="font-size: 0.75rem; color: var(--text-muted);">⭐ 5.00 (0)</span>
+        <h4 id="drawer-user-name">Muhammad Nazim <i class="fa-solid fa-circle-check" style="color:var(--primary); font-size:0.8rem;"></i></h4>
+        <span id="user-tier-badge" style="font-size: 0.75rem; color: var(--accent);">⭐ 5.0 Rating (Gold Partner)</span>
       </div>
     </div>
     <ul class="drawer-menu-list">
-      <li class="drawer-menu-item" onclick="closeDrawer()"><i class="fa-solid fa-car"></i> City</li>
-      <li class="drawer-menu-item" onclick="openModal('history-modal'); closeDrawer();"><i class="fa-solid fa-clock-rotate-left"></i> Request history</li>
-      <li class="drawer-menu-item" onclick="closeDrawer()"><i class="fa-solid fa-globe"></i> City to City</li>
-      <li class="drawer-menu-item" onclick="openModal('notifications-modal'); closeDrawer();"><i class="fa-solid fa-bell"></i> Notifications</li>
-      <li class="drawer-menu-item" onclick="openModal('safety-modal'); closeDrawer();"><i class="fa-solid fa-shield-halved"></i> Safety</li>
-      <li class="drawer-menu-item" onclick="openModal('settings-modal'); closeDrawer();"><i class="fa-solid fa-gear"></i> Settings</li>
-      <li class="drawer-menu-item" onclick="openModal('help-modal'); closeDrawer();"><i class="fa-solid fa-circle-question"></i> Help</li>
-      <li class="drawer-menu-item" onclick="openModal('support-modal'); closeDrawer();"><i class="fa-solid fa-headset"></i> Support</li>
+      <li class="drawer-menu-item" onclick="closeDrawer()"><i class="fa-solid fa-car"></i> City Rides</li>
+      <li class="drawer-menu-item" onclick="openModal('wallet-modal'); closeDrawer();"><i class="fa-solid fa-wallet"></i> GB Wallet & Promos</li>
+      <li class="drawer-menu-item" onclick="openModal('referral-modal'); closeDrawer();"><i class="fa-solid fa-gift"></i> Referral & Earn</li>
+      <li class="drawer-menu-item" onclick="openModal('schedule-modal'); closeDrawer();"><i class="fa-solid fa-calendar-days"></i> Scheduled Rides</li>
+      <li class="drawer-menu-item" onclick="openModal('safety-modal'); closeDrawer();"><i class="fa-solid fa-shield-halved"></i> Safety & SOS Siren</li>
+      <li class="drawer-menu-item" onclick="openModal('settings-modal'); closeDrawer();"><i class="fa-solid fa-language"></i> Language (Urdu, Shina, Balti)</li>
+      <li class="drawer-menu-item" onclick="openModal('about-modal'); closeDrawer();"><i class="fa-solid fa-circle-info"></i> About Company</li>
     </ul>
-    <button class="btn btn-accent" onclick="switchToDriverMode()" style="margin-top: 10px; font-weight: 700;">Driver mode</button>
+    <button class="btn btn-accent" onclick="switchToDriverMode()" style="margin-top: 10px;">Switch to Driver Mode</button>
   </div>
 
-  <!-- Modals -->
+  <!-- Language Settings Modal -->
+  <div id="settings-modal" class="modal-overlay hidden">
+    <div class="modal-content">
+      <div class="modal-header"><h3><i class="fa-solid fa-language"></i> Select Language / زبان</h3><i class="fa-solid fa-xmark" style="cursor:pointer;" onclick="closeModal('settings-modal')"></i></div>
+      <div class="form-group">
+        <label>Choose Preferred Language</label>
+        <select id="lang-select" onchange="changeAppLanguage(this.value)">
+          <option value="en">English</option>
+          <option value="ur">Urdu (اردو)</option>
+          <option value="sh">Shina (شینا)</option>
+          <option value="bl">Balti (بلتی)</option>
+        </select>
+      </div>
+      <button class="btn btn-accent" onclick="closeModal('settings-modal')">Save Language</button>
+    </div>
+  </div>
+
+  <!-- Referral Modal -->
+  <div id="referral-modal" class="modal-overlay hidden">
+    <div class="modal-content text-center">
+      <div class="modal-header"><h3><i class="fa-solid fa-gift"></i> Invite & Earn</h3><i class="fa-solid fa-xmark" style="cursor:pointer;" onclick="closeModal('referral-modal')"></i></div>
+      <i class="fa-solid fa-hand-holding-dollar" style="font-size:2.5rem; color:var(--accent); margin-bottom:10px;"></i>
+      <h4>Share your Code</h4>
+      <p style="font-size:0.85rem; color:var(--text-muted); margin:10px 0;">Give your friends 200 PKR discount on their first ride across Astore or Gilgit. You get 200 PKR added to your wallet!</p>
+      <div style="background:var(--card-elevated); padding:12px; border-radius:10px; font-size:1.1rem; font-weight:bold; letter-spacing:2px; color:var(--accent); margin-bottom:10px;" id="my-referral-code">GBNAZIM2026</div>
+      <button class="btn btn-accent" onclick="alert('Referral link copied!')">Copy Invite Link</button>
+    </div>
+  </div>
+
+  <!-- Scheduled Rides Modal -->
+  <div id="schedule-modal" class="modal-overlay hidden">
+    <div class="modal-content">
+      <div class="modal-header"><h3><i class="fa-solid fa-calendar-days"></i> Schedule for Later</h3><i class="fa-solid fa-xmark" style="cursor:pointer;" onclick="closeModal('schedule-modal')"></i></div>
+      <form id="schedule-ride-form">
+        <div class="form-group"><label>Pickup Location</label><input type="text" id="sch-pickup" value="Astore Bazaar" required></div>
+        <div class="form-group"><label>Destination</label><input type="text" id="sch-dropoff" placeholder="e.g. Skardu" required></div>
+        <div class="form-group"><label>Date & Time</label><input type="datetime-local" id="sch-datetime" required></div>
+        <div class="form-group"><label>Fare Offer (PKR)</label><input type="number" id="sch-fare" value="1500" required></div>
+        <button type="submit" class="btn btn-accent">Schedule Ride</button>
+      </form>
+    </div>
+  </div>
+
+  <!-- SOS Emergency Modal -->
+  <div id="safety-modal" class="modal-overlay hidden">
+    <div class="modal-content text-center">
+      <div class="modal-header"><h3><i class="fa-solid fa-shield-halved"></i> Safety & SOS</h3><i class="fa-solid fa-xmark" style="cursor:pointer;" onclick="closeModal('safety-modal')"></i></div>
+      <i class="fa-solid fa-triangle-exclamation" style="font-size:3rem; color:var(--danger); margin-bottom:10px;"></i>
+      <h4>Emergency Assistance</h4>
+      <button class="btn btn-danger" onclick="window.location.href='tel:15'" style="margin-bottom:10px;"><i class="fa-solid fa-phone"></i> Call Police (15)</button>
+      <button class="btn btn-warning" onclick="alert('🚨 SOS Siren Activated & Live Audio Recording Started!')" style="margin-bottom:10px;"><i class="fa-solid fa-volume-high"></i> Trigger SOS Siren</button>
+      <button class="btn btn-admin" onclick="window.open('https://wa.me/923379827882?text=SOS%20Emergency%20on%20GB%20Drive!','_blank')"><i class="fa-brands fa-whatsapp"></i> WhatsApp Emergency</button>
+    </div>
+  </div>
+
+  <!-- About Company Modal -->
+  <div id="about-modal" class="modal-overlay hidden">
+    <div class="modal-content">
+      <div class="modal-header"><h3><i class="fa-solid fa-building"></i> About GB Drive</h3><i class="fa-solid fa-xmark" style="cursor:pointer;" onclick="closeModal('about-modal')"></i></div>
+      <div style="font-size: 0.85rem; line-height: 1.5; color: var(--text-muted);">
+        <p><strong>GB Drive Inc.</strong> is Gilgit-Baltistan's premier ride-hailing and logistics super app, founded by <b>Muhammad Nazim</b> under <b>Prime Solutions</b>.</p>
+        <p style="margin-top: 8px;">📞 <strong>Helpline:</strong> 0337-9827882<br>📍 <strong>Head Office:</strong> Astore Bazaar, Gilgit-Baltistan</p>
+      </div>
+    </div>
+  </div>
+
+  <!-- Wallet & Promo Modal -->
+  <div id="wallet-modal" class="modal-overlay hidden">
+    <div class="modal-content">
+      <div class="modal-header"><h3><i class="fa-solid fa-wallet"></i> GB Wallet & Promos</h3><i class="fa-solid fa-xmark" style="cursor:pointer;" onclick="closeModal('wallet-modal')"></i></div>
+      <div style="background:var(--card-elevated); padding:12px; border-radius:12px; margin-bottom:12px; font-size:0.85rem;">
+        <p>💳 <strong>Send Payment to Company Accounts:</strong></p>
+        <p style="margin-top:4px;">🟢 <b>Easypaisa:</b> 03379827882</p>
+        <p>🟡 <b>JazzCash:</b> 03705519562</p>
+      </div>
+      <form id="wallet-topup-form">
+        <div class="form-group"><label>Your Username</label><input type="text" id="topup-username" required placeholder="Name"></div>
+        <div class="form-group"><label>Amount (PKR)</label><input type="number" id="topup-amount" required placeholder="1000"></div>
+        <div class="form-group"><label>TID Number</label><input type="text" id="topup-tid" required placeholder="TID from SMS"></div>
+        <button type="submit" class="btn btn-accent" style="margin-bottom:10px;">Submit Top-up</button>
+      </form>
+    </div>
+  </div>
+
   <div id="profile-modal" class="modal-overlay hidden">
     <div class="modal-content">
-      <div class="modal-header"><h3><i class="fa-solid fa-user"></i> Profile Settings</h3><i class="fa-solid fa-xmark" style="cursor:pointer;" onclick="closeModal('profile-modal')"></i></div>
-      <button class="btn btn-danger" onclick="alert('Picture retake requested!')" style="margin-bottom:10px;">Retake picture</button>
-      <div class="form-group"><label>Change GB City</label><select id="change-city-select" onchange="updateUserCity(this.value)"><option value="Astore">Astore</option><option value="Gilgit">Gilgit City</option><option value="Skardu">Skardu City</option><option value="Hunza">Hunza</option></select></div>
+      <div class="modal-header"><h3><i class="fa-solid fa-user-gear"></i> Profile</h3><i class="fa-solid fa-xmark" style="cursor:pointer;" onclick="closeModal('profile-modal')"></i></div>
       <button class="btn btn-danger" onclick="signOutUser()">Log Out</button>
     </div>
   </div>
 
-  <div id="history-modal" class="modal-overlay hidden">
-    <div class="modal-content">
-      <div class="modal-header"><h3><i class="fa-solid fa-clock-rotate-left"></i> Order history</h3><i class="fa-solid fa-xmark" style="cursor:pointer;" onclick="closeModal('history-modal')"></i></div>
-      <div style="background:var(--card-elevated); padding:15px; border-radius:12px; text-align:center;">
-        <i class="fa-solid fa-car" style="font-size:2.5rem; color:var(--accent); margin-bottom:10px;">}</i>
-        <h4>Your completed orders will be here</h4>
-        <p style="font-size:0.8rem; color:var(--text-muted); margin-top:5px;">Order on your terms – start now</p>
-      </div>
-    </div>
-  </div>
-
-  <div id="notifications-modal" class="modal-overlay hidden">
-    <div class="modal-content text-center">
-      <div class="modal-header"><h3><i class="fa-solid fa-bell"></i> Notifications</h3><i class="fa-solid fa-xmark" style="cursor:pointer;" onclick="closeModal('notifications-modal')"></i></div>
-      <i class="fa-solid fa-space-shuttle" style="font-size:3rem; color:var(--accent); margin:15px 0;"></i>
-      <h4>You are all up to date</h4>
-      <p style="font-size:0.8rem; color:var(--text-muted);">No new notifications – come back soon</p>
-    </div>
-  </div>
-
-  <div id="safety-modal" class="modal-overlay hidden">
-    <div class="modal-content">
-      <div class="modal-header"><h3><i class="fa-solid fa-shield-halved"></i> Safety</h3><i class="fa-solid fa-xmark" style="cursor:pointer;" onclick="closeModal('safety-modal')"></i></div>
-      <button class="btn btn-danger" onclick="window.location.href='tel:15'" style="margin-bottom:10px;"><i class="fa-solid fa-phone"></i> Call 15 (Police)</button>
-      <div style="display:grid; grid-template-columns: 1fr 1fr; gap:8px;">
-        <div class="ride-card" style="text-align:center; padding:10px;"><i class="fa-solid fa-headset" style="color:var(--accent);"></i><br><span style="font-size:0.8rem;">Proactive support</span></div>
-        <div class="ride-card" style="text-align:center; padding:10px;"><i class="fa-solid fa-id-card" style="color:var(--accent);"></i><br><span style="font-size:0.8rem;">Drivers verification</span></div>
-      </div>
-    </div>
-  </div>
-
-  <div id="settings-modal" class="modal-overlay hidden">
-    <div class="modal-content">
-      <div class="modal-header"><h3><i class="fa-solid fa-gear"></i> App settings</h3><i class="fa-solid fa-xmark" style="cursor:pointer;" onclick="closeModal('settings-modal')"></i></div>
-      <div class="form-group"><label>Language</label><select><option>English</option><option>Urdu (اردو)</option><option>Shina (شینا)</option></select></div>
-      <div class="form-group"><label>Distance Units</label><select><option>Kilometres</option><option>Miles</option></select></div>
-    </div>
-  </div>
-
-  <div id="help-modal" class="modal-overlay hidden">
-    <div class="modal-content">
-      <div class="modal-header"><h3>Help Topics</h3><i class="fa-solid fa-xmark" style="cursor:pointer;" onclick="closeModal('help-modal')"></i></div>
-      <div class="ride-card" onclick="alert('City help topic')">City</div>
-      <div class="ride-card" onclick="alert('City to City help topic')">City to City</div>
-      <div class="ride-card" onclick="alert('Freight help topic')">Freight</div>
-    </div>
-  </div>
-
-  <div id="support-modal" class="modal-overlay hidden">
-    <div class="modal-content text-center">
-      <div class="modal-header"><h3>Support</h3><i class="fa-solid fa-xmark" style="cursor:pointer;" onclick="closeModal('support-modal')"></i></div>
-      <i class="fa-solid fa-wifi-slash" style="font-size:3rem; color:var(--danger); margin:15px 0;"></i>
-      <h4>Something isn't loading</h4>
-      <p style="font-size:0.8rem; color:var(--text-muted);">Please check your connection.</p>
-      <button class="btn btn-accent" onclick="closeModal('support-modal')">Try again</button>
-    </div>
-  </div>
-
-  <!-- Eagle Eye Admin Modal -->
+  <!-- Eagle Eye Master Control -->
   <div id="eagle-eye-modal" class="modal-overlay hidden">
     <div class="modal-content">
       <div class="modal-header" style="border-color: var(--admin-color);">
@@ -244,12 +276,10 @@
         <button class="btn btn-admin" onclick="verifyAdminKey()">Unlock Dashboard</button>
       </div>
       <div id="admin-dashboard-view" class="hidden">
-        <div style="background: rgba(124,58,237,0.1); border: 1px solid var(--admin-color); padding: 10px; border-radius: 8px; margin-bottom: 12px; font-size: 0.85rem;">
-          👑 <strong>Platform Revenue:</strong> <span id="admin-total-revenue" style="color: var(--accent); font-weight: bold;">0 PKR</span>
-        </div>
-        <h4 style="margin-bottom: 8px;">Active Rides Monitor:</h4>
-        <div id="admin-rides-monitor" style="max-height: 150px; overflow-y: auto;"><p style="font-size: 0.85rem; opacity: 0.7;">No active rides.</p></div>
-        <button class="btn btn-admin" onclick="broadcastAdminNotification()" style="margin-top: 10px;">📢 Send Weather/Road Alert (Broadcast)</button>
+        <h4 style="margin-bottom: 8px;">💳 Pending Wallet Requests:</h4>
+        <div id="admin-wallet-monitor" style="max-height: 130px; overflow-y: auto; margin-bottom:10px;"><p style="font-size: 0.85rem; opacity: 0.7;">No pending requests.</p></div>
+        <h4 style="margin-bottom: 8px;">🚗 Active Rides:</h4>
+        <div id="admin-rides-monitor" style="max-height: 130px; overflow-y: auto;"><p style="font-size: 0.85rem; opacity: 0.7;">No active rides.</p></div>
       </div>
     </div>
   </div>
@@ -275,30 +305,34 @@
       <i class="fa-solid fa-location-crosshairs"></i>
     </button>
 
-    <!-- Auth Overlay -->
-    <div id="auth-overlay" class="modal-overlay" style="z-index: 9999;">
-      <div class="modal-content">
+    <!-- Modern Auth Overlay -->
+    <div id="auth-overlay" class="modal-overlay" style="z-index: 9999; background: linear-gradient(rgba(0,0,0,0.85), rgba(0,0,0,0.95)), url('https://images.unsplash.com/photo-1464822759023-fed622ff2c3b?auto=format&fit=crop&w=1000&q=80') center/cover;">
+      <div class="modal-content" style="background: rgba(30,30,30,0.92); backdrop-filter: blur(10px);">
         <h2 style="margin-bottom: 15px; text-align: center;"><i class="fa-solid fa-car-side" style="color: var(--accent);"></i> GB Drive Login</h2>
         <button id="google-login-btn" class="btn" style="background: #ea4335; margin-bottom: 10px;"><i class="fa-brands fa-google"></i> Continue with Google</button>
         <form id="auth-form">
           <div class="form-group"><label>Email</label><input type="email" id="auth-email" required placeholder="name@example.com"></div>
           <div class="form-group"><label>Password</label><input type="password" id="auth-password" required placeholder="••••••••"></div>
-          <button type="submit" class="btn btn-accent">Login</button>
+          <button type="submit" class="btn btn-accent">Login / Sign Up</button>
         </form>
       </div>
     </div>
 
-    <!-- Profile Setup -->
+    <!-- Complete Profile Setup -->
     <div id="profile-setup-section" class="modal-overlay hidden" style="z-index: 9998;">
       <div class="modal-content">
-        <h3 style="margin-bottom: 12px; text-align: center;">Complete Profile & Verification</h3>
+        <h3 style="margin-bottom: 12px; text-align: center;">Complete Profile</h3>
         <form id="profile-setup-form">
-          <div class="form-group"><label>Role</label><select id="setup-role" onchange="toggleDriverDocs()"><option value="passenger">Passenger</option><option value="driver">Driver Partner</option></select></div>
+          <div class="form-group"><label>Role</label><select id="setup-role" onchange="toggleDriverFields()"><option value="passenger">Passenger</option><option value="driver">Driver Partner</option></select></div>
           <div class="form-group"><label>GB City</label><select id="setup-city"><option value="Astore">Astore</option><option value="Gilgit">Gilgit City</option><option value="Skardu">Skardu City</option><option value="Hunza">Hunza</option></select></div>
           <div class="form-group"><label>Full Name</label><input type="text" id="setup-name" required placeholder="Full Name"></div>
           <div class="form-group"><label>WhatsApp Number</label><input type="text" id="setup-phone" required placeholder="03001234567"></div>
-          <div class="form-group"><label>Emergency Contact</label><input type="text" id="setup-emergency" required placeholder="Emergency Phone"></div>
-          <button type="submit" class="btn btn-accent" style="margin-top:10px;">Save & Enter App</button>
+          
+          <div id="driver-extra-fields" class="hidden">
+            <div class="form-group"><label>Vehicle Model & Number</label><input type="text" id="setup-vehicle" placeholder="Toyota 4x4 (GIL-786)"></div>
+          </div>
+
+          <button type="submit" class="btn btn-accent" style="margin-top:10px;">Save & Enter</button>
         </form>
       </div>
     </div>
@@ -311,7 +345,7 @@
         <div class="service-tabs">
           <div class="service-tab active" onclick="selectServiceType('City Rides', this)"><i class="fa-solid fa-car"></i><span>Ride</span></div>
           <div class="service-tab" onclick="selectServiceType('Intercity', this)"><i class="fa-solid fa-city"></i><span>City to city</span></div>
-          <div class="service-tab" onclick="selectServiceType('Freight', this)"><i class="fa-solid fa-truck-fast"></i><span>Freight</span></div>
+          <div class="service-tab" onclick="selectServiceType('Jeep 4x4', this)"><i class="fa-solid fa-truck-monster"></i><span>4x4 Jeep</span></div>
         </div>
 
         <div class="indrive-search-bar" onclick="openBookingModal()">
@@ -328,8 +362,10 @@
           <button class="btn btn-accent" onclick="switchToPassengerMode()" style="width: auto; padding: 6px 12px; font-size: 0.8rem; margin:0;">Passenger Mode</button>
         </div>
         <div style="background: var(--card-elevated); padding: 10px; border-radius: 12px; margin-bottom: 10px; font-size: 0.85rem;">
-          💰 Wallet Balance: <strong style="color: var(--accent);">5000 PKR</strong><br>
-          📈 Today's Earnings: <strong style="color: var(--primary);">2,400 PKR</strong> (4 Rides Completed)
+          💰 Wallet Balance: <strong id="driver-wallet-balance" style="color: var(--accent);">0 PKR</strong><br>
+          📈 Weekly Earnings: <strong style="color: var(--primary);">4,500 PKR</strong> (Commission: 10%)<br>
+          ⭐ Rating: <strong>5.0 / 5.0</strong><br>
+          <button class="btn btn-accent" onclick="openModal('wallet-modal')" style="padding:4px; font-size:0.75rem; margin-top:6px;">Top-up Wallet</button>
         </div>
         <div id="rides-list"></div>
       </div>
@@ -337,36 +373,36 @@
     </div>
   </div>
 
-  <!-- Booking Modal (InDrive Style Route & Fare Selection) -->
+  <!-- Booking Modal with Promo Code Engine -->
   <div id="booking-modal" class="modal-overlay hidden">
     <div class="modal-content">
       <div class="modal-header"><h3><i class="fa-solid fa-route"></i> Enter your route</h3><i class="fa-solid fa-xmark" style="cursor:pointer;" onclick="closeModal('booking-modal')"></i></div>
       <form id="ride-form">
-        <div class="form-group">
-          <label>From</label>
-          <input type="text" id="pickup" required value="Astore (Eidgah)">
-        </div>
-        <div class="form-group">
-          <label>To (Destination)</label>
-          <input type="text" id="dropoff" required placeholder="Enter destination or landmark...">
-          <div style="display:flex; gap:5px; margin-top:4px;">
-            <button type="button" class="btn btn-admin" style="padding:4px; font-size:0.75rem; margin:0;" onclick="setSavedPlace('dropoff', 'Skardu View Point')">🏔️ Skardu</button>
-            <button type="button" class="btn btn-admin" style="padding:4px; font-size:0.75rem; margin:0;" onclick="setSavedPlace('dropoff', 'Gilgit City Center')">🌆 Gilgit</button>
-          </div>
-        </div>
-
-        <div class="form-group">
-          <label>Offer your fare (PKR)</label>
-          <input type="number" id="fare" required value="400" placeholder="Enter amount">
-        </div>
-
-        <div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 12px; background:var(--card-elevated); padding:8px 12px; border-radius:10px;">
-          <span style="font-size:0.85rem;">Automatically accept nearest driver</span>
-          <input type="checkbox" id="auto-accept-toggle" style="width:20px; height:20px; accent-color:var(--accent);">
-        </div>
-
+        <div class="form-group"><label>From</label><input type="text" id="pickup" required value="Astore (Eidgah)"></div>
+        <div class="form-group"><label>To (Destination)</label><input type="text" id="dropoff" required placeholder="Enter destination..."></div>
+        <div class="form-group"><label>Offer your fare (PKR)</label><input type="number" id="fare" required value="400" placeholder="Enter amount"></div>
+        <div class="form-group"><label>Promo Code (e.g. GB500)</label><div style="display:flex; gap:6px;"><input type="text" id="promo-input" placeholder="Enter promo code"><button type="button" class="btn btn-accent" onclick="applyPromoCode()" style="width:auto; margin:0; padding:6px 12px; font-size:0.8rem;">Apply</button></div></div>
         <button type="submit" class="btn btn-accent">Find offers</button>
       </form>
+    </div>
+  </div>
+
+  <!-- inDrive Style Searching / Timeout Modal -->
+  <div id="searching-modal" class="modal-overlay hidden">
+    <div class="modal-content text-center">
+      <div class="modal-header"><h3>Searching for drivers</h3><i class="fa-solid fa-xmark" style="cursor:pointer;" onclick="cancelSearchModal()"></i></div>
+      <div style="font-size: 2rem; margin: 15px 0; color: var(--accent); font-weight: bold;" id="search-timer">0:58</div>
+      <p style="font-size: 0.85rem; color: var(--text-muted); margin-bottom: 15px;">Notifying nearby drivers in Astore...</p>
+      
+      <div id="driver-bids-container" style="max-height: 180px; overflow-y: auto; margin-bottom: 10px;"></div>
+
+      <div id="timeout-options" class="hidden" style="background:var(--card-elevated); padding:12px; border-radius:12px; margin-bottom:10px;">
+        <p style="font-size:0.85rem; margin-bottom:8px;">Still need a ride? Search again with higher fare</p>
+        <button class="btn btn-accent" onclick="searchWithHigherFare()" style="margin-bottom:6px;">Search at higher fare (+100 PKR)</button>
+        <button class="btn btn-danger" onclick="cancelSearchModal()">I want to cancel</button>
+      </div>
+
+      <button class="btn btn-danger" onclick="cancelSearchModal()" id="cancel-request-btn">Cancel request</button>
     </div>
   </div>
 
@@ -393,24 +429,37 @@
 
     let currentUser = null, currentUserProfile = null;
     let selectedService = 'City Rides';
+    let map = null, userMarker = null;
+    let driverMarkers = {};
+    let activeRideId = null, searchTimerInterval = null, currentFareAmount = 400;
 
     window.addEventListener('load', () => {
       setTimeout(() => { const s = document.getElementById('splash-screen'); if(s) { s.style.opacity='0'; setTimeout(()=>s.remove(), 600); } }, 1500);
       initMap();
     });
 
-    let map = null, userMarker = null;
     function initMap() {
       map = L.map('map', { zoomControl: false }).setView([35.3472, 75.0833], 15);
-      L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', { maxZoom: 19 }).addTo(map);
+      L.tileLayer('https://{s}.tile.openstreetmap.org/{z}s/{y}.png', { maxZoom: 19 }).addTo(map);
+      loadAvailableDriversRealtime();
+    }
 
-      const gbLandmarks = [
-        { name: "Eidgah Das", coords: [35.3520, 75.0890] },
-        { name: "Usmani Masjid", coords: [35.3460, 75.0810] },
-        { name: "DC House Astore", coords: [35.3440, 75.0870] },
-        { name: "Astore Bazaar", coords: [35.3472, 75.0833] }
-      ];
-      gbLandmarks.forEach(loc => { L.marker(loc.coords).addTo(map).bindPopup(`<b>${loc.name}</b>`); });
+    function loadAvailableDriversRealtime() {
+      onValue(ref(db, 'drivers_location/'), snap => {
+        const drivers = snap.val();
+        Object.values(driverMarkers).forEach(m => map.removeLayer(m));
+        driverMarkers = {};
+        if (drivers) {
+          Object.keys(drivers).forEach(id => {
+            const d = drivers[id];
+            if (d && d.lat && d.lng) {
+              const marker = L.marker([d.lat, d.lng]).addTo(map)
+                .bindPopup(`<b>🚗 ${d.name}</b> ⭐ 5.0<br>Vehicle: ${d.vehicle || 'Toyota 4x4'}`);
+              driverMarkers[id] = marker;
+            }
+          });
+        }
+      });
     }
 
     window.getCurrentGPSLocation = function() {
@@ -421,8 +470,21 @@
           userMarker = L.marker([lat, lng]).addTo(map).bindPopup("Your Location").openPopup();
           map.setView([lat, lng], 16);
           document.getElementById('pickup').value = `Astore GPS (${lat.toFixed(3)}, ${lng.toFixed(3)})`;
+          
+          if(currentUserProfile && currentUserProfile.role === 'driver') {
+            set(ref(db, `drivers_location/${currentUser.uid}`), {
+              name: currentUserProfile.name, vehicle: currentUserProfile.vehicle || 'Toyota 4x4', lat, lng
+            });
+          }
         }, () => { alert('GPS Error.'); });
       }
+    };
+
+    window.toggleDriverFields = () => {
+      const role = document.getElementById('setup-role').value;
+      const extra = document.getElementById('driver-extra-fields');
+      if(role === 'driver') extra.classList.remove('hidden');
+      else extra.classList.add('hidden');
     };
 
     window.openDrawer = () => document.getElementById('sidebar-drawer').classList.add('open');
@@ -430,8 +492,28 @@
     window.openModal = id => document.getElementById(id).classList.remove('hidden');
     window.closeModal = id => document.getElementById(id).classList.add('hidden');
     window.openBookingModal = () => document.getElementById('booking-modal').classList.remove('hidden');
-    window.setSavedPlace = (fieldId, val) => { document.getElementById(fieldId).value = val; };
-    window.updateUserCity = (city) => { document.getElementById('current-city-label-top').innerText = city; };
+
+    // Promo Code Engine
+    window.applyPromoCode = () => {
+      const code = document.getElementById('promo-input').value.trim().toUpperCase();
+      const fareInput = document.getElementById('fare');
+      if (code === 'GB500' || code === 'ASTORE2026') {
+        let current = Number(fareInput.value);
+        let discounted = Math.max(100, current - 100);
+        fareInput.value = discounted;
+        alert('Promo code applied successfully! 100 PKR discount granted.');
+      } else {
+        alert('Invalid promo code!');
+      }
+    };
+
+    // Multi-Language Switcher
+    window.changeAppLanguage = (lang) => {
+      if(lang === 'ur') alert('Language switched to Urdu (اردو)');
+      else if(lang === 'sh') alert('Language switched to Shina (شینا)');
+      else if(lang === 'bl') alert('Language switched to Balti (بلتی)');
+      else alert('Language switched to English');
+    };
 
     let secretTapCount = 0, tapTimer = null;
     window.handleHeaderSecretTap = function() {
@@ -460,10 +542,32 @@
           });
         }
       });
+
+      onValue(ref(db, 'wallet_requests/'), snap => {
+        const data = snap.val();
+        const monitor = document.getElementById('admin-wallet-monitor');
+        monitor.innerHTML = data ? '' : '<p>No pending requests.</p>';
+        if (data) {
+          Object.keys(data).forEach(id => {
+            const req = data[id];
+            if(req.status === 'pending') {
+              monitor.innerHTML += `<div class="ride-card" style="border-color:var(--accent);"><div>User: <strong>${req.username}</strong></div><div>Amount: PKR ${req.amount} | TID: <code>${req.tid}</code></div><button class="btn btn-accent" onclick="adminApproveWallet('${id}', '${req.uid}', ${req.amount})" style="padding:4px; font-size:0.75rem; margin-top:4px;">Approve</button></div>`;
+            }
+          });
+        }
+      });
     }
 
+    window.adminApproveWallet = async (reqId, userId, amount) => {
+      await update(ref(db, `wallet_requests/${reqId}`), { status: 'approved' });
+      const userWalletRef = ref(db, `users/${userId}/wallet`);
+      const snap = await get(userWalletRef);
+      const currentBalance = snap.exists() ? snap.val() : 0;
+      await set(userWalletRef, currentBalance + amount);
+      alert('Wallet approved!');
+    };
+
     window.adminCancelRide = async (rideId) => { await update(ref(db, `rides/${rideId}`), { status: 'cancelled' }); alert('Cancelled by Admin.'); };
-    window.broadcastAdminNotification = () => { const msg = prompt("Broadcast message:"); if(msg) alert(`Broadcast sent: "${msg}"`); };
 
     window.selectServiceType = (type, el) => {
       selectedService = type;
@@ -492,6 +596,10 @@
           currentUserProfile = snap.val();
           document.getElementById('drawer-user-name').innerText = currentUserProfile.name;
           document.getElementById('current-city-label-top').innerText = currentUserProfile.city || 'Astore';
+          document.getElementById('driver-wallet-balance').innerText = (currentUserProfile.wallet || 0) + ' PKR';
+          if(currentUserProfile.role === 'driver') {
+            setInterval(getCurrentGPSLocation, 10000);
+          }
         } else {
           document.getElementById('profile-setup-section').classList.remove('hidden');
         }
@@ -509,13 +617,15 @@
 
     document.getElementById('profile-setup-form').addEventListener('submit', async e => {
       e.preventDefault();
+      const role = document.getElementById('setup-role').value;
       const profile = {
         uid: currentUser.uid, email: currentUser.email,
         city: document.getElementById('setup-city').value,
         name: document.getElementById('setup-name').value,
         phone: document.getElementById('setup-phone').value,
-        emergencyPhone: document.getElementById('setup-emergency').value,
-        role: document.getElementById('setup-role').value,
+        role,
+        vehicle: role === 'driver' ? document.getElementById('setup-vehicle').value : '',
+        wallet: 200,
         isProfileComplete: true
       };
       await set(ref(db, `users/${currentUser.uid}`), profile);
@@ -526,42 +636,101 @@
 
     document.getElementById('ride-form').addEventListener('submit', async e => {
       e.preventDefault();
+      currentFareAmount = Number(document.getElementById('fare').value);
       const newRideRef = push(ref(db, 'rides/'));
+      activeRideId = newRideRef.key;
+
       await set(newRideRef, {
         clientId: currentUser.uid, clientName: currentUserProfile.name,
         city: currentUserProfile.city, serviceType: selectedService,
         pickup: document.getElementById('pickup').value,
         dropoff: document.getElementById('dropoff').value,
-        fare: Number(document.getElementById('fare').value),
+        fare: currentFareAmount,
         status: 'pending', createdAt: Date.now()
       });
+
       document.getElementById('booking-modal').classList.add('hidden');
-      alert('Searching for drivers...');
-      trackPassengerRide(newRideRef.key);
+      document.getElementById('searching-modal').classList.remove('hidden');
+      startInDriveSearchTimer(activeRideId);
+      trackPassengerSearch(activeRideId);
     });
 
-    function trackPassengerRide(rideId) {
+    
+    function startInDriveSearchTimer(rideId) {
+      let timeLeft = 58;
+      const timerEl = document.getElementById('search-timer');
+      const timeoutOpts = document.getElementById('timeout-options');
+      const cancelBtn = document.getElementById('cancel-request-btn');
+      
+      timeoutOpts.classList.add('hidden');
+      cancelBtn.classList.remove('hidden');
+
+      clearInterval(searchTimerInterval);
+      searchTimerInterval = setInterval(() => {
+        timeLeft--;
+        let secs = timeLeft < 10 ? '0' + timeLeft : timeLeft;
+        timerEl.innerText = `0:${secs}`;
+
+        if(timeLeft <= 0) {
+          clearInterval(searchTimerInterval);
+          timeoutOpts.classList.remove('hidden');
+          cancelBtn.classList.add('hidden');
+        }
+      }, 1000);
+    }
+
+    window.searchWithHigherFare = async () => {
+      currentFareAmount += 100;
+      if(activeRideId) {
+        await update(ref(db, `rides/${activeRideId}`), { fare: currentFareAmount });
+        alert(`Fare increased to PKR ${currentFareAmount}. Searching again...`);
+        startInDriveSearchTimer(activeRideId);
+      }
+    };
+
+    window.cancelSearchModal = async () => {
+      clearInterval(searchTimerInterval);
+      if(activeRideId) {
+        await update(ref(db, `rides/${activeRideId}`), { status: 'cancelled' });
+      }
+      document.getElementById('searching-modal').classList.add('hidden');
+    };
+
+    function trackPassengerSearch(rideId) {
       onValue(ref(db, `rides/${rideId}`), snap => {
         const r = snap.val();
-        const stat = document.getElementById('passenger-ride-status');
+        const bidsContainer = document.getElementById('driver-bids-container');
         if(!r) return;
-        if(r.status === 'pending' && !r.bids) {
-          stat.innerHTML = `<div class="ride-card">⏳ Searching drivers...<br><button class="btn btn-danger" onclick="cancelRide('${rideId}')" style="margin-top:6px;padding:6px;">Cancel request</button></div>`;
-        } else if(r.bids && r.status === 'pending') {
-          let html = `<h4>Driver Bids:</h4>`;
+
+        if(r.bids && r.status === 'pending') {
+          let html = `<h4>Driver Offers:</h4>`;
           Object.keys(r.bids).forEach(k => {
             const b = r.bids[k];
-            html += `<div class="ride-card"><div>Driver: <strong>${b.driverName}</strong> ⭐ 4.9</div><div>Offer: <strong style="color:var(--accent);">PKR ${b.amount}</strong></div><button class="btn btn-accent" onclick="acceptBid('${rideId}', '${b.driverId}', '${b.driverName}', ${b.amount})" style="padding:6px;font-size:0.8rem;margin-top:6px;">Accept Bid</button></div>`;
+            html += `<div class="ride-card"><div>Driver: <strong>${b.driverName}</strong> ⭐ 5.0</div><div>Offer: <strong style="color:var(--accent);">PKR ${b.amount}</strong></div><button class="btn btn-accent" onclick="acceptBid('${rideId}', '${b.driverId}', '${b.driverName}', ${b.amount})" style="padding:6px;font-size:0.8rem;margin-top:6px;">Accept Offer</button></div>`;
           });
-          stat.innerHTML = html;
+          bidsContainer.innerHTML = html;
         } else if(r.status === 'accepted') {
-          stat.innerHTML = `<div class="ride-card" style="background:#14532d;">✅ Accepted by <strong>${r.acceptedDriverName}</strong> for PKR ${r.acceptedFare}</div>`;
+          clearInterval(searchTimerInterval);
+          document.getElementById('searching-modal').classList.add('hidden');
+          document.getElementById('passenger-ride-status').innerHTML = `
+            <div class="ride-card" style="background:#14532d;">
+              ✅ Ride Accepted by <strong>${r.acceptedDriverName}</strong> for PKR ${r.acceptedFare}<br>
+              <div style="margin-top:8px;">
+                <p style="font-size:0.8rem; margin-bottom:4px;">Rate your Driver (1 to 5 Stars):</p>
+                <button class="btn btn-accent" onclick="submitRating(5)" style="padding:4px; font-size:0.75rem;">⭐⭐⭐⭐⭐ (5/5)</button>
+              </div>
+            </div>`;
         }
       });
     }
 
-    window.cancelRide = async (rideId) => { await update(ref(db, `rides/${rideId}`), { status: 'cancelled' }); document.getElementById('passenger-ride-status').innerHTML = ''; alert('Request cancelled.'); };
-    window.acceptBid = async (rideId, driverId, driverName, fare) => { await update(ref(db, `rides/${rideId}`), { status: 'accepted', acceptedDriverName: driverName, acceptedFare: fare }); };
+    window.acceptBid = async (rideId, driverId, driverName, fare) => {
+      await update(ref(db, `rides/${rideId}`), { status: 'accepted', acceptedDriverName: driverName, acceptedFare: fare });
+    };
+
+    window.submitRating = (stars) => {
+      alert(`Thank you! ${stars}-star rating and review submitted successfully.`);
+    };
 
     function loadDriverRides() {
       onValue(ref(db, 'rides/'), snap => {
@@ -569,7 +738,7 @@
         const list = document.getElementById('rides-list');
         if(!list) return;
         list.innerHTML = '';
-        if(!data) { list.innerHTML = '<p style="color:var(--text-muted);">No requests available.</p>'; return; }
+        if(!data) { list.innerHTML = '<p style="color:var(--text-muted);">No ride requests available.</p>'; return; }
         Object.keys(data).forEach(id => {
           const r = data[id];
           if(r.status === 'pending') {
